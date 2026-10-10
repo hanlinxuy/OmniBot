@@ -33,6 +33,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cn.com.omnimind.bot.ui.nativehome.LegacyHomeNavigator
+import cn.com.omnimind.bot.ui.account.NativeAccountRoute
+import cn.com.omnimind.bot.ui.account.NativeAccountViewModel
 import cn.com.omnimind.bot.ui.nativehome.TabletPanePreferences
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -259,6 +261,13 @@ class NativeHomeActivity : ComponentActivity() {
                 sceneModels = { onBack, onProviders, onEditAvatar -> NativeSceneModelsRoute(
                     sceneModelsViewModel, onProviders, onEditAvatar, onBack) },
                 modelProviders = { onBack -> NativeModelProviderRoute(modelProviderViewModel, onBack) },
+                account = { onBack ->
+                    val accountViewModel = remember {
+                        ViewModelProvider(this@NativeHomeActivity, NativeAccountViewModel.Factory(this@NativeHomeActivity, authOnly = false))[
+                            "account", NativeAccountViewModel::class.java]
+                    }
+                    NativeAccountRoute(accountViewModel, onBack)
+                },
                 mcpTools = { onBack -> NativeRemoteMcpRoute(remoteMcpViewModel, onBack) },
                 agents = { onBack, onModelProviders, onAgentConfig, onRemoteBridge, onTerminalFocus -> NativeAgentsRoute(
                     agentsViewModel, navigator::open, onModelProviders, onAgentConfig, onRemoteBridge, onTerminalFocus, onBack) },

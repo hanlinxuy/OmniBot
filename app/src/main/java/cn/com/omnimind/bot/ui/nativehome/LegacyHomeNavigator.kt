@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import cn.com.omnimind.bot.activity.MainActivity
+import cn.com.omnimind.bot.activity.NativeAccountActivity
 import cn.com.omnimind.bot.activity.NativeOnboardingActivity
 import cn.com.omnimind.bot.ui.WebLinks
 import cn.com.omnimind.nativeui.LegacyDestination
@@ -40,7 +41,6 @@ internal class LegacyHomeNavigator(private val activity: Activity) {
                 .build().toString()
             is LegacyDestination.PluginRoute -> destination.route.takeIf { it.startsWith("/") } ?: "/home/chat"
             is Page -> when (destination) {
-                Page.Account -> "/my/account"
                 Page.ModelProviders -> "/home/model_provider_setting"
                 Page.SceneModels -> "/home/scene_model_setting"
                 // Temporary hand-off: the native Bridge page's QR scan entry opens the
@@ -48,7 +48,7 @@ internal class LegacyHomeNavigator(private val activity: Activity) {
                 Page.RemoteBridge -> "/home/remote_codex_setting"
                 Page.Chat -> "/home/chat"
                 // Opened by openNatively.
-                Page.QuickStart, Page.UserGuide -> return
+                Page.QuickStart, Page.UserGuide, Page.Account -> return
             }
             // Native pages since 5e-8a; NativeHomeApp opens them and never hands them over.
             is LegacyDestination.Workspace, is LegacyDestination.WorkspaceFile -> return
@@ -63,6 +63,11 @@ internal class LegacyHomeNavigator(private val activity: Activity) {
         Page.QuickStart -> {
             activity.startActivity(Intent(activity, NativeOnboardingActivity::class.java)
                 .putExtra(NativeOnboardingActivity.EXTRA_REPLAY, true))
+            true
+        }
+        // Callers outside native Home (Home opens it as its own page) (5h).
+        Page.Account -> {
+            activity.startActivity(Intent(activity, NativeAccountActivity::class.java))
             true
         }
         // The manual opens in a Custom Tab instead of the Flutter WebView (5g).

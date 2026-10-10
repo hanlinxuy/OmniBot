@@ -122,7 +122,9 @@ class WorkspaceBrowserModelsTest {
         assertTrue(LegacyDestination.Workspace().opensNativePage)
         assertTrue(LegacyDestination.WorkspaceFile("/w/a.md").opensNativePage)
         assertTrue(LegacyDestination.Page.ModelProviders.opensNativePage)
-        assertFalse(LegacyDestination.Page.Account.opensNativePage)
+        // Native since 5h.
+        assertTrue(LegacyDestination.Page.Account.opensNativePage)
+        assertFalse(LegacyDestination.Page.RemoteBridge.opensNativePage)
         assertFalse(LegacyDestination.Conversation(1, "agent").opensNativePage)
     }
 

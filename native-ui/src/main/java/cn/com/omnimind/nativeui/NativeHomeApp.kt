@@ -50,6 +50,7 @@ import top.yukonga.miuix.kmp.nav.core.rememberNavSystemCornerRadius
 internal sealed interface HomeRoute : NavKey {
     @Serializable data object Home : HomeRoute
     @Serializable data object Settings : HomeRoute
+    @Serializable data object Account : HomeRoute
     @Serializable data object Archive : HomeRoute
     @Serializable data object About : HomeRoute
     @Serializable data object Appearance : HomeRoute
@@ -107,6 +108,8 @@ fun NativeHomeApp(
     workspaceMemory: @Composable (onBack: () -> Unit, onSceneModels: () -> Unit) -> Unit,
     sceneModels: @Composable (onBack: () -> Unit, onProviders: () -> Unit, onEditAvatar: () -> Unit) -> Unit,
     modelProviders: @Composable (onBack: () -> Unit) -> Unit,
+    /** The account page (5h). */
+    account: @Composable (onBack: () -> Unit) -> Unit = {},
     mcpTools: @Composable (onBack: () -> Unit) -> Unit,
     agents: @Composable (onBack: () -> Unit, onModelProviders: () -> Unit, onAgentConfig: (String) -> Unit, onRemoteBridge: () -> Unit, onTerminalFocus: (String) -> Unit) -> Unit,
     agentConfig: @Composable (agentId: String, onBack: () -> Unit) -> Unit,
@@ -177,6 +180,10 @@ fun NativeHomeApp(
                 LegacyDestination.Page.ModelProviders -> {
                     actions.consumeDestination()
                     if (HomeRoute.ModelProviders !in backStack) backStack.add(HomeRoute.ModelProviders)
+                }
+                LegacyDestination.Page.Account -> {
+                    actions.consumeDestination()
+                    if (HomeRoute.Account !in backStack) backStack.add(HomeRoute.Account)
                 }
                 is LegacyDestination.TerminalPackage -> {
                     actions.consumeDestination()
@@ -308,6 +315,7 @@ fun NativeHomeApp(
                     onMcpTools = { backStack.add(HomeRoute.McpTools) },
                     onAgents = { backStack.add(HomeRoute.Agents) },
                     onTerminal = { backStack.add(HomeRoute.Terminal()) },
+                    onAccount = { backStack.add(HomeRoute.Account) },
                 )
             }
             entry<HomeRoute.Appearance> { appearance(
@@ -341,6 +349,7 @@ fun NativeHomeApp(
                 { actions.open(LegacyDestination.Page.SceneModels) },
             ) }
             entry<HomeRoute.ModelProviders> { modelProviders { backStack.removeLastOrNull() } }
+            entry<HomeRoute.Account> { account { backStack.removeLastOrNull() } }
             entry<HomeRoute.McpTools> { mcpTools { backStack.removeLastOrNull() } }
             entry<HomeRoute.Agents> {
                 agents(

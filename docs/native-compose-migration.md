@@ -814,6 +814,92 @@ sends a user without `flutter.welcome_completed` to the Flutter flow.
   and progress easing, and the connection form checks.
 - Verification: `OnboardingModelsTest` (8). Nothing uses it yet.
 
+### 5h checkpoint: native account page (device-verified on the emulator)
+
+- Settings › Account & AI service opens `AccountScreen` on native Home
+  (`HomeRoute.Account`) instead of the Flutter `AccountPage`. Onboarding's
+  sign-in opens `NativeAccountActivity` with `EXTRA_AUTH_ONLY`, which
+  closes on success, instead of the Flutter `AccountAuthPage`.
+  `LegacyHomeNavigator` sends any other `Page.Account` caller there too.
+- The page covers every Flutter state:
+  - loading;
+  - failed;
+  - service not configured (`OMNIBOT_BASE_URL`);
+  - secure storage recovering;
+  - the update gate;
+  - sign in and register;
+  - signed in, with quota and management.
+
+  It also covers every sheet:
+  - reset password;
+  - change password;
+  - two-step delete;
+  - recent usage;
+  - signed-in devices, with revoke one or all others;
+  - sign out.
+- Structure:
+  - `AccountModels` holds the pure rules: validation, code ownership and
+    cooldown, the server-code mapping, the quota reset, device order.
+  - `AccountPageRepository` calls `OmniAccount` with the channel's side
+    effects (official AI refresh after sign-in, deactivation on sign out and
+    deletion) and maps every exception to an `AccountError`.
+  - `NativeAccountViewModel` holds the state.
+  - `NativeScreenActivity` is the shared host for native screens outside
+    Home (locale, theme, edge-to-edge); onboarding now uses it too.
+- How it looks and behaves:
+  - States cross-fade.
+  - Sign in and register slide in the direction of the tab.
+  - Each field shows its own error under it, sliding in.
+  - Progress shows inside the submit button instead of a scrim over the
+    whole page.
+  - The quota shows as a bar that animates to the remaining share and turns
+    red below 15%.
+  - "Forgot password?" is a quiet link, not a button.
+- Behaviour fixed instead of ported:
+  - **Codes.** A code belongs to the email it was sent to and expires. Dart
+    reused a code sent to another address and only learned it had expired
+    from the server.
+  - **Resend.** Resending waits 60 s, with a live countdown on the button.
+    Dart had no cooldown, so a double tap mailed two codes.
+  - **Server error codes.** All of them now get a specific message. Dart had
+    an unreachable `invalid_verification_request` case, never matched
+    `rate_limited`, and sent `user_disabled`, `password_reset_failed` and
+    `invalid_access_token` to the generic message.
+  - **Offline.** An offline phone now says so; Dart said "the cloud service
+    went wrong".
+  - **Expired session.** Any call that finds the session expired drops to
+    the sign-in form. Dart only knew `invalid_refresh_token` and otherwise
+    kept a stale signed-in page.
+  - **Success toast.** The sign-in toast appears only once the signed-in
+    page has loaded. Dart toasted, and closed onboarding's page, even when
+    loading the account then failed.
+  - **Register then sign-in.** If sign-in fails after a successful
+    registration, the sign-in tab opens with the email filled in.
+  - **Password change.** The new password must differ from the current one;
+    Dart left this to the server's `password_reuse`.
+  - **Delete confirmation.** The field no longer shows the account email as
+    its hint. Dart's hint showed the very value it asked the user to type.
+  - **Sheets in flight.** A sheet cannot be dragged away while its request
+    runs.
+  - **Quota reset.** The reset follows the server's `weeklyPeriodStart`
+    when it sends one. Dart always assumed the next local Monday.
+  - **Catalog refresh.** Opening the page no longer forces an official AI
+    catalog refresh. Only pull-to-refresh and sign-in do; Dart refreshed on
+    every open.
+  - **Saved state.** Each tab keeps its own fields. The emails typed so far
+    survive process death; passwords and codes never do.
+- Verification:
+  - Tests: `AccountModelsTest` (12), `AccountPageRepositoryTest`.
+  - Emulator, against the development account service:
+    - the sign-in form;
+    - a real sign-in with a wrong password showed "Incorrect email or
+      password";
+    - the register tab;
+    - a real code request started the 60 s countdown;
+    - the reset sheet opened over the page.
+  - Not verified: a successful sign-in, the signed-in page and its sheets
+    (no test account), and the update gate.
+
 ### 5g checkpoint: the user guide opens in a Custom Tab (device-verified on the emulator)
 
 - About › User guide (`Page.UserGuide`) no longer opens the Flutter

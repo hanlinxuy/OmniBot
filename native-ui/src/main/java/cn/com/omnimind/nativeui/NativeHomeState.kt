@@ -135,6 +135,7 @@ sealed interface LegacyDestination {
  */
 val LegacyDestination.opensNativePage: Boolean
     get() = this == LegacyDestination.Page.ModelProviders ||
+        this == LegacyDestination.Page.Account ||
         this is LegacyDestination.TerminalPackage ||
         this is LegacyDestination.SharedDraft ||
         this is LegacyDestination.OpenConversation ||
