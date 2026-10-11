@@ -120,7 +120,6 @@
     <string name="omni_agent_select">Select agent</string>
     <string name="omni_pet">Desktop pet</string>
     <string name="omni_input_tools">Attachments and tools</string>
-    <string name="omni_voice">Voice input</string>
     <string name="omni_open_chat">Open conversation</string>
     <string name="omni_settings_mcp_address">Address</string>
     <string name="omni_settings_mcp_token">Token</string>

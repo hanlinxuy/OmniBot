@@ -63,8 +63,7 @@ internal fun HomeScreen(
                             OmniIconButton(R.drawable.omni_plus, stringResource(R.string.omni_input_tools), openChat, size = 20.dp)
                             OmniIconButton(R.drawable.omni_square_terminal, stringResource(R.string.omni_settings_alpine_title),
                                 onTerminal, size = 20.dp)
-                            Spacer(Modifier.weight(1f))
-                            OmniIconButton(R.drawable.omni_mic, stringResource(R.string.omni_voice), openChat, size = 20.dp)
+                            // No voice button: Flutter never had voice input, and the skeleton's mic only opened chat (5k).
                         }
                     }
                 }

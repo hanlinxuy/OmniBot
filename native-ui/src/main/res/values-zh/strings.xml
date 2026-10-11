@@ -120,7 +120,6 @@
     <string name="omni_agent_select">选择 Agent</string>
     <string name="omni_pet">桌宠</string>
     <string name="omni_input_tools">附件与工具</string>
-    <string name="omni_voice">语音输入</string>
     <string name="omni_open_chat">打开会话</string>
     <string name="omni_settings_mcp_address">地址</string>
     <string name="omni_settings_mcp_token">Token</string>

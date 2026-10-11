@@ -814,6 +814,20 @@ sends a user without `flutter.welcome_completed` to the Flutter flow.
   and progress easing, and the connection form checks.
 - Verification: `OnboardingModelsTest` (8). Nothing uses it yet.
 
+### 5k: no voice input to migrate (2026-10-12)
+
+- "Voice input" was on the remaining-work list, but Flutter never had it.
+  Nothing in `ui/lib` records audio or calls speech recognition, and the
+  pubspec has no recording or speech-to-text dependency (only `just_audio`
+  for TTS playback).
+- The mic button on native Home came from the migration scaffold
+  (3425eac1f). It only opened chat, which promised a feature that does not
+  exist. It is removed, together with the `omni_voice` string and the
+  `omni_mic` icon.
+- Voice input is a new feature, not a migration item. It would need a
+  product decision (system recognizer vs a provider ASR model, and
+  dictation vs voice turns), so it is off this list.
+
 ### 5j checkpoint: native Agent avatar editor (device-verified on the emulator)
 
 - Scene models › the Agent avatar no longer hands off to the Flutter scene
