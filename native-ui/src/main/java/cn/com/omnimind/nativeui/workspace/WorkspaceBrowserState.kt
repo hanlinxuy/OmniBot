@@ -119,6 +119,8 @@ data class WorkspaceFileState(
     /** A line was longer than [WORKSPACE_PREVIEW_LINE_LIMIT]; the preview shows it cut and the file is read-only. */
     val longLines: Boolean = false,
     val image: ImageBitmap? = null,
+    /** An opened PDF (5l); null for other kinds or when it could not be opened. */
+    val pdf: PdfPages? = null,
     val editing: Boolean = false,
     val draft: String = "",
     val saving: Boolean = false,

@@ -1413,4 +1413,6 @@
     <string name="omni_avatar_crop_hint">Pinch to zoom, drag to move</string>
     <string name="omni_avatar_open_failed">This photo could not be opened</string>
     <string name="omni_avatar_save_failed">Could not save the avatar</string>
+    <string name="omni_pdf_page">Page %1$d</string>
+    <string name="omni_pdf_open_failed">This PDF could not be opened. Open it with another app.</string>
 </resources>

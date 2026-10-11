@@ -66,6 +66,7 @@ internal class NativeWorkspaceFileViewModel(
         ),
     )
     val state = mutableState.asStateFlow()
+    private var pdfPages: NativePdfPages? = null
 
     val actions = WorkspaceFileActions(
         edit = ::edit,
@@ -116,6 +117,15 @@ internal class NativeWorkspaceFileViewModel(
                         val image = withContext(Dispatchers.IO) { decodeSampled(state.value.path) }
                         mutableState.update { it.copy(loading = false, image = image, failed = image == null) }
                     }
+                    // An unreadable PDF (encrypted, damaged) falls back to "open with".
+                    kind == WorkspaceFileKind.Pdf -> {
+                        val pdf = NativePdfPages.open(state.value.path)
+                        pdfPages = pdf
+                        mutableState.update {
+                            it.copy(loading = false, pdf = pdf,
+                                notice = if (pdf == null) appContext.getString(R.string.omni_pdf_open_failed) else it.notice)
+                        }
+                    }
                     else -> mutableState.update { it.copy(loading = false) }
                 }
             } catch (cancelled: CancellationException) {
@@ -125,6 +135,11 @@ internal class NativeWorkspaceFileViewModel(
                 mutableState.update { it.copy(loading = false, failed = true) }
             }
         }
+    }
+
+    override fun onCleared() {
+        // The renderer holds a file descriptor; release it when the page goes away.
+        pdfPages?.close()
     }
 
     /** Decodes at most ~2048px on the long side so a camera photo cannot exhaust memory. */

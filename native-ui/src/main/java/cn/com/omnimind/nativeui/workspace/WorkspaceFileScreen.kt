@@ -47,9 +47,8 @@ import top.yukonga.miuix.kmp.basic.BasicComponent
 
 /**
  * The native file preview (batch 5e-8a). Text, Markdown and code render
- * natively and edit in place; images render natively; PDF, HTML, Office and
- * media files show what they are and hand off to the system (the Flutter
- * page embedded WebView/PDF/media players, which stay a follow-up).
+ * natively and edit in place; images and PDFs (5l) render natively; HTML,
+ * Office and media files show what they are and hand off to the system.
  * Leaving with unsaved edits asks first.
  */
 @Composable
@@ -133,6 +132,7 @@ fun WorkspaceFileScreen(
                 }
                 state.image != null -> Image(state.image, state.name, Modifier.fillMaxSize().padding(12.dp),
                     contentScale = ContentScale.Fit)
+                state.pdf != null -> PdfPreview(state.pdf)
                 else -> HandOff(state, actions)
             }
         }

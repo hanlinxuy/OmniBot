@@ -1413,4 +1413,6 @@
     <string name="omni_avatar_crop_hint">双指缩放，拖动调整位置</string>
     <string name="omni_avatar_open_failed">无法打开这张图片</string>
     <string name="omni_avatar_save_failed">头像保存失败</string>
+    <string name="omni_pdf_page">第 %1$d 页</string>
+    <string name="omni_pdf_open_failed">无法打开这个 PDF，请用其他应用打开。</string>
 </resources>

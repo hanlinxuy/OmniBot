@@ -814,6 +814,33 @@ sends a user without `flutter.welcome_completed` to the Flutter flow.
   and progress easing, and the connection form checks.
 - Verification: `OnboardingModelsTest` (8). Nothing uses it yet.
 
+### 5l checkpoint: native PDF preview (source complete; not device-verified)
+
+- Workspace PDFs now render on the native file page (`PdfPreview`), not as
+  an "open with" hand-off. The pages stack as paper on the page color, and
+  a pill at the bottom shows the current page.
+- `NativePdfPages` keeps one `PdfRenderer` open while the page shows the
+  file. `PdfPreviewChannel` reopened the file for every page and sent each
+  page as a PNG to be decoded again. Renders are serialized because
+  `PdfRenderer` allows only one open page at a time. `close()` waits for a
+  render in flight, since closing under an open page crashes.
+- Gestures:
+  - one finger scrolls;
+  - two fingers zoom the document up to 4× and pan horizontally;
+  - a double tap toggles 2×.
+- Rendering:
+  - Pages re-render sharper in steps (1×, 2×, 3×) as the zoom crosses a
+    threshold, and never wider than 2400 px (`pdfRenderWidth`).
+  - Only pages near the viewport hold a bitmap; Dart kept every page it had
+    seen in memory.
+- An encrypted or damaged PDF shows the hand-off with "This PDF could not be
+  opened".
+- Verification:
+  - Tests: `PdfPreviewTest`.
+  - Not device-verified: the emulator's AVD disappeared from this machine
+    mid-session (`emulator -list-avds` is empty), so the preview has not
+    been run.
+
 ### 5k: no voice input to migrate (2026-10-12)
 
 - "Voice input" was on the remaining-work list, but Flutter never had it.
