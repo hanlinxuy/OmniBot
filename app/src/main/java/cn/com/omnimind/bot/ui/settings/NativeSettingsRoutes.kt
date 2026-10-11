@@ -1,5 +1,6 @@
 package cn.com.omnimind.bot.ui.settings
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.mutableStateOf
@@ -164,10 +165,14 @@ internal fun NativeRemoteMcpRoute(viewModel: NativeRemoteMcpViewModel, onBack: (
 
 @Composable
 internal fun NativeSceneModelsRoute(viewModel: NativeSceneModelsViewModel,
-    onProviders: () -> Unit, onEditAvatar: () -> Unit, onBack: () -> Unit) {
+    onProviders: () -> Unit, onBack: () -> Unit) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    var editingAvatar by rememberSaveable { mutableStateOf(false) }
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { viewModel.refresh() }
-    SceneModelsScreen(state, viewModel.actions, onProviders, onEditAvatar, onBack)
+    // Native since 5j: the sheet sits in the page's popup host, the crop covers the page.
+    SceneModelsScreen(state, viewModel.actions, onProviders, onEditAvatar = { editingAvatar = true }, onBack) {
+        AgentAvatarRoute(editingAvatar, onChanged = viewModel::reloadAvatar, onDismiss = { editingAvatar = false })
+    }
 }
 
 @Composable

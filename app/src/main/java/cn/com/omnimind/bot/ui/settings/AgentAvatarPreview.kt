@@ -4,26 +4,33 @@ import android.content.Context
 import android.graphics.BitmapFactory
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
+import cn.com.omnimind.nativeui.settings.AGENT_AVATAR_PRESETS
 
 /**
- * Reads the existing Flutter avatar keys and the packaged Flutter preset
- * assets. The avatar feature still owns those keys; native pages only render
- * a preview until it migrates.
+ * A small preview of the Agent avatar for native pages: the cropped photo,
+ * else the chosen preset from the native resources (5j). It used to read
+ * the presets out of Flutter's packaged assets, which go away with Flutter.
  */
 internal fun loadAgentAvatarPreview(context: Context): ImageBitmap? = runCatching {
-    val preferences = context.getSharedPreferences("FlutterSharedPreferences", Context.MODE_PRIVATE)
-    val path = preferences.getString("flutter.agentAvatarCustomImagePath", "").orEmpty()
-    if (path.isNotBlank()) {
+    val choice = AgentAvatarStore(context).read()
+    choice.customPath?.let { path ->
         val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
         BitmapFactory.decodeFile(path, bounds)
-        val options = BitmapFactory.Options().apply {
-            while (bounds.outWidth / inSampleSize > 128 || bounds.outHeight / inSampleSize > 128) inSampleSize *= 2
-        }
+        val options = BitmapFactory.Options().apply { inSampleSize = previewSampleSize(bounds.outWidth, bounds.outHeight) }
         BitmapFactory.decodeFile(path, options)?.asImageBitmap()?.let { return@runCatching it }
     }
-    val stored = preferences.getLong("flutter.agentAvatarIndex", 0L)
-    val index = if (stored in 0L..5L) stored.toInt() else 0
-    context.assets.open("flutter_assets/assets/avatar/default_avatar${index + 1}.png").use {
-        BitmapFactory.decodeStream(it)?.asImageBitmap()
-    }
+    BitmapFactory.decodeResource(context.resources, AGENT_AVATAR_PRESETS[choice.presetIndex])?.asImageBitmap()
 }.getOrNull()
+
+private const val PREVIEW_SIDE = 128
+
+/**
+ * The power-of-two sample that brings the photo near [PREVIEW_SIDE]. The old
+ * loop started from `BitmapFactory.Options.inSampleSize`, which is 0, so it
+ * divided by zero and a custom avatar never showed on native pages (fixed in 5j).
+ */
+internal fun previewSampleSize(width: Int, height: Int): Int {
+    var sample = 1
+    while (width / sample > PREVIEW_SIDE || height / sample > PREVIEW_SIDE) sample *= 2
+    return sample
+}

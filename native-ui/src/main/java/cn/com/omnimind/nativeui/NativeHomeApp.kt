@@ -106,7 +106,7 @@ fun NativeHomeApp(
     requestLogs: @Composable (onBack: () -> Unit) -> Unit,
     runtimeLogs: @Composable (onBack: () -> Unit) -> Unit,
     workspaceMemory: @Composable (onBack: () -> Unit, onSceneModels: () -> Unit) -> Unit,
-    sceneModels: @Composable (onBack: () -> Unit, onProviders: () -> Unit, onEditAvatar: () -> Unit) -> Unit,
+    sceneModels: @Composable (onBack: () -> Unit, onProviders: () -> Unit) -> Unit,
     modelProviders: @Composable (onBack: () -> Unit) -> Unit,
     /** The account page (5h). */
     account: @Composable (onBack: () -> Unit) -> Unit = {},
@@ -346,7 +346,6 @@ fun NativeHomeApp(
             entry<HomeRoute.SceneModels> { sceneModels(
                 { backStack.removeLastOrNull() },
                 { backStack.add(HomeRoute.ModelProviders) },
-                { actions.open(LegacyDestination.Page.SceneModels) },
             ) }
             entry<HomeRoute.ModelProviders> { modelProviders { backStack.removeLastOrNull() } }
             entry<HomeRoute.Account> { account { backStack.removeLastOrNull() } }

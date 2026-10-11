@@ -258,8 +258,7 @@ class NativeHomeActivity : ComponentActivity() {
                 runtimeLogs = { onBack -> NativeRuntimeLogsRoute(logs, ::copyLogText, onBack) },
                 workspaceMemory = { onBack, onSceneModels -> NativeWorkspaceMemoryRoute(
                     workspaceMemoryViewModel, onSceneModels, onBack) },
-                sceneModels = { onBack, onProviders, onEditAvatar -> NativeSceneModelsRoute(
-                    sceneModelsViewModel, onProviders, onEditAvatar, onBack) },
+                sceneModels = { onBack, onProviders -> NativeSceneModelsRoute(sceneModelsViewModel, onProviders, onBack) },
                 modelProviders = { onBack -> NativeModelProviderRoute(modelProviderViewModel, onBack) },
                 account = { onBack ->
                     val accountViewModel = remember {

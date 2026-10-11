@@ -59,7 +59,7 @@ class NativeHomeNavigationTest {
         val state = mutableStateOf(NativeHomeState(loading = false))
         restoration.setContent {
             NativeHomeApp(state.value, actions(setService = { state.value = state.value.copy(localServiceEnabled = it) }),
-                about = { _, _, _ -> }, storage = {}, requestLogs = {}, runtimeLogs = {}, workspaceMemory = { _, _ -> }, sceneModels = { _, _, _ -> }, modelProviders = {},
+                about = { _, _, _ -> }, storage = {}, requestLogs = {}, runtimeLogs = {}, workspaceMemory = { _, _ -> }, sceneModels = { _, _ -> }, modelProviders = {},
                 mcpTools = {}, agents = { _, _, _, _, _ -> }, agentConfig = { _, _ -> }, alarmSettings = {}, openWith = {}, remoteBridge = {}, scheduledTasks = {}, executionHistory = {}, skills = {}, memory = {}, terminal = { _, _ -> }, plugins = { _, _ -> }, pluginDetail = { _, _ -> }, permissions = {}, appearance = { _, _ -> }, background = { _, _ -> }, pet = {}, homePreferences = {}, miscellaneous = { _, _, _, _ -> })
         }
         capture("home-light")
@@ -82,7 +82,7 @@ class NativeHomeNavigationTest {
             NativeHomeApp(NativeHomeState(
                 loading = false,
                 conversations = listOf(ConversationSummary(42, "Saved thread", "", "agent", 1, false)),
-            ), actions(open = { opened.add(it) }), about = { _, _, _ -> }, storage = {}, requestLogs = {}, runtimeLogs = {}, workspaceMemory = { _, _ -> }, sceneModels = { _, _, _ -> }, modelProviders = {},
+            ), actions(open = { opened.add(it) }), about = { _, _, _ -> }, storage = {}, requestLogs = {}, runtimeLogs = {}, workspaceMemory = { _, _ -> }, sceneModels = { _, _ -> }, modelProviders = {},
                 mcpTools = {}, agents = { _, _, _, _, _ -> }, agentConfig = { _, _ -> }, alarmSettings = {}, openWith = {}, remoteBridge = {}, scheduledTasks = {}, executionHistory = {}, skills = {}, memory = {}, terminal = { _, _ -> }, plugins = { _, _ -> }, pluginDetail = { _, _ -> }, permissions = {}, appearance = { _, _ -> }, background = { _, _ -> }, pet = {}, homePreferences = {},
                 miscellaneous = { _, _, _, _ -> })
         }
@@ -94,7 +94,7 @@ class NativeHomeNavigationTest {
 
     @Test fun settingsOpensNativeMiscAndReturnsToSettings() {
         compose.setContent {
-            NativeHomeApp(NativeHomeState(loading = false), actions(), about = { _, _, _ -> }, storage = {}, requestLogs = {}, runtimeLogs = {}, workspaceMemory = { _, _ -> }, sceneModels = { _, _, _ -> }, modelProviders = {}, mcpTools = {}, agents = { _, _, _, _, _ -> }, agentConfig = { _, _ -> }, alarmSettings = {}, openWith = {}, remoteBridge = {}, scheduledTasks = {}, executionHistory = {}, skills = {}, memory = {}, terminal = { _, _ -> }, plugins = { _, _ -> }, pluginDetail = { _, _ -> }, permissions = {},
+            NativeHomeApp(NativeHomeState(loading = false), actions(), about = { _, _, _ -> }, storage = {}, requestLogs = {}, runtimeLogs = {}, workspaceMemory = { _, _ -> }, sceneModels = { _, _ -> }, modelProviders = {}, mcpTools = {}, agents = { _, _, _, _, _ -> }, agentConfig = { _, _ -> }, alarmSettings = {}, openWith = {}, remoteBridge = {}, scheduledTasks = {}, executionHistory = {}, skills = {}, memory = {}, terminal = { _, _ -> }, plugins = { _, _ -> }, pluginDetail = { _, _ -> }, permissions = {},
                 appearance = { _, _ -> }, background = { _, _ -> }, pet = {}, homePreferences = {}, miscellaneous = { onBack, onHomeSettings, _, _ ->
                     MiscSettingsScreen(MiscSettingsState(loaded = true), miscActions(), onHomeSettings, {}, {}, {}, onBack)
                 })
@@ -109,7 +109,7 @@ class NativeHomeNavigationTest {
 
     @Test fun miscOpensNativeAlarmSettingsAndReturns() {
         compose.setContent {
-            NativeHomeApp(NativeHomeState(loading = false), actions(), about = { _, _, _ -> }, storage = {}, requestLogs = {}, runtimeLogs = {}, workspaceMemory = { _, _ -> }, sceneModels = { _, _, _ -> }, modelProviders = {}, mcpTools = {}, agents = { _, _, _, _, _ -> }, agentConfig = { _, _ -> }, remoteBridge = {}, scheduledTasks = {}, executionHistory = {}, skills = {}, memory = {}, terminal = { _, _ -> }, plugins = { _, _ -> }, pluginDetail = { _, _ -> }, permissions = {},
+            NativeHomeApp(NativeHomeState(loading = false), actions(), about = { _, _, _ -> }, storage = {}, requestLogs = {}, runtimeLogs = {}, workspaceMemory = { _, _ -> }, sceneModels = { _, _ -> }, modelProviders = {}, mcpTools = {}, agents = { _, _, _, _, _ -> }, agentConfig = { _, _ -> }, remoteBridge = {}, scheduledTasks = {}, executionHistory = {}, skills = {}, memory = {}, terminal = { _, _ -> }, plugins = { _, _ -> }, pluginDetail = { _, _ -> }, permissions = {},
                 appearance = { _, _ -> }, background = { _, _ -> }, pet = {}, homePreferences = {},
                 miscellaneous = { onBack, _, onAlarm, _ ->
                     MiscSettingsScreen(MiscSettingsState(loaded = true), miscActions(), {}, onAlarm, {}, {}, onBack)
@@ -130,7 +130,7 @@ class NativeHomeNavigationTest {
 
     @Test fun miscOpensNativeOpenWithAndReturns() {
         compose.setContent {
-            NativeHomeApp(NativeHomeState(loading = false), actions(), about = { _, _, _ -> }, storage = {}, requestLogs = {}, runtimeLogs = {}, workspaceMemory = { _, _ -> }, sceneModels = { _, _, _ -> }, modelProviders = {}, mcpTools = {}, agents = { _, _, _, _, _ -> }, agentConfig = { _, _ -> }, remoteBridge = {}, scheduledTasks = {}, executionHistory = {}, skills = {}, memory = {}, terminal = { _, _ -> }, plugins = { _, _ -> }, pluginDetail = { _, _ -> }, permissions = {},
+            NativeHomeApp(NativeHomeState(loading = false), actions(), about = { _, _, _ -> }, storage = {}, requestLogs = {}, runtimeLogs = {}, workspaceMemory = { _, _ -> }, sceneModels = { _, _ -> }, modelProviders = {}, mcpTools = {}, agents = { _, _, _, _, _ -> }, agentConfig = { _, _ -> }, remoteBridge = {}, scheduledTasks = {}, executionHistory = {}, skills = {}, memory = {}, terminal = { _, _ -> }, plugins = { _, _ -> }, pluginDetail = { _, _ -> }, permissions = {},
                 appearance = { _, _ -> }, background = { _, _ -> }, pet = {}, homePreferences = {},
                 miscellaneous = { onBack, _, _, onOpenWith ->
                     MiscSettingsScreen(MiscSettingsState(loaded = true), miscActions(), {}, {}, onOpenWith, {}, onBack)
@@ -151,7 +151,7 @@ class NativeHomeNavigationTest {
 
     @Test fun settingsOpensNativeAgentsAndReturnsToSettings() {
         compose.setContent {
-            NativeHomeApp(NativeHomeState(loading = false), actions(), about = { _, _, _ -> }, storage = {}, requestLogs = {}, runtimeLogs = {}, workspaceMemory = { _, _ -> }, sceneModels = { _, _, _ -> }, modelProviders = {}, mcpTools = {}, permissions = {},
+            NativeHomeApp(NativeHomeState(loading = false), actions(), about = { _, _, _ -> }, storage = {}, requestLogs = {}, runtimeLogs = {}, workspaceMemory = { _, _ -> }, sceneModels = { _, _ -> }, modelProviders = {}, mcpTools = {}, permissions = {},
                 appearance = { _, _ -> }, background = { _, _ -> }, pet = {}, homePreferences = {}, miscellaneous = { _, _, _, _ -> },
                 agents = { onBack, _, _, _, _ ->
                     AgentsScreen(AgentsState(loaded = true), agentsActions(), {}, {}, onBack)
@@ -167,7 +167,7 @@ class NativeHomeNavigationTest {
 
     @Test fun agentsOpenTheNativeRemoteBridgeRoute() {
         compose.setContent {
-            NativeHomeApp(NativeHomeState(loading = false), actions(), about = { _, _, _ -> }, storage = {}, requestLogs = {}, runtimeLogs = {}, workspaceMemory = { _, _ -> }, sceneModels = { _, _, _ -> }, modelProviders = {}, mcpTools = {}, permissions = {},
+            NativeHomeApp(NativeHomeState(loading = false), actions(), about = { _, _, _ -> }, storage = {}, requestLogs = {}, runtimeLogs = {}, workspaceMemory = { _, _ -> }, sceneModels = { _, _ -> }, modelProviders = {}, mcpTools = {}, permissions = {},
                 appearance = { _, _ -> }, background = { _, _ -> }, pet = {}, homePreferences = {}, miscellaneous = { _, _, _, _ -> },
                 agents = { onBack, _, _, onRemoteBridge, _ ->
                     AgentsScreen(AgentsState(loaded = true), agentsActions(), {}, onRemoteBridge, onBack)
@@ -188,7 +188,7 @@ class NativeHomeNavigationTest {
 
     @Test fun agentsOpenTheNativeAgentConfigRoute() {
         compose.setContent {
-            NativeHomeApp(NativeHomeState(loading = false), actions(), about = { _, _, _ -> }, storage = {}, requestLogs = {}, runtimeLogs = {}, workspaceMemory = { _, _ -> }, sceneModels = { _, _, _ -> }, modelProviders = {}, mcpTools = {}, permissions = {},
+            NativeHomeApp(NativeHomeState(loading = false), actions(), about = { _, _, _ -> }, storage = {}, requestLogs = {}, runtimeLogs = {}, workspaceMemory = { _, _ -> }, sceneModels = { _, _ -> }, modelProviders = {}, mcpTools = {}, permissions = {},
                 appearance = { _, _ -> }, background = { _, _ -> }, pet = {}, homePreferences = {}, miscellaneous = { _, _, _, _ -> },
                 agents = { onBack, _, onAgentConfig, _, _ ->
                     AgentsScreen(
@@ -214,7 +214,7 @@ class NativeHomeNavigationTest {
 
     @Test fun homeAgentButtonOpensTheNativeAgentsRoute() {
         compose.setContent {
-            NativeHomeApp(NativeHomeState(loading = false), actions(), about = { _, _, _ -> }, storage = {}, requestLogs = {}, runtimeLogs = {}, workspaceMemory = { _, _ -> }, sceneModels = { _, _, _ -> }, modelProviders = {}, mcpTools = {}, permissions = {},
+            NativeHomeApp(NativeHomeState(loading = false), actions(), about = { _, _, _ -> }, storage = {}, requestLogs = {}, runtimeLogs = {}, workspaceMemory = { _, _ -> }, sceneModels = { _, _ -> }, modelProviders = {}, mcpTools = {}, permissions = {},
                 appearance = { _, _ -> }, background = { _, _ -> }, homePreferences = {}, miscellaneous = { _, _, _, _ -> }, pet = {},
                 agents = { _, _, _, _, _ ->
                     top.yukonga.miuix.kmp.basic.Text("Native agents page")
@@ -228,7 +228,7 @@ class NativeHomeNavigationTest {
         val opened = mutableListOf<LegacyDestination>()
         compose.setContent {
             NativeHomeApp(NativeHomeState(loading = false), actions(open = { opened.add(it) }),
-                about = { _, _, _ -> }, storage = {}, requestLogs = {}, runtimeLogs = {}, workspaceMemory = { _, _ -> }, sceneModels = { _, _, _ -> }, modelProviders = {},
+                about = { _, _, _ -> }, storage = {}, requestLogs = {}, runtimeLogs = {}, workspaceMemory = { _, _ -> }, sceneModels = { _, _ -> }, modelProviders = {},
                 mcpTools = {}, agents = { _, _, _, _, _ -> }, agentConfig = { _, _ -> }, alarmSettings = {}, openWith = {}, remoteBridge = {}, scheduledTasks = {}, executionHistory = {}, skills = {}, memory = {}, terminal = { _, _ -> }, plugins = { _, _ -> }, pluginDetail = { _, _ -> }, permissions = {}, appearance = { _, _ -> }, background = { _, _ -> }, pet = {}, homePreferences = {}, miscellaneous = { _, _, _, _ -> })
         }
         compose.onNodeWithText(label(R.string.omni_composer_hint)).performClick()
@@ -238,7 +238,7 @@ class NativeHomeNavigationTest {
 
     @Test fun homePetButtonOpensTheNativePetRoute() {
         compose.setContent {
-            NativeHomeApp(NativeHomeState(loading = false), actions(), about = { _, _, _ -> }, storage = {}, requestLogs = {}, runtimeLogs = {}, workspaceMemory = { _, _ -> }, sceneModels = { _, _, _ -> }, modelProviders = {}, mcpTools = {}, agents = { _, _, _, _, _ -> }, agentConfig = { _, _ -> }, alarmSettings = {}, openWith = {}, remoteBridge = {}, scheduledTasks = {}, executionHistory = {}, skills = {}, memory = {}, terminal = { _, _ -> }, plugins = { _, _ -> }, pluginDetail = { _, _ -> }, permissions = {},
+            NativeHomeApp(NativeHomeState(loading = false), actions(), about = { _, _, _ -> }, storage = {}, requestLogs = {}, runtimeLogs = {}, workspaceMemory = { _, _ -> }, sceneModels = { _, _ -> }, modelProviders = {}, mcpTools = {}, agents = { _, _, _, _, _ -> }, agentConfig = { _, _ -> }, alarmSettings = {}, openWith = {}, remoteBridge = {}, scheduledTasks = {}, executionHistory = {}, skills = {}, memory = {}, terminal = { _, _ -> }, plugins = { _, _ -> }, pluginDetail = { _, _ -> }, permissions = {},
                 appearance = { _, _ -> }, background = { _, _ -> }, homePreferences = {},
                 miscellaneous = { _, _, _, _ -> }, pet = {
                     top.yukonga.miuix.kmp.basic.Text("Native pet page")
@@ -250,7 +250,7 @@ class NativeHomeNavigationTest {
 
     @Test fun drawerOpensNativeScheduledTasksAndReturns() {
         compose.setContent {
-            NativeHomeApp(NativeHomeState(loading = false), actions(), about = { _, _, _ -> }, storage = {}, requestLogs = {}, runtimeLogs = {}, workspaceMemory = { _, _ -> }, sceneModels = { _, _, _ -> }, modelProviders = {}, mcpTools = {}, agents = { _, _, _, _, _ -> }, agentConfig = { _, _ -> }, alarmSettings = {}, openWith = {}, remoteBridge = {}, permissions = {},
+            NativeHomeApp(NativeHomeState(loading = false), actions(), about = { _, _, _ -> }, storage = {}, requestLogs = {}, runtimeLogs = {}, workspaceMemory = { _, _ -> }, sceneModels = { _, _ -> }, modelProviders = {}, mcpTools = {}, agents = { _, _, _, _, _ -> }, agentConfig = { _, _ -> }, alarmSettings = {}, openWith = {}, remoteBridge = {}, permissions = {},
                 appearance = { _, _ -> }, background = { _, _ -> }, pet = {}, homePreferences = {}, miscellaneous = { _, _, _, _ -> },
                 executionHistory = {}, skills = {}, memory = {}, terminal = { _, _ -> }, plugins = { _, _ -> }, pluginDetail = { _, _ -> },
                 scheduledTasks = { onBack ->
@@ -266,7 +266,7 @@ class NativeHomeNavigationTest {
 
     @Test fun drawerOpensNativeSkillStoreAndReturns() {
         compose.setContent {
-            NativeHomeApp(NativeHomeState(loading = false), actions(), about = { _, _, _ -> }, storage = {}, requestLogs = {}, runtimeLogs = {}, workspaceMemory = { _, _ -> }, sceneModels = { _, _, _ -> }, modelProviders = {}, mcpTools = {}, agents = { _, _, _, _, _ -> }, agentConfig = { _, _ -> }, alarmSettings = {}, openWith = {}, remoteBridge = {}, scheduledTasks = {}, executionHistory = {}, permissions = {},
+            NativeHomeApp(NativeHomeState(loading = false), actions(), about = { _, _, _ -> }, storage = {}, requestLogs = {}, runtimeLogs = {}, workspaceMemory = { _, _ -> }, sceneModels = { _, _ -> }, modelProviders = {}, mcpTools = {}, agents = { _, _, _, _, _ -> }, agentConfig = { _, _ -> }, alarmSettings = {}, openWith = {}, remoteBridge = {}, scheduledTasks = {}, executionHistory = {}, permissions = {},
                 appearance = { _, _ -> }, background = { _, _ -> }, pet = {}, homePreferences = {}, miscellaneous = { _, _, _, _ -> },
                 skills = { onBack ->
                     SkillStoreScreen(SkillStoreState(loaded = true), skillStoreActions(), onBack)
@@ -282,7 +282,7 @@ class NativeHomeNavigationTest {
     @Test fun drawerOpensNativeExecutionHistoryAndReturns() {
         compose.setContent {
             var usage by remember { mutableStateOf(UsageStatisticsState(loaded = true)) }
-            NativeHomeApp(NativeHomeState(loading = false), actions(), about = { _, _, _ -> }, storage = {}, requestLogs = {}, runtimeLogs = {}, workspaceMemory = { _, _ -> }, sceneModels = { _, _, _ -> }, modelProviders = {}, mcpTools = {}, agents = { _, _, _, _, _ -> }, agentConfig = { _, _ -> }, alarmSettings = {}, openWith = {}, remoteBridge = {}, scheduledTasks = {}, permissions = {},
+            NativeHomeApp(NativeHomeState(loading = false), actions(), about = { _, _, _ -> }, storage = {}, requestLogs = {}, runtimeLogs = {}, workspaceMemory = { _, _ -> }, sceneModels = { _, _ -> }, modelProviders = {}, mcpTools = {}, agents = { _, _, _, _, _ -> }, agentConfig = { _, _ -> }, alarmSettings = {}, openWith = {}, remoteBridge = {}, scheduledTasks = {}, permissions = {},
                 appearance = { _, _ -> }, background = { _, _ -> }, pet = {}, homePreferences = {}, miscellaneous = { _, _, _, _ -> },
                 executionHistory = { onBack ->
                     UsageStatisticsScreen(usage, UsageStatisticsActions(setTab = { tab -> usage = usage.copy(tab = tab) }), onBack)
@@ -299,7 +299,7 @@ class NativeHomeNavigationTest {
 
     @Test fun drawerOpensNativePluginMarketAndReturns() {
         compose.setContent {
-            NativeHomeApp(NativeHomeState(loading = false), actions(), about = { _, _, _ -> }, storage = {}, requestLogs = {}, runtimeLogs = {}, workspaceMemory = { _, _ -> }, sceneModels = { _, _, _ -> }, modelProviders = {}, mcpTools = {}, agents = { _, _, _, _, _ -> }, agentConfig = { _, _ -> }, alarmSettings = {}, openWith = {}, remoteBridge = {}, scheduledTasks = {}, executionHistory = {}, skills = {}, memory = {}, terminal = { _, _ -> }, permissions = {},
+            NativeHomeApp(NativeHomeState(loading = false), actions(), about = { _, _, _ -> }, storage = {}, requestLogs = {}, runtimeLogs = {}, workspaceMemory = { _, _ -> }, sceneModels = { _, _ -> }, modelProviders = {}, mcpTools = {}, agents = { _, _, _, _, _ -> }, agentConfig = { _, _ -> }, alarmSettings = {}, openWith = {}, remoteBridge = {}, scheduledTasks = {}, executionHistory = {}, skills = {}, memory = {}, terminal = { _, _ -> }, permissions = {},
                 appearance = { _, _ -> }, background = { _, _ -> }, pet = {}, homePreferences = {}, miscellaneous = { _, _, _, _ -> },
                 plugins = { onBack, _ ->
                     PluginMarketScreen(PluginMarketState(loaded = true), pluginMarketActions(), {}, onBack)
@@ -314,7 +314,7 @@ class NativeHomeNavigationTest {
 
     @Test fun pluginMarketOpensTheNativePluginDetailRoute() {
         compose.setContent {
-            NativeHomeApp(NativeHomeState(loading = false), actions(), about = { _, _, _ -> }, storage = {}, requestLogs = {}, runtimeLogs = {}, workspaceMemory = { _, _ -> }, sceneModels = { _, _, _ -> }, modelProviders = {}, mcpTools = {}, agents = { _, _, _, _, _ -> }, agentConfig = { _, _ -> }, alarmSettings = {}, openWith = {}, remoteBridge = {}, scheduledTasks = {}, executionHistory = {}, skills = {}, memory = {}, terminal = { _, _ -> }, permissions = {},
+            NativeHomeApp(NativeHomeState(loading = false), actions(), about = { _, _, _ -> }, storage = {}, requestLogs = {}, runtimeLogs = {}, workspaceMemory = { _, _ -> }, sceneModels = { _, _ -> }, modelProviders = {}, mcpTools = {}, agents = { _, _, _, _, _ -> }, agentConfig = { _, _ -> }, alarmSettings = {}, openWith = {}, remoteBridge = {}, scheduledTasks = {}, executionHistory = {}, skills = {}, memory = {}, terminal = { _, _ -> }, permissions = {},
                 appearance = { _, _ -> }, background = { _, _ -> }, pet = {}, homePreferences = {}, miscellaneous = { _, _, _, _ -> },
                 plugins = { onBack, onPlugin ->
                     PluginMarketScreen(
@@ -341,7 +341,7 @@ class NativeHomeNavigationTest {
 
     @Test fun drawerOpensNativeMemoryCenterAndReturns() {
         compose.setContent {
-            NativeHomeApp(NativeHomeState(loading = false), actions(), about = { _, _, _ -> }, storage = {}, requestLogs = {}, runtimeLogs = {}, workspaceMemory = { _, _ -> }, sceneModels = { _, _, _ -> }, modelProviders = {}, mcpTools = {}, agents = { _, _, _, _, _ -> }, agentConfig = { _, _ -> }, alarmSettings = {}, openWith = {}, remoteBridge = {}, scheduledTasks = {}, executionHistory = {}, skills = {}, plugins = { _, _ -> }, pluginDetail = { _, _ -> }, permissions = {},
+            NativeHomeApp(NativeHomeState(loading = false), actions(), about = { _, _, _ -> }, storage = {}, requestLogs = {}, runtimeLogs = {}, workspaceMemory = { _, _ -> }, sceneModels = { _, _ -> }, modelProviders = {}, mcpTools = {}, agents = { _, _, _, _, _ -> }, agentConfig = { _, _ -> }, alarmSettings = {}, openWith = {}, remoteBridge = {}, scheduledTasks = {}, executionHistory = {}, skills = {}, plugins = { _, _ -> }, pluginDetail = { _, _ -> }, permissions = {},
                 appearance = { _, _ -> }, background = { _, _ -> }, pet = {}, homePreferences = {}, miscellaneous = { _, _, _, _ -> },
                 memory = { onBack ->
                     MemoryCenterScreen(MemoryCenterState(loaded = true), memoryCenterActions(), onBack)
@@ -364,7 +364,7 @@ class NativeHomeNavigationTest {
 
     @Test fun settingsOpensNativeTerminalSettingsAndReturns() {
         compose.setContent {
-            NativeHomeApp(NativeHomeState(loading = false), actions(), about = { _, _, _ -> }, storage = {}, requestLogs = {}, runtimeLogs = {}, workspaceMemory = { _, _ -> }, sceneModels = { _, _, _ -> }, modelProviders = {}, mcpTools = {}, agents = { _, _, _, _, _ -> }, agentConfig = { _, _ -> }, alarmSettings = {}, openWith = {}, remoteBridge = {}, scheduledTasks = {}, executionHistory = {}, skills = {}, plugins = { _, _ -> }, pluginDetail = { _, _ -> }, memory = {}, permissions = {},
+            NativeHomeApp(NativeHomeState(loading = false), actions(), about = { _, _, _ -> }, storage = {}, requestLogs = {}, runtimeLogs = {}, workspaceMemory = { _, _ -> }, sceneModels = { _, _ -> }, modelProviders = {}, mcpTools = {}, agents = { _, _, _, _, _ -> }, agentConfig = { _, _ -> }, alarmSettings = {}, openWith = {}, remoteBridge = {}, scheduledTasks = {}, executionHistory = {}, skills = {}, plugins = { _, _ -> }, pluginDetail = { _, _ -> }, memory = {}, permissions = {},
                 appearance = { _, _ -> }, background = { _, _ -> }, pet = {}, homePreferences = {}, miscellaneous = { _, _, _, _ -> },
                 terminal = { _, onBack ->
                     TerminalSettingsScreen(TerminalSettingsState(loaded = true), terminalActions(), {}, {}, {}, onBack)

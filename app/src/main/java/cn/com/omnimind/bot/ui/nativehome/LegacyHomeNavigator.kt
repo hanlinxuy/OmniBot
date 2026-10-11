@@ -42,7 +42,6 @@ internal class LegacyHomeNavigator(private val activity: Activity) {
             is LegacyDestination.PluginRoute -> destination.route.takeIf { it.startsWith("/") } ?: "/home/chat"
             is Page -> when (destination) {
                 Page.ModelProviders -> "/home/model_provider_setting"
-                Page.SceneModels -> "/home/scene_model_setting"
                 Page.Chat -> "/home/chat"
                 // Opened by openNatively.
                 Page.QuickStart, Page.UserGuide, Page.Account -> return

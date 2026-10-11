@@ -35,7 +35,9 @@ import cn.com.omnimind.nativeui.components.OmniPage
 
 @Composable
 fun SceneModelsScreen(state: SceneModelsState, actions: SceneModelsActions,
-    onProviders: () -> Unit, onEditAvatar: () -> Unit, onBack: () -> Unit) {
+    onProviders: () -> Unit, onEditAvatar: () -> Unit, onBack: () -> Unit,
+    /** Sheets the host shows over this page; Miuix overlays need the page's popup host. */
+    overlays: @Composable () -> Unit = {}) {
     val palette = LocalOmniPalette.current
     val notice = state.notice?.let { stringResource(it) }
     val enabled = !state.loading && state.savingSceneId == null && !state.voiceBusy
@@ -85,6 +87,7 @@ fun SceneModelsScreen(state: SceneModelsState, actions: SceneModelsActions,
                 }
             }
         }
+        overlays()
     }
 }
 

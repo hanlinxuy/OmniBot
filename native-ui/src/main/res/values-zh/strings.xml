@@ -1405,4 +1405,13 @@
     <string name="omni_scan_grant">允许使用相机</string>
     <string name="omni_scan_torch_on">打开手电筒</string>
     <string name="omni_scan_torch_off">关闭手电筒</string>
+    <!-- Agent avatar (5j) -->
+    <string name="omni_avatar_title">Agent 头像</string>
+    <string name="omni_avatar_preset">预设头像 %1$d</string>
+    <string name="omni_avatar_from_photo">从相册选择并裁剪</string>
+    <string name="omni_avatar_in_use">使用中</string>
+    <string name="omni_avatar_use">使用</string>
+    <string name="omni_avatar_crop_hint">双指缩放，拖动调整位置</string>
+    <string name="omni_avatar_open_failed">无法打开这张图片</string>
+    <string name="omni_avatar_save_failed">头像保存失败</string>
 </resources>

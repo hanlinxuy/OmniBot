@@ -814,6 +814,52 @@ sends a user without `flutter.welcome_completed` to the Flutter flow.
   and progress easing, and the connection form checks.
 - Verification: `OnboardingModelsTest` (8). Nothing uses it yet.
 
+### 5j checkpoint: native Agent avatar editor (device-verified on the emulator)
+
+- Scene models › the Agent avatar no longer hands off to the Flutter scene
+  page. `AgentAvatarRoute` opens on the native page:
+  - a sheet with the current avatar large, the six presets in two rows of
+    three with a selection ring that springs in, and a photo entry;
+  - a full-screen crop (`AvatarCropScreen`) for a photo picked through the
+    system photo picker.
+
+  Choosing a preset applies at once and keeps the sheet open, so the change
+  can be seen. `Page.SceneModels` and its Flutter route are gone.
+- `AgentAvatarStore` keeps the Flutter keys (`agentAvatarIndex`,
+  `agentAvatarCustomImagePath`) and the same file location
+  (`files/agent_avatars`), so the remaining Flutter surfaces show the same
+  avatar. It deletes only photos it created.
+- The presets ship as native WebP drawables: 64 KB instead of Flutter's
+  1 MB of PNGs. The previews no longer read Flutter's packaged assets, which
+  go away with Flutter.
+- Behaviour fixed instead of ported:
+  - **Pinch zoom.** It keeps the point under the fingers still
+    (`AvatarCropTransform.gesture`). Dart zoomed around the circle's center,
+    so pinching on a face slid it away.
+  - **Large photos.** They decode sampled to about twice the 512 px output
+    (`avatarSampleSize`). Dart decoded a 50 MP camera photo at full size,
+    about 200 MB.
+  - **Orientation.** Photos open upright. ImageDecoder applies the EXIF
+    rotation, which Dart's decode ignored.
+  - **Edge pixels.** The source square is rounded, not truncated, so the
+    last row and column of the photo are not lost.
+  - **Preview divide by zero.** The native avatar preview divided by zero
+    (its sample loop started from `inSampleSize = 0`), so a custom avatar
+    never showed on native pages and they fell back to a robot icon
+    (`previewSampleSize`).
+- Found on the emulator and fixed before commit:
+  - The sheet, declared outside `OmniPage`, never rendered. It now passes
+    through the page's `overlays` slot.
+  - The crop rendered under the top bar. It is now a full-screen dialog
+    window, and back cancels it.
+- Verification:
+  - Tests: `AvatarCropTest` (4), `AgentAvatarPreviewTest`.
+  - Emulator:
+    - preset 5 saved `agentAvatarIndex = 4`;
+    - picking a photo opened the crop;
+    - "Use this" wrote a 512 px PNG under `files/agent_avatars`;
+    - the scene page showed the new avatar.
+
 ### 5i checkpoint: native PC Bridge QR scanner (device-verified except a real scan)
 
 - The native Remote PC Bridge page's "Scan QR" no longer hands off to the

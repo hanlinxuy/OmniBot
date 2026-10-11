@@ -1405,4 +1405,13 @@
     <string name="omni_scan_grant">Allow camera</string>
     <string name="omni_scan_torch_on">Turn on torch</string>
     <string name="omni_scan_torch_off">Turn off torch</string>
+    <!-- Agent avatar (5j) -->
+    <string name="omni_avatar_title">Agent avatar</string>
+    <string name="omni_avatar_preset">Preset avatar %1$d</string>
+    <string name="omni_avatar_from_photo">Choose a photo and crop</string>
+    <string name="omni_avatar_in_use">In use</string>
+    <string name="omni_avatar_use">Use this</string>
+    <string name="omni_avatar_crop_hint">Pinch to zoom, drag to move</string>
+    <string name="omni_avatar_open_failed">This photo could not be opened</string>
+    <string name="omni_avatar_save_failed">Could not save the avatar</string>
 </resources>

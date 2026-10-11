@@ -170,6 +170,14 @@ internal class NativeSceneModelsViewModel(private val context: Context) : ViewMo
 
     private fun loadAvatar(): ImageBitmap? = loadAgentAvatarPreview(context)
 
+    /** After the avatar editor saved a change. */
+    fun reloadAvatar() {
+        viewModelScope.launch {
+            val avatar = withContext(Dispatchers.IO) { loadAvatar() }
+            mutableState.update { it.copy(avatar = avatar) }
+        }
+    }
+
     class Factory(context: Context) : ViewModelProvider.Factory {
         private val application = context.applicationContext
         @Suppress("UNCHECKED_CAST")
