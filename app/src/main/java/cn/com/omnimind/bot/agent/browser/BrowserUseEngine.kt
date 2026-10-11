@@ -1082,7 +1082,9 @@ class BrowserUseEngine(
     }
 
     private fun publishSnapshotUpdate() {
-        FlutterChatSyncBridge.dispatchBrowserSnapshotUpdated(liveSessionSnapshot())
+        val snapshot = liveSessionSnapshot()
+        FlutterChatSyncBridge.dispatchBrowserSnapshotUpdated(snapshot)
+        LiveAgentBrowserSessionManager.publish(workspaceId, snapshot)
     }
 
     private suspend fun hostNavigate(
@@ -1360,9 +1362,11 @@ class BrowserUseEngine(
         }
         val tab = activeTabId?.let { tabs[it] } ?: tabs.values.lastOrNull() ?: return
         val parent = tab.webView.parent as? ViewGroup ?: return
-        if (container == null || parent === container) {
-            parent.removeView(tab.webView)
-        }
+        // Only the host that still holds the WebView releases it. A host that was
+        // already replaced used to reset the context of the WebView now showing
+        // in the new host to the application context (fixed in 5m).
+        if (container != null && parent !== container) return
+        parent.removeView(tab.webView)
         tab.contextWrapper.baseContext = appContext
     }
 
@@ -3284,6 +3288,27 @@ class BrowserUseEngine(
         publishSnapshotUpdate()
     }
 
+    /**
+     * Settles a dialog that a new one replaces. Each callback only cancelled
+     * its own kind before, so an alert replaced by a prompt (or the other way
+     * round) was never answered and the page's JS thread stayed blocked
+     * (fixed in 5m).
+     */
+    private fun cancelPendingDialog() {
+        val prompt = pendingDialog ?: return
+        pendingDialog = null
+        prompt.jsResult?.cancel()
+        prompt.jsPromptResult?.cancel()
+    }
+
+    /** Same for permissions: a web request replaced by a location prompt, or the reverse, was left unanswered. */
+    private fun denyPendingPermissionPrompt() {
+        val prompt = pendingPermissionPrompt ?: return
+        pendingPermissionPrompt = null
+        prompt.webPermissionRequest?.deny()
+        prompt.geolocationCallback?.invoke(prompt.origin, false, false)
+    }
+
     private fun resolveDialog(
         requestId: String?,
         accept: Boolean,
@@ -3543,7 +3568,7 @@ class BrowserUseEngine(
             message: String?,
             result: JsResult?
         ): Boolean {
-            pendingDialog?.jsResult?.cancel()
+            cancelPendingDialog()
             pendingDialog = PendingDialog(
                 requestId = UUID.randomUUID().toString(),
                 type = "alert",
@@ -3561,7 +3586,7 @@ class BrowserUseEngine(
             message: String?,
             result: JsResult?
         ): Boolean {
-            pendingDialog?.jsResult?.cancel()
+            cancelPendingDialog()
             pendingDialog = PendingDialog(
                 requestId = UUID.randomUUID().toString(),
                 type = "confirm",
@@ -3580,7 +3605,7 @@ class BrowserUseEngine(
             defaultValue: String?,
             result: JsPromptResult?
         ): Boolean {
-            pendingDialog?.jsPromptResult?.cancel()
+            cancelPendingDialog()
             pendingDialog = PendingDialog(
                 requestId = UUID.randomUUID().toString(),
                 type = "prompt",
@@ -3597,7 +3622,7 @@ class BrowserUseEngine(
             if (request == null) {
                 return
             }
-            pendingPermissionPrompt?.webPermissionRequest?.deny()
+            denyPendingPermissionPrompt()
             pendingPermissionPrompt = PendingPermissionPrompt(
                 requestId = UUID.randomUUID().toString(),
                 kind = "web",
@@ -3619,11 +3644,7 @@ class BrowserUseEngine(
             origin: String?,
             callback: GeolocationPermissions.Callback?
         ) {
-            pendingPermissionPrompt?.geolocationCallback?.invoke(
-                pendingPermissionPrompt?.origin.orEmpty(),
-                false,
-                false
-            )
+            denyPendingPermissionPrompt()
             pendingPermissionPrompt = PendingPermissionPrompt(
                 requestId = UUID.randomUUID().toString(),
                 kind = "geolocation",

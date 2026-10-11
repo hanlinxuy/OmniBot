@@ -48,6 +48,9 @@ data class ChatPageBarState(
     val switching: Boolean = false,
     /** Null hides the config button (pure chat, remote Codex). */
     val config: AcpConfigPanelState? = null,
+    /** This conversation has a browser session to show (5m). */
+    val browserAvailable: Boolean = false,
+    val browserOpen: Boolean = false,
 )
 
 class ChatPageBarActions(
@@ -57,6 +60,7 @@ class ChatPageBarActions(
     val onDismissConfig: () -> Unit = {},
     val onRefreshConfig: () -> Unit = {},
     val onSetConfig: (configId: String, value: Any) -> Unit = { _, _ -> },
+    val onToggleBrowser: () -> Unit = {},
 )
 
 /**
@@ -107,6 +111,11 @@ internal fun ChatPageBarActionsRow(
                 }
             }
         }
+    }
+    // Shown only once the agent has opened a browser in this conversation.
+    if (state.browserAvailable) {
+        OmniIconButton(R.drawable.omni_globe, stringResource(if (state.browserOpen) R.string.omni_br_close else R.string.omni_br_open),
+            actions.onToggleBrowser, size = 20.dp, tint = if (state.browserOpen) palette.accent else palette.text)
     }
     state.config?.let { config ->
         OmniIconButton(R.drawable.omni_settings_2, stringResource(R.string.omni_acp_config_title), actions.onOpenConfig, size = 20.dp)

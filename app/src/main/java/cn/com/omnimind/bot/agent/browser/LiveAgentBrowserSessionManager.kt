@@ -24,6 +24,9 @@ class LiveAgentBrowserSessionStore<T : AgentBrowserLiveSessionHandle> {
     fun current(): T? = currentWorkspaceId?.let(sessions::get)
 
     @Synchronized
+    fun find(workspaceId: String): T? = sessions[workspaceId]
+
+    @Synchronized
     fun clear() {
         sessions.values.toList().forEach { it.closeSession() }
         sessions.clear()
@@ -97,6 +100,40 @@ object LiveAgentBrowserSessionManager {
 
     fun detachActiveTabFrom(container: ViewGroup? = null) {
         store.current()?.detachActiveTabFrom(container)
+    }
+
+    // ---- Native observers (5m) ----------------------------------------------
+
+    private val listeners = java.util.concurrent.CopyOnWriteArrayList<(String, Map<String, Any?>) -> Unit>()
+
+    /** Every snapshot an engine publishes, with its workspace; called on the main thread. */
+    fun addSnapshotListener(listener: (workspaceId: String, snapshot: Map<String, Any?>) -> Unit) { listeners += listener }
+    fun removeSnapshotListener(listener: (String, Map<String, Any?>) -> Unit) { listeners -= listener }
+
+    internal fun publish(workspaceId: String, snapshot: Map<String, Any?>) {
+        listeners.forEach { runCatching { it(workspaceId, snapshot) } }
+    }
+
+    /** The snapshot of one conversation's browser, never another's. */
+    fun snapshotFor(workspaceId: String): Map<String, Any?> =
+        store.find(workspaceId)?.liveSessionSnapshot() ?: BrowserUseEngine.unavailableSnapshot(workspaceId = workspaceId)
+
+    /**
+     * Runs a host command on [workspaceId]'s own engine. The Flutter overlay
+     * sent every command to whichever engine ran last, so a tap could drive
+     * another conversation's browser (fixed in 5m for the native overlay).
+     */
+    suspend fun handleCall(workspaceId: String, method: String, arguments: Map<String, Any?> = emptyMap()): Any? {
+        val engine = store.find(workspaceId) ?: throw IllegalStateException("No browser session for this conversation")
+        return engine.handleHostCall(method = method, arguments = arguments)
+    }
+
+    /** Shows [workspaceId]'s active tab in [container]; false when that conversation has no browser. */
+    fun attachTabOf(workspaceId: String, container: ViewGroup, hostContext: Context): Boolean =
+        store.find(workspaceId)?.attachActiveTabTo(container = container, hostContext = hostContext) ?: false
+
+    fun detachTabOf(workspaceId: String, container: ViewGroup) {
+        store.find(workspaceId)?.detachActiveTabFrom(container)
     }
 
     fun releaseRunOwnership() {

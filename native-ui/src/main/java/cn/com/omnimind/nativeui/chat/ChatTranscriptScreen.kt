@@ -13,6 +13,7 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -112,6 +113,11 @@ fun ChatTranscriptScreen(
     composerActions: ChatComposerActions = ChatComposerActions(),
     bar: ChatPageBarState = ChatPageBarState(),
     barActions: ChatPageBarActions = ChatPageBarActions(),
+    /**
+     * Floats over the transcript inside the page, so its sheets share the
+     * page's popup host (the agent browser window, 5m).
+     */
+    overlay: @Composable BoxScope.() -> Unit = {},
 ) {
     val palette = LocalOmniPalette.current
     val subtitle = stringResource(
@@ -145,6 +151,7 @@ fun ChatTranscriptScreen(
                 ChatMessageList(state, actions, Modifier.fillMaxSize())
             }
         }
+        Box(Modifier.fillMaxSize(), content = overlay)
     }
 }
 
