@@ -814,6 +814,52 @@ sends a user without `flutter.welcome_completed` to the Flutter flow.
   and progress easing, and the connection form checks.
 - Verification: `OnboardingModelsTest` (8). Nothing uses it yet.
 
+### 5i checkpoint: native PC Bridge QR scanner (device-verified except a real scan)
+
+- The native Remote PC Bridge page's "Scan QR" no longer hands off to the
+  Flutter `CodexBridgeQrScannerPage`. `BridgeQrScannerRoute` runs:
+  - a CameraX preview through `camera-compose`'s `CameraXViewfinder`;
+  - ML Kit QR-only analysis that keeps only the latest frame.
+
+  A scanned code fills the form through `NativeRemoteBridgeViewModel.applyScan`,
+  and the page's usual auto-save stores it. The Flutter detour that re-read
+  the store on resume is gone, along with `Page.RemoteBridge`.
+- `parseBridgeQrCode` ports Dart `CodexBridgeQrScanResult.tryParse`:
+  - a JSON payload typed `omnibot.codex_bridge`;
+  - an `omnibot://codex-bridge` link;
+  - a bare ws/http Bridge URL, which keeps no token or folder in the stored
+    URL, with `/health` or `/fs/list` pointed at `/codex`.
+- The overlay (`BridgeScannerScreen`):
+  - a dimmed surround with a clear rounded viewfinder and corner brackets;
+  - an accent line sweeping the frame;
+  - a hint that cross-fades to an amber "not a Bridge code" message for 2 s;
+  - a torch button, shown only when the camera has a flash.
+- Behaviour fixed instead of ported:
+  - A found code turns the frame accent and plays a confirm haptic, then the
+    scanner fades away after 450 ms. Dart closed the page on the frame it
+    read the code.
+  - Camera permission is asked in place. A denial shows the reason, an
+    "Allow camera" button that opens app settings once the system dialog no
+    longer appears, and a note that the address can be typed by hand. The
+    page re-checks the permission on return. Dart showed only
+    `Camera unavailable: permissionDenied`.
+  - The scanner applies a code only once. Dart guarded the pop with a flag,
+    but every later detection still parsed and could toast.
+  - A scanned code without a token or folder keeps the ones already typed.
+    Dart replaced them with empty values.
+- Dependencies: `androidx.camera` 1.6.1 and ML Kit `barcode-scanning` 17.3.0
+  were already on the runtime classpath through Flutter's `mobile_scanner`.
+  They are now declared directly, together with `camera-compose` 1.6.1 (new,
+  same release train), so the native scanner survives Flutter's removal.
+- Verification:
+  - Tests: `BridgeQrCodeTest` (4).
+  - Emulator: Agents › Remote PC Bridge › Scan QR shows the system permission
+    dialog. A denial shows the permission state with "Allow camera". After
+    granting, the live viewfinder runs; CameraX logs show the capture
+    session.
+  - Not verified: decoding a real Bridge code. The emulator's virtual camera
+    has no scene to scan.
+
 ### 5h checkpoint: native account page (device-verified on the emulator)
 
 - Settings › Account & AI service opens `AccountScreen` on native Home

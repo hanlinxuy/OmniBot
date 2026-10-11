@@ -1,5 +1,13 @@
 package cn.com.omnimind.bot.ui.settings
 
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.animation.togetherWith
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.AnimatedContent
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -363,16 +371,24 @@ internal fun NativeUsageStatisticsRoute(viewModel: NativeUsageStatisticsViewMode
 @Composable
 internal fun NativeRemoteBridgeRoute(
     viewModel: NativeRemoteBridgeViewModel,
-    openLegacy: (LegacyDestination) -> Unit,
     onBack: () -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    var scanning by rememberSaveable { mutableStateOf(false) }
     LaunchedEffect(Unit) { viewModel.load() }
-    // The QR scan hand-off lives on the Flutter page until batch 4h-2; returning
-    // from it re-reads the stored config.
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { viewModel.resume() }
-    RemoteBridgeScreen(state, viewModel.actions,
-        onScanQr = { openLegacy(LegacyDestination.Page.RemoteBridge) }, onBack)
+    // The scanner covers the page and fades away once a code fills the form (5i).
+    AnimatedContent(scanning, transitionSpec = { fadeIn(tween(220)) togetherWith fadeOut(tween(180)) },
+        label = "bridge-scanner") { showScanner ->
+        if (showScanner) {
+            BridgeQrScannerRoute(onScanned = { code ->
+                viewModel.applyScan(code)
+                scanning = false
+            }, onBack = { scanning = false })
+        } else {
+            RemoteBridgeScreen(state, viewModel.actions, onScanQr = { scanning = true }, onBack)
+        }
+    }
 }
 
 @Composable

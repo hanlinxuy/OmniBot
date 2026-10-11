@@ -57,6 +57,11 @@ androidSvg = "1.4"
 [libraries]
 # Already on the runtime classpath through a dependency; declared for the user guide's Custom Tab (5g).
 androidx-browser = { group = "androidx.browser", name = "browser", version = "1.9.0" }
+# Already resolved through mobile_scanner; declared for the native Bridge scanner (5i).
+androidx-camera-camera2 = { group = "androidx.camera", name = "camera-camera2", version = "1.6.1" }
+androidx-camera-lifecycle = { group = "androidx.camera", name = "camera-lifecycle", version = "1.6.1" }
+androidx-camera-compose = { group = "androidx.camera", name = "camera-compose", version = "1.6.1" }
+mlkit-barcode-scanning = { group = "com.google.mlkit", name = "barcode-scanning", version = "17.3.0" }
 miuix-nav = { module = "top.yukonga.miuix.kmp:miuix-nav", version.ref = "miuix" }
 miuix-ui = { module = "top.yukonga.miuix.kmp:miuix-ui", version.ref = "miuix" }
 markwon-core = { module = "io.noties.markwon:core", version.ref = "markwon" }

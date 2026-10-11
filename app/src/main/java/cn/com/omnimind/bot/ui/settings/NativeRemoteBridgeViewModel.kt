@@ -10,6 +10,7 @@ import cn.com.omnimind.bot.agent.NativeRemoteBridgeRepository
 import cn.com.omnimind.nativeui.R
 import cn.com.omnimind.nativeui.settings.RemoteBridgeActions
 import cn.com.omnimind.nativeui.settings.RemoteBridgeSaveStatus
+import cn.com.omnimind.nativeui.settings.BridgeQrCode
 import cn.com.omnimind.nativeui.settings.RemoteBridgeState
 import cn.com.omnimind.nativeui.settings.RemoteDirectoryPickerEntry
 import cn.com.omnimind.nativeui.settings.RemoteDirectoryPickerState
@@ -120,6 +121,15 @@ internal class NativeRemoteBridgeViewModel(context: Context) : ViewModel() {
             } catch (_: Exception) {
                 OmniLog.w("NativeRemoteBridge", "Remote bridge refresh failed; keeping current form")
             }
+        }
+    }
+
+    /** Fills the form from a scanned Bridge code and turns the Bridge on; the usual auto-save follows. */
+    fun applyScan(code: BridgeQrCode) {
+        if (state.value.status == RemoteBridgeSaveStatus.Saving) return
+        edit {
+            it.copy(enabled = true, url = code.bridgeUrl, token = code.token.ifBlank { it.token },
+                cwd = code.cwd.ifBlank { it.cwd })
         }
     }
 

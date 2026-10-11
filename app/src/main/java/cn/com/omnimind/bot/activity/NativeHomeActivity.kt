@@ -295,7 +295,7 @@ class NativeHomeActivity : ComponentActivity() {
                 ) },
                 alarmSettings = { onBack -> NativeAlarmSettingsRoute(alarmSettingsViewModel, permissionAccess, onBack) },
                 openWith = { onBack -> NativeOpenWithRoute(openWithViewModel, onBack) },
-                remoteBridge = { onBack -> NativeRemoteBridgeRoute(remoteBridgeViewModel, navigator::open, onBack) },
+                remoteBridge = { onBack -> NativeRemoteBridgeRoute(remoteBridgeViewModel, onBack) },
                 scheduledTasks = { onBack -> NativeScheduledTasksRoute(scheduledTasksViewModel, onBack) },
                 skills = { onBack -> NativeSkillStoreRoute(skillStoreViewModel, onBack) },
                 memory = { onBack -> NativeMemoryCenterRoute(memoryCenterViewModel, onBack) },

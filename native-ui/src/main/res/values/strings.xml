@@ -1395,4 +1395,14 @@
     <string name="omni_acc_err_expired">Your sign-in expired. Sign in again.</string>
     <string name="omni_acc_err_network">Check your connection and try again</string>
     <string name="omni_acc_err_unknown">Something went wrong. Try again later.</string>
+    <!-- Bridge QR scanner (5i) -->
+    <string name="omni_scan_title">Scan PC Bridge</string>
+    <string name="omni_scan_hint">Point at the QR code the PC Bridge prints in its terminal.</string>
+    <string name="omni_scan_not_bridge">This is not an Omnibot PC Bridge QR code.</string>
+    <string name="omni_scan_found">Found the Bridge. Saving…</string>
+    <string name="omni_scan_permission">Camera access is needed to scan the Bridge QR code. You can also type the address and token by hand.</string>
+    <string name="omni_scan_camera_unavailable">The camera is unavailable. Type the Bridge address and token by hand.</string>
+    <string name="omni_scan_grant">Allow camera</string>
+    <string name="omni_scan_torch_on">Turn on torch</string>
+    <string name="omni_scan_torch_off">Turn off torch</string>
 </resources>

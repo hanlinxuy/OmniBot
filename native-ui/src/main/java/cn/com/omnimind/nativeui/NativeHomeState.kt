@@ -123,7 +123,7 @@ sealed interface LegacyDestination {
     data class WorkspaceFile(val path: String, val edit: Boolean = false) : LegacyDestination
 
     enum class Page : LegacyDestination {
-        Account, ModelProviders, SceneModels, RemoteBridge,
+        Account, ModelProviders, SceneModels,
         Chat, QuickStart, UserGuide,
     }
 }
