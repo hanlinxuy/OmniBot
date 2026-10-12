@@ -11,6 +11,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.ui.Modifier
+import cn.com.omnimind.bot.ui.chat.browser.NativeBrowserLayer
+import cn.com.omnimind.bot.ui.chat.browser.NativeBrowserViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.SavedStateHandle
@@ -107,7 +112,12 @@ internal class NativeChatTranscriptViewModel(
      * fixed afterwards and kept in [savedState], so the page reopens that
      * conversation after process death (5e-2). Main thread only.
      */
-    private var conversationIdOrNull: Long? = initialConversationId ?: savedState.get<Long>(KEY_CONVERSATION_ID)
+    private val mutableConversationId = MutableStateFlow(initialConversationId ?: savedState.get<Long>(KEY_CONVERSATION_ID))
+    /** The open conversation, for page parts that follow it (the agent browser, 5m). */
+    val currentConversationId = mutableConversationId.asStateFlow()
+    private var conversationIdOrNull: Long?
+        get() = mutableConversationId.value
+        set(value) { mutableConversationId.value = value }
     private val conversationId: Long get() = checkNotNull(conversationIdOrNull)
     private var creatingConversation = false
     private val appContext = context.applicationContext
@@ -1533,6 +1543,8 @@ internal fun ChatMessage.toUi(cards: ChatCardCache? = null): ChatMessageUi {
 @Composable
 internal fun NativeChatTranscriptRoute(
     viewModel: NativeChatTranscriptViewModel,
+    /** The agent browser window over this page (5m). */
+    browser: NativeBrowserViewModel,
     onOpenLink: (String) -> Unit,
     onToolAction: (AgentToolActionUi) -> Unit,
     onNewConversation: () -> Unit,
@@ -1558,7 +1570,7 @@ internal fun NativeChatTranscriptRoute(
             onOpenInChat(it)
         }
     }
-    val barActions = remember(viewModel, onNewConversation) {
+    val barActions = remember(viewModel, browser, onNewConversation) {
         ChatPageBarActions(
             onSelectHarness = viewModel::selectHarness,
             onNewConversation = onNewConversation,
@@ -1566,6 +1578,7 @@ internal fun NativeChatTranscriptRoute(
             onDismissConfig = viewModel::dismissConfig,
             onRefreshConfig = viewModel::refreshConfig,
             onSetConfig = viewModel::setConfig,
+            onToggleBrowser = browser::toggle,
         )
     }
     val activity = LocalContext.current as? android.app.Activity
@@ -1602,5 +1615,13 @@ internal fun NativeChatTranscriptRoute(
             onUserMessageAction = viewModel::onUserMessageAction,
         )
     }
-    ChatTranscriptScreen(state, onBack, actions, composer, composerActions, bar, barActions)
+    val conversationId by viewModel.currentConversationId.collectAsStateWithLifecycle()
+    LaunchedEffect(conversationId) { browser.follow(conversationId) }
+    val window by browser.state.collectAsStateWithLifecycle()
+    val pageBar = bar.copy(browserAvailable = window.session != null, browserOpen = window.open)
+    ChatTranscriptScreen(state, onBack, actions, composer, composerActions, pageBar, barActions) {
+        BoxWithConstraints(Modifier.fillMaxSize()) {
+            NativeBrowserLayer(browser, maxWidth.value, maxHeight.value)
+        }
+    }
 }

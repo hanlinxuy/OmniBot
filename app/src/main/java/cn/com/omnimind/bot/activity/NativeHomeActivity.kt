@@ -10,6 +10,7 @@ import cn.com.omnimind.bot.ui.chat.resolveChatStartupTarget
 import cn.com.omnimind.nativeui.chat.AgentToolActionUi
 import cn.com.omnimind.bot.ui.chat.NativeChatTranscriptRoute
 import cn.com.omnimind.bot.ui.chat.NativeChatTranscriptViewModel
+import cn.com.omnimind.bot.ui.chat.browser.NativeBrowserViewModel
 import android.content.Context
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -308,8 +309,12 @@ class NativeHomeActivity : ComponentActivity() {
                             ))[
                                 key, NativeChatTranscriptViewModel::class.java]
                     }
+                    val browserViewModel = remember(key) {
+                        ViewModelProvider(this@NativeHomeActivity, NativeBrowserViewModel.Factory())[
+                            "$key/browser", NativeBrowserViewModel::class.java]
+                    }
                     NativeChatTranscriptRoute(
-                        transcriptViewModel, ::openTranscriptLink, ::runTranscriptToolAction, onNewConversation,
+                        transcriptViewModel, browserViewModel, ::openTranscriptLink, ::runTranscriptToolAction, onNewConversation,
                         onOpenInChat = { handoff ->
                             // The Flutter chat owns these flows until they move (5e-6).
                             navigator.open(
