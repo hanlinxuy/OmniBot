@@ -1,5 +1,6 @@
 package cn.com.omnimind.nativeui
 
+import cn.com.omnimind.nativeui.omniflow.OmniFlowTab
 import androidx.compose.runtime.remember
 import androidx.compose.foundation.layout.Box
 
@@ -71,8 +72,12 @@ internal sealed interface HomeRoute : NavKey {
     @Serializable data object AlarmSettings : HomeRoute
     @Serializable data object OpenWith : HomeRoute
     @Serializable data object RemoteBridge : HomeRoute
-    @Serializable data object ScheduledTasks : HomeRoute
+    /** [alarms] opens the exact-alarm tab (a tool card's "View alarms"). */
+    @Serializable data class ScheduledTasks(val alarms: Boolean = false) : HomeRoute
     @Serializable data object ExecutionHistory : HomeRoute
+    /** The OmniFlow execution center (5n); [functionId] opens that Function. */
+    @Serializable data class OmniFlow(val tab: OmniFlowTab = OmniFlowTab.Functions, val functionId: String? = null) : HomeRoute
+    @Serializable data class RunLog(val runId: String) : HomeRoute
     @Serializable data object Skills : HomeRoute
     @Serializable data object Plugins : HomeRoute
     @Serializable data class PluginDetail(val pluginId: String) : HomeRoute
@@ -114,13 +119,23 @@ fun NativeHomeApp(
     agents: @Composable (onBack: () -> Unit, onModelProviders: () -> Unit, onAgentConfig: (String) -> Unit, onRemoteBridge: () -> Unit, onTerminalFocus: (String) -> Unit) -> Unit,
     agentConfig: @Composable (agentId: String, onBack: () -> Unit) -> Unit,
     remoteBridge: @Composable (onBack: () -> Unit) -> Unit,
-    scheduledTasks: @Composable (onBack: () -> Unit) -> Unit,
+    scheduledTasks: @Composable (alarms: Boolean, onBack: () -> Unit) -> Unit,
     skills: @Composable (onBack: () -> Unit) -> Unit,
     plugins: @Composable (onBack: () -> Unit, onPlugin: (String) -> Unit) -> Unit,
     pluginDetail: @Composable (pluginId: String, onBack: () -> Unit) -> Unit,
     memory: @Composable (onBack: () -> Unit) -> Unit,
     terminal: @Composable (focusPackageId: String?, onBack: () -> Unit) -> Unit,
     executionHistory: @Composable (onBack: () -> Unit) -> Unit,
+    /**
+     * The OmniFlow pages (5n). [onRunLog] and [onFunction] push a RunLog or the
+     * center on a Function; [onEnhance] opens a new chat with the request drafted.
+     */
+    omniFlow: @Composable (
+        tab: OmniFlowTab, functionId: String?, instanceKey: String, onRunLog: (String) -> Unit,
+        onEnhance: (String) -> Unit, onPlugin: (String) -> Unit, onBack: () -> Unit,
+    ) -> Unit = { _, _, _, _, _, _, _ -> },
+    runLog: @Composable (runId: String, instanceKey: String, onFunction: (String) -> Unit, onBack: () -> Unit) -> Unit =
+        { _, _, _, _ -> },
     permissions: @Composable (onBack: () -> Unit) -> Unit,
     appearance: @Composable (onBack: () -> Unit, onBackground: () -> Unit) -> Unit,
     homePreferences: @Composable (onBack: () -> Unit) -> Unit,
@@ -202,6 +217,18 @@ fun NativeHomeApp(
                     actions.consumeDestination()
                     backStack.add(HomeRoute.WorkspaceFile(destination.path, destination.edit))
                 }
+                is LegacyDestination.OmniFlow -> {
+                    actions.consumeDestination()
+                    backStack.add(HomeRoute.OmniFlow(destination.tab, destination.functionId))
+                }
+                is LegacyDestination.RunLog -> {
+                    actions.consumeDestination()
+                    backStack.add(HomeRoute.RunLog(destination.runId))
+                }
+                is LegacyDestination.ScheduledTasks -> {
+                    actions.consumeDestination()
+                    backStack.add(HomeRoute.ScheduledTasks(destination.alarms))
+                }
                 else -> Unit
             }
         }
@@ -239,7 +266,7 @@ fun NativeHomeApp(
                     onSettings = { backStack.add(HomeRoute.Settings) },
                     onArchive = { backStack.add(HomeRoute.Archive) },
                     onNewConversation = { openFromPane(HomeRoute.NativeNewChat(System.currentTimeMillis())) },
-                    onScheduledTasks = { backStack.add(HomeRoute.ScheduledTasks) },
+                    onScheduledTasks = { backStack.add(HomeRoute.ScheduledTasks()) },
                     onExecutionHistory = { backStack.add(HomeRoute.ExecutionHistory) },
                     onSkills = { backStack.add(HomeRoute.Skills) },
                     onPlugins = { backStack.add(HomeRoute.Plugins) },
@@ -271,7 +298,7 @@ fun NativeHomeApp(
                     onPet = { backStack.add(HomeRoute.Pet) },
                     onAgents = { backStack.add(HomeRoute.Agents) },
                     onTerminal = { backStack.add(HomeRoute.Terminal()) },
-                    onScheduledTasks = { backStack.add(HomeRoute.ScheduledTasks) },
+                    onScheduledTasks = { backStack.add(HomeRoute.ScheduledTasks()) },
                     onExecutionHistory = { backStack.add(HomeRoute.ExecutionHistory) },
                     onSkills = { backStack.add(HomeRoute.Skills) },
                     onPlugins = { backStack.add(HomeRoute.Plugins) },
@@ -365,7 +392,7 @@ fun NativeHomeApp(
             entry<HomeRoute.AlarmSettings> { alarmSettings { backStack.removeLastOrNull() } }
             entry<HomeRoute.OpenWith> { openWith { backStack.removeLastOrNull() } }
             entry<HomeRoute.RemoteBridge> { remoteBridge { backStack.removeLastOrNull() } }
-            entry<HomeRoute.ScheduledTasks> { scheduledTasks { backStack.removeLastOrNull() } }
+            entry<HomeRoute.ScheduledTasks> { key -> scheduledTasks(key.alarms) { backStack.removeLastOrNull() } }
             entry<HomeRoute.Skills> { skills { backStack.removeLastOrNull() } }
             entry<HomeRoute.Plugins> {
                 plugins({ backStack.removeLastOrNull() }, { backStack.add(HomeRoute.PluginDetail(it)) })
@@ -378,6 +405,19 @@ fun NativeHomeApp(
                 terminal(key.focusPackageId) { backStack.removeLastOrNull() }
             }
             entry<HomeRoute.ExecutionHistory> { executionHistory { backStack.removeLastOrNull() } }
+            entry<HomeRoute.OmniFlow> { key ->
+                omniFlow(
+                    key.tab, key.functionId, "omniflow:${backStack.indexOf(key)}",
+                    { runId -> backStack.add(HomeRoute.RunLog(runId)) },
+                    { draft -> openNativeChatWithDraft(draft) },
+                    { pluginId -> backStack.add(HomeRoute.PluginDetail(pluginId)) },
+                ) { backStack.removeLastOrNull() }
+            }
+            entry<HomeRoute.RunLog> { key ->
+                runLog(key.runId, "run-log:${key.runId}:${backStack.indexOf(key)}",
+                    { functionId -> backStack.add(HomeRoute.OmniFlow(functionId = functionId)) },
+                ) { backStack.removeLastOrNull() }
+            }
             entry<HomeRoute.Permissions> { permissions { backStack.removeLastOrNull() } }
             // A new conversation replaces the current chat page instead of stacking on it.
             val replaceWithNewChat: () -> Unit = {

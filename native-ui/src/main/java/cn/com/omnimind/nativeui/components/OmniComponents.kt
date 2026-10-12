@@ -3,16 +3,20 @@ package cn.com.omnimind.nativeui.components
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cn.com.omnimind.nativeui.R
 import cn.com.omnimind.nativeui.theme.LocalOmniPalette
+import top.yukonga.miuix.kmp.basic.Button
+import top.yukonga.miuix.kmp.basic.ButtonDefaults
 import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.basic.IconButton
 import top.yukonga.miuix.kmp.basic.SmallTopAppBar
@@ -70,4 +74,37 @@ internal fun OmniTopBar(
 internal fun SectionTitle(title: String, modifier: Modifier = Modifier) {
     Text(title, modifier = modifier, fontSize = 11.sp, letterSpacing = .6.sp,
         fontWeight = FontWeight.SemiBold, color = LocalOmniPalette.current.tertiaryText)
+}
+
+/**
+ * A page or tab with nothing to show: an icon, a title, an optional hint and
+ * an optional action (retry, enable). Centered in the space it is given.
+ */
+@Composable
+internal fun OmniEmptyState(
+    @DrawableRes icon: Int,
+    title: String,
+    modifier: Modifier = Modifier,
+    message: String? = null,
+    actionLabel: String? = null,
+    onAction: (() -> Unit)? = null,
+    actionEnabled: Boolean = true,
+) {
+    val palette = LocalOmniPalette.current
+    Column(modifier.fillMaxSize().padding(horizontal = 32.dp), horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center) {
+        OmniIcon(icon, size = 44.dp, tint = palette.tertiaryText)
+        Spacer(Modifier.height(14.dp))
+        Text(title, fontSize = 16.sp, fontWeight = FontWeight.Medium, color = palette.text, textAlign = TextAlign.Center)
+        if (!message.isNullOrBlank()) {
+            Spacer(Modifier.height(6.dp))
+            Text(message, fontSize = 13.sp, lineHeight = 19.sp, color = palette.secondaryText, textAlign = TextAlign.Center)
+        }
+        if (actionLabel != null && onAction != null) {
+            Spacer(Modifier.height(18.dp))
+            Button(onClick = onAction, enabled = actionEnabled, colors = ButtonDefaults.buttonColorsPrimary()) {
+                Text(actionLabel, color = Color.White)
+            }
+        }
+    }
 }

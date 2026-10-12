@@ -1,6 +1,9 @@
 package cn.com.omnimind.nativeui
 
 import androidx.compose.runtime.Immutable
+import cn.com.omnimind.nativeui.omniflow.OmniFlowTab
+import java.net.URI
+import java.net.URLDecoder
 
 /** Presentation data only. Conversation/ACP lifecycle remains owned by the host runtime. */
 @Immutable
@@ -122,6 +125,15 @@ sealed interface LegacyDestination {
     /** The native file preview (5e-8a); [edit] starts in the editor. */
     data class WorkspaceFile(val path: String, val edit: Boolean = false) : LegacyDestination
 
+    /** The native OmniFlow execution center (5n); [functionId] opens that Function's sheet. */
+    data class OmniFlow(val tab: OmniFlowTab = OmniFlowTab.Functions, val functionId: String? = null) : LegacyDestination
+
+    /** One native RunLog page (5n). */
+    data class RunLog(val runId: String) : LegacyDestination
+
+    /** The native scheduled tasks page; [alarms] opens its exact-alarm tab. */
+    data class ScheduledTasks(val alarms: Boolean = false) : LegacyDestination
+
     enum class Page : LegacyDestination {
         Account, ModelProviders,
         Chat, QuickStart, UserGuide,
@@ -140,7 +152,43 @@ val LegacyDestination.opensNativePage: Boolean
         this is LegacyDestination.SharedDraft ||
         this is LegacyDestination.OpenConversation ||
         this is LegacyDestination.Workspace ||
-        this is LegacyDestination.WorkspaceFile
+        this is LegacyDestination.WorkspaceFile ||
+        this is LegacyDestination.OmniFlow ||
+        this is LegacyDestination.RunLog ||
+        this is LegacyDestination.ScheduledTasks
+
+/**
+ * The native page an in-app route names (tool-card and plugin actions use
+ * the Flutter paths), or null when Flutter still owns it. Before 5n these
+ * always opened Flutter, even for pages that were already native.
+ */
+fun nativeDestinationForRoute(route: String): LegacyDestination? {
+    val uri = runCatching { URI(route.trim()) }.getOrNull() ?: return null
+    val path = uri.path?.trimEnd('/').orEmpty()
+    val query = uri.rawQuery.orEmpty().split('&').mapNotNull { pair ->
+        val parts = pair.split('=', limit = 2)
+        if (parts[0].isEmpty()) null
+        else parts[0] to URLDecoder.decode(parts.getOrElse(1) { "" }, Charsets.UTF_8).trim()
+    }.toMap()
+    return when {
+        path == "/task/omniflow" -> LegacyDestination.OmniFlow(
+            tab = omniFlowTab(query["tab"]),
+            functionId = query["functionId"]?.ifEmpty { null },
+        )
+        path == "/task/run_logs" -> LegacyDestination.OmniFlow(OmniFlowTab.RunLogs)
+        path.startsWith("/task/run_log/") -> path.removePrefix("/task/run_log/")
+            .takeIf { it.isNotEmpty() && '/' !in it }
+            ?.let { LegacyDestination.RunLog(URLDecoder.decode(it, Charsets.UTF_8)) }
+        path == "/task/scheduled_tasks" -> LegacyDestination.ScheduledTasks(alarms = query["tab"] == "alarm")
+        else -> null
+    }
+}
+
+/** Dart `_initialTabIndex`: the spellings tool cards and plugins use for the run log tab. */
+private fun omniFlowTab(value: String?): OmniFlowTab = when (value?.lowercase()) {
+    "run_log", "run_logs", "runlog", "runlogs", "logs", "1" -> OmniFlowTab.RunLogs
+    else -> OmniFlowTab.Functions
+}
 
 /** Notification and stored modes spell the same mode differently (`normal` vs `agent`). */
 fun conversationModeKey(mode: String?): String = when (mode?.trim()?.lowercase()) {

@@ -1235,8 +1235,40 @@ private fun resolveAgentToolActions(
             ),
         )
     }
+    actions.addAll(vlmTaskActions(cardData, english))
     return actions.filter { action -> dartTrim(dartStr(action["label"])).isNotEmpty() }
 }
+
+/**
+ * A finished GUI task's RunLog and Function links (Dart `_VlmTaskResultCard`).
+ * The native card had none, so a VLM run's log was unreachable from the
+ * native chat; the routes open the native OmniFlow pages (5n).
+ */
+private fun vlmTaskActions(cardData: Map<String, Any?>, english: Boolean): List<Map<String, Any?>> {
+    if (canonicalAgentToolName(dartStr(cardData["toolName"])) != "vlm_task" || dartStr(cardData["status"]) == "running") {
+        return emptyList()
+    }
+    val payload = listOf(cardData["resultPreviewJson"], cardData["rawResultJson"])
+        .map { decodeJsonMapOrEmpty(dartStr(it)) }
+        .firstOrNull { it.containsKey("run_id") || it.containsKey("content") }.orEmpty()
+    fun first(vararg values: Any?) = values.map { dartTrim(dartStr(it)) }.firstOrNull { it.isNotEmpty() }.orEmpty()
+    val runId = first(payload["run_id"], payload["runId"], cardData["run_id"], cardData["runId"])
+    val registeredId = first(payload["registered_function_id"], payload["function_id"])
+    val autoRegistered = payload["auto_registered"] == true
+    val success = (cardData["status"] ?: "success").toString() == "success"
+    return buildList {
+        if (runId.isNotEmpty()) {
+            add(linkedMapOf("type" to "route", "label" to if (english) "View Run Log" else "查看运行记录",
+                "target" to "/task/run_log/${urlEncode(runId)}"))
+        }
+        if (success && (autoRegistered || runId.isEmpty())) {
+            add(linkedMapOf("type" to "route", "label" to if (english) "View Function" else "查看复用指令",
+                "target" to "/task/omniflow" + if (registeredId.isEmpty()) "" else "?functionId=${urlEncode(registeredId)}"))
+        }
+    }
+}
+
+private fun urlEncode(value: String): String = java.net.URLEncoder.encode(value, Charsets.UTF_8).replace("+", "%20")
 
 /** Dart `_resolveDiffSummary` (transcript) / `_resolveInlineDiffSummary` (card): identical bodies. */
 private fun resolveDiffSummary(cardData: Map<String, Any?>): AgentDiffSummary? =

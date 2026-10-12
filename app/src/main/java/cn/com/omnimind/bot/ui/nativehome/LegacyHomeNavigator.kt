@@ -9,12 +9,24 @@ import cn.com.omnimind.bot.activity.NativeOnboardingActivity
 import cn.com.omnimind.bot.ui.WebLinks
 import cn.com.omnimind.nativeui.LegacyDestination
 import cn.com.omnimind.nativeui.LegacyDestination.Page
+import cn.com.omnimind.nativeui.nativeDestinationForRoute
 import java.util.UUID
 
-/** Remove each mapping when its feature has moved to Compose. Never dispatches an Agent prompt. */
-internal class LegacyHomeNavigator(private val activity: Activity) {
+/**
+ * Remove each mapping when its feature has moved to Compose. Never dispatches an Agent prompt.
+ * [openNativePage] pushes a page native Home owns, such as one an in-app route names (5n).
+ */
+internal class LegacyHomeNavigator(
+    private val activity: Activity,
+    private val openNativePage: (LegacyDestination) -> Unit = {},
+) {
     fun open(destination: LegacyDestination) {
         if (openNatively(destination)) return
+        val native = (destination as? LegacyDestination.PluginRoute)?.let { nativeDestinationForRoute(it.route) }
+        if (native != null) {
+            openNativePage(native)
+            return
+        }
         val route = when (destination) {
             is LegacyDestination.Conversation -> Uri.Builder().path("/home/chat")
                 .appendQueryParameter("conversationId", destination.id.toString())
@@ -47,7 +59,8 @@ internal class LegacyHomeNavigator(private val activity: Activity) {
                 Page.QuickStart, Page.UserGuide, Page.Account -> return
             }
             // Native pages since 5e-8a; NativeHomeApp opens them and never hands them over.
-            is LegacyDestination.Workspace, is LegacyDestination.WorkspaceFile -> return
+            is LegacyDestination.Workspace, is LegacyDestination.WorkspaceFile,
+            is LegacyDestination.OmniFlow, is LegacyDestination.RunLog, is LegacyDestination.ScheduledTasks -> return
         }
         activity.startActivity(Intent(activity, MainActivity::class.java)
             .putExtra(EXTRA_NATIVE_DESTINATION, route))

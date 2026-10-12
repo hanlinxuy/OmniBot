@@ -398,4 +398,17 @@ class AgentToolCardPresenterTest {
         assertNotNull(value)
         return value!!
     }
+
+    @Test fun aFinishedGuiTaskLinksItsRunLogAndFunction() {
+        val result = """{"run_id":"run 1","content":"Done","auto_registered":true,"registered_function_id":"f1"}"""
+        val card = presentAgentToolCard(mapOf("toolName" to "vlm_task", "status" to "success", "resultPreviewJson" to result),
+            english = true)
+        assertEquals(listOf("/task/run_log/run%201", "/task/omniflow?functionId=f1"), card.detail.actions.map { it.target })
+        // Not auto-registered: the Run Log page offers registration, so only its link shows.
+        val manual = presentAgentToolCard(mapOf("toolName" to "vlm_task", "status" to "success",
+            "resultPreviewJson" to """{"run_id":"r2","content":"Done"}"""), english = true)
+        assertEquals(listOf("/task/run_log/r2"), manual.detail.actions.map { it.target })
+        val running = presentAgentToolCard(mapOf("toolName" to "vlm_task", "status" to "running", "runId" to "r3"), english = true)
+        assertTrue(running.detail.actions.isEmpty())
+    }
 }

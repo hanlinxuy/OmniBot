@@ -172,9 +172,10 @@ random greeting selection out of pixel comparisons.
   memory center is native (batch 4l-1); the drawer shortcut row no longer opens
   any Flutter compatibility page. The terminal settings page is native
   (batch 4m), including the distribution switch, environment inventory,
-  boot tasks and workspace mounts. The OmniFlow execution center
-  (`/task/omniflow`, entered from tool-summary cards and manual recording) and
-  the remote workspace browser remain Flutter compatibility destinations.
+  boot tasks and workspace mounts. The OmniFlow execution center and Run Log
+  pages are native (batch 5n); manual recording, which starts from the
+  Flutter chat, and the remote workspace browser remain Flutter compatibility
+  destinations.
 - Native home gained MainActivity's launch/foreground behaviors in 5e-7e
   (terminal auto-start, account refresh, app update checks, orientation);
   deep-link routing still goes through MainActivity. The generic native chat entry now delegates
@@ -813,6 +814,92 @@ sends a user without `flutter.welcome_completed` to the Flutter flow.
   death), the scene defaults and embedding detection, the install phase
   and progress easing, and the connection form checks.
 - Verification: `OnboardingModelsTest` (8). Nothing uses it yet.
+
+### 5n checkpoint: native OmniFlow execution center and Run Logs (source complete; not device-verified)
+
+- `/task/omniflow` (Functions and Run Logs tabs), `/task/run_logs` and
+  `/task/run_log/<id>` open native pages (`ExecutionCenterScreen`,
+  `RunLogScreen`). Tool cards and plugin actions name them by those paths;
+  `nativeDestinationForRoute` maps them, so `LegacyHomeNavigator` hands a
+  `PluginRoute` to native Home instead of Flutter. `/task/scheduled_tasks`
+  (and `?tab=alarm`) maps the same way: it was already native, but tool-card
+  actions still opened the Flutter page for it.
+- Ownership:
+  - `OmniFlowHostTools.call` is the single host tool call. The Flutter
+    `tools/call` channel and `NativeOmniFlowRepository` both use it, so a
+    plain `save_function` registers the stored RunLog the same way for both.
+  - `NativeOmniFlowViewModel` (per back-stack entry) and
+    `NativeRunLogViewModel` map payloads through `OmniFlowPayloads`; the
+    pure rules (status, step titles, paging, argument parsing, marker
+    scaling) live in native-ui `OmniFlowModels`.
+  - `JsonValues` (native-ui) is now the one Dart-`jsonDecode` equivalent,
+    shared with the chat timeline.
+  - `OmniEmptyState` is a shared component for empty, error and setup states.
+- The native chat's GUI task card gained "View Run Log" and "View Function"
+  (Dart `_VlmTaskResultCard`); before this a VLM run's log was unreachable
+  from the native chat.
+- Enhance opens a new native chat with the enhancement request drafted. Dart
+  sent it at once; the native page never sends a prompt by itself, so the
+  user sees and sends this one too.
+- Legacy bugs fixed:
+  - Run arguments: an empty required field made Run do nothing, malformed
+    JSON for an object or array argument threw, and any boolean other than
+    `true` became `false`. Each now names the field to fix
+    (`OmniFlowModelsTest.badArgumentsNameTheFieldInsteadOfFailingSilently`).
+  - A second Run could start while a replay was still driving the screen.
+    `OmniFlowReplays` runs one at a time and every page shows which one runs.
+  - The tap marker on a step screenshot sat at raw screen pixels over a
+    scaled-down image, far from the real tap (`scaledPoint`,
+    `OmniFlowModelsTest.theTapMarkerScalesWithTheScreenshot`).
+  - Opening a Function by id (from a Run Log or a tool card) only searched
+    the first loaded page, so older Functions never opened; the sheet now
+    fetches it directly. The Run Log page pages through Functions until it
+    finds the linked one instead of stopping at 100.
+  - "Register Function" was offered on failed and running runs; it is only
+    offered on successful ones.
+  - Deleting confirmed with "This cannot be undone." and no name; the
+    dialog names the Function.
+- Verification:
+  - Tests: `OmniFlowModelsTest` (11), `OmniFlowPayloadsTest` (7),
+    `AgentToolCardPresenterTest.aFinishedGuiTaskLinksItsRunLogAndFunction`;
+    the full native-ui and app unit suites pass.
+  - Not device-verified: replay, registration and the screenshot sheet need
+    an installed OmniFlow plugin and a recorded run.
+
+### 5m checkpoint: native agent browser window (source complete; not device-verified)
+
+- Once the agent opens a browser in a conversation, a globe button appears
+  in the native chat bar. It opens a floating window with the agent's
+  WebView: address bar, back/forward/reload, tabs, history, bookmarks,
+  downloads, desktop mode, and page dialogs/permission prompts in-window.
+- Ownership:
+  - `NativeBrowserViewModel` (one per chat page, keyed `<page>/browser`)
+    follows only its own conversation's engine (`conversation_<id>`) and
+    sends every command there. The chat ViewModel only exposes
+    `currentConversationId`.
+  - The UI (`BrowserOverlay`, `BrowserSheets`, `BrowserModels`) lives in
+    native-ui. The WebView arrives as a slot (`AgentWebViewHost`), so
+    native-ui never touches the engine.
+- Legacy bugs fixed (each covered by a test where it runs on the JVM):
+  - Dart re-keyed the platform view on almost every progress snapshot. The
+    WebView detached and reattached several times per load, which made it
+    flicker, dropped the typed address and orphaned sheets. The native host
+    is keyed only by the conversation.
+  - Commands went to whichever engine ran last, so a tap could drive another
+    conversation's browser (`NativeBrowserViewModelTest`).
+  - A dialog or permission request replaced by one of a different type was
+    never answered, and the page hung (engine).
+  - Detaching reset the WebView's context even when another container held
+    it (engine).
+  - `localhost:3000` was read as a URI with scheme `localhost`
+    (`BrowserModelsTest`).
+  - Sheets were snapshots and went stale; they now read the live session.
+  - The window closes by itself when the last tab is gone.
+- Verification:
+  - Tests: `BrowserModelsTest`, `BrowserSessionMapperTest`,
+    `NativeBrowserViewModelTest`.
+  - Not device-verified: drag/resize, page dialogs and WebView attach still
+    need a device run.
 
 ### 5l checkpoint: native PDF preview (source complete; not device-verified)
 
@@ -3188,38 +3275,3 @@ restoration and returning home, plus conversation-identity hand-off. It writes
 light/dark screenshots under the test application's external files directory
 (`native-home-verification`) for visual review. Flutter tests check that the
 compatibility navigation completes only after its page is popped.
-
-### 5m checkpoint: native agent browser window (source complete; not device-verified)
-
-- Once the agent opens a browser in a conversation, a globe button appears
-  in the native chat bar. It opens a floating window with the agent's
-  WebView: address bar, back/forward/reload, tabs, history, bookmarks,
-  downloads, desktop mode, and page dialogs/permission prompts in-window.
-- Ownership:
-  - `NativeBrowserViewModel` (one per chat page, keyed `<page>/browser`)
-    follows only its own conversation's engine (`conversation_<id>`) and
-    sends every command there. The chat ViewModel only exposes
-    `currentConversationId`.
-  - The UI (`BrowserOverlay`, `BrowserSheets`, `BrowserModels`) lives in
-    native-ui. The WebView arrives as a slot (`AgentWebViewHost`), so
-    native-ui never touches the engine.
-- Legacy bugs fixed (each covered by a test where it runs on the JVM):
-  - Dart re-keyed the platform view on almost every progress snapshot. The
-    WebView detached and reattached several times per load, which made it
-    flicker, dropped the typed address and orphaned sheets. The native host
-    is keyed only by the conversation.
-  - Commands went to whichever engine ran last, so a tap could drive another
-    conversation's browser (`NativeBrowserViewModelTest`).
-  - A dialog or permission request replaced by one of a different type was
-    never answered, and the page hung (engine).
-  - Detaching reset the WebView's context even when another container held
-    it (engine).
-  - `localhost:3000` was read as a URI with scheme `localhost`
-    (`BrowserModelsTest`).
-  - Sheets were snapshots and went stale; they now read the live session.
-  - The window closes by itself when the last tab is gone.
-- Verification:
-  - Tests: `BrowserModelsTest`, `BrowserSessionMapperTest`,
-    `NativeBrowserViewModelTest`.
-  - Not device-verified: drag/resize, page dialogs and WebView attach still
-    need a device run.

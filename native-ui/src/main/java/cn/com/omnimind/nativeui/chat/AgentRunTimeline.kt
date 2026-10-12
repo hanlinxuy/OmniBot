@@ -1,11 +1,6 @@
 package cn.com.omnimind.nativeui.chat
 
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonArray
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonNull
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.JsonPrimitive
+import cn.com.omnimind.nativeui.JsonValues
 
 /*
  * Port of ui/lib/features/home/pages/chat/utils/agent_run_timeline.dart.
@@ -295,7 +290,7 @@ private fun decodeRequestParams(raw: Any?): Map<String, Any?>? {
     val text = raw?.toString()?.dartTrim() ?: ""
     if (text.isEmpty()) return null
     try {
-        val decoded = jsonDecode(text)
+        val decoded = JsonValues.decode(text)
         if (decoded is Map<*, *>) {
             return stringKeyedCopy(decoded)
         }
@@ -881,29 +876,3 @@ private fun dartIntTryParse(source: String): Long? {
 private fun stringKeyedCopy(map: Map<*, *>): Map<String, Any?> =
     LinkedHashMap<String, Any?>().apply { map.forEach { (k, v) -> put(k.toString(), v) } }
 
-/** Minimal Dart `jsonDecode`: objects -> Map, arrays -> List, numbers -> Int/Long/Double. */
-private fun jsonDecode(text: String): Any? = jsonElementToValue(Json.parseToJsonElement(text))
-
-private val jsonNumberPattern = Regex("^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?\\z")
-
-private fun jsonElementToValue(element: JsonElement): Any? = when (element) {
-    is JsonNull -> null
-    is JsonObject -> LinkedHashMap<String, Any?>().apply {
-        element.forEach { (key, value) -> put(key, jsonElementToValue(value)) }
-    }
-    is JsonArray -> element.map(::jsonElementToValue)
-    is JsonPrimitive -> when {
-        element.isString -> element.content
-        element.content == "true" -> true
-        element.content == "false" -> false
-        else -> {
-            val literal = element.content
-            require(jsonNumberPattern.containsMatchIn(literal)) { "Invalid JSON literal: $literal" }
-            if (literal.any { it == '.' || it == 'e' || it == 'E' }) {
-                literal.toDouble()
-            } else {
-                literal.toIntOrNull() ?: literal.toLongOrNull() ?: literal.toDouble()
-            }
-        }
-    }
-}

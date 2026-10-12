@@ -71,7 +71,10 @@ class OmniFlowToolChannelManualRecordingTest {
             .substringBefore("private fun startHumanTrajectoryLearning(")
 
         assertTrue(method.contains("val goal = payload?.get(\"goal\")"))
-        assertTrue(method.contains("goal = goal.ifBlank { name }"))
+        assertTrue(method.contains("OmniFlowHostTools.call(appContext, name, arguments, goal)"))
+        // The fallback lives in the call shared with the native execution center (5n).
+        val hostTools = projectSource("app/src/main/java/cn/com/omnimind/bot/omniflow/OmniFlowHostTools.kt")
+        assertTrue(hostTools.contains("goal = goal.ifBlank { name }"))
     }
 
     private fun projectSource(path: String): String {

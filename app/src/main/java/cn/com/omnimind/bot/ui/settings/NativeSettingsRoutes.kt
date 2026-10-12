@@ -43,6 +43,7 @@ import cn.com.omnimind.nativeui.settings.AlarmSettingsScreen
 import cn.com.omnimind.nativeui.settings.OpenWithSettingsScreen
 import cn.com.omnimind.nativeui.settings.RemoteBridgeScreen
 import cn.com.omnimind.nativeui.settings.ScheduledTasksScreen
+import cn.com.omnimind.nativeui.settings.ScheduledTasksTab
 import cn.com.omnimind.nativeui.settings.SkillStoreScreen
 import cn.com.omnimind.nativeui.settings.PluginMarketScreen
 import cn.com.omnimind.nativeui.settings.PluginDetailScreen
@@ -269,9 +270,17 @@ internal fun NativeOpenWithRoute(viewModel: NativeOpenWithViewModel, onBack: () 
 }
 
 @Composable
-internal fun NativeScheduledTasksRoute(viewModel: NativeScheduledTasksViewModel, onBack: () -> Unit) {
+internal fun NativeScheduledTasksRoute(viewModel: NativeScheduledTasksViewModel, alarms: Boolean, onBack: () -> Unit) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     LaunchedEffect(Unit) { viewModel.load() }
+    // Saveable: a rotation keeps the tab the user picked since.
+    var tabApplied by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(alarms) {
+        if (!tabApplied) {
+            tabApplied = true
+            viewModel.actions.setTab(if (alarms) ScheduledTasksTab.Alarms else ScheduledTasksTab.Tasks)
+        }
+    }
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { viewModel.resume() }
     ScheduledTasksScreen(state, viewModel.actions, onBack)
 }

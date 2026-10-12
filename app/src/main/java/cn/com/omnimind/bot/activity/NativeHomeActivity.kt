@@ -11,6 +11,10 @@ import cn.com.omnimind.nativeui.chat.AgentToolActionUi
 import cn.com.omnimind.bot.ui.chat.NativeChatTranscriptRoute
 import cn.com.omnimind.bot.ui.chat.NativeChatTranscriptViewModel
 import cn.com.omnimind.bot.ui.chat.browser.NativeBrowserViewModel
+import cn.com.omnimind.bot.ui.omniflow.NativeOmniFlowRoute
+import cn.com.omnimind.bot.ui.omniflow.NativeOmniFlowViewModel
+import cn.com.omnimind.bot.ui.omniflow.NativeRunLogRoute
+import cn.com.omnimind.bot.ui.omniflow.NativeRunLogViewModel
 import android.content.Context
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -140,6 +144,7 @@ class NativeHomeActivity : ComponentActivity() {
     private val usageStatisticsViewModel by lazy(LazyThreadSafetyMode.NONE) {
         ViewModelProvider(this, NativeUsageStatisticsViewModel.Factory(this))[NativeUsageStatisticsViewModel::class.java]
     }
+    private val navigator by lazy(LazyThreadSafetyMode.NONE) { LegacyHomeNavigator(this) { viewModel.requestDestination(it) } }
     private val scheduledTasksViewModel by lazy(LazyThreadSafetyMode.NONE) {
         ViewModelProvider(this, NativeScheduledTasksViewModel.Factory(this))[NativeScheduledTasksViewModel::class.java]
     }
@@ -190,7 +195,6 @@ class NativeHomeActivity : ComponentActivity() {
         val logs = ViewModelProvider(this)[NativeLogsViewModel::class.java]
         backgroundViewModel = ViewModelProvider(this, NativeBackgroundViewModel.Factory(this))[NativeBackgroundViewModel::class.java]
         val permissionAccess = AppPermissionAccess(applicationContext)
-        val navigator = LegacyHomeNavigator(this)
         val actions = NativeHomeActions(
             resolveStartupChat = ::resolveStartupChat,
             open = navigator::open,
@@ -296,7 +300,7 @@ class NativeHomeActivity : ComponentActivity() {
                 alarmSettings = { onBack -> NativeAlarmSettingsRoute(alarmSettingsViewModel, permissionAccess, onBack) },
                 openWith = { onBack -> NativeOpenWithRoute(openWithViewModel, onBack) },
                 remoteBridge = { onBack -> NativeRemoteBridgeRoute(remoteBridgeViewModel, onBack) },
-                scheduledTasks = { onBack -> NativeScheduledTasksRoute(scheduledTasksViewModel, onBack) },
+                scheduledTasks = { alarms, onBack -> NativeScheduledTasksRoute(scheduledTasksViewModel, alarms, onBack) },
                 skills = { onBack -> NativeSkillStoreRoute(skillStoreViewModel, onBack) },
                 memory = { onBack -> NativeMemoryCenterRoute(memoryCenterViewModel, onBack) },
                 chatTranscript = { conversationId, mode, title, key, draft, sharedDraftKey, onNewConversation, onBack ->
@@ -375,6 +379,21 @@ class NativeHomeActivity : ComponentActivity() {
                     NativePluginDetailRoute(detailViewModel, navigator::open, onBack)
                 },
                 executionHistory = { onBack -> NativeUsageStatisticsRoute(usageStatisticsViewModel, onBack) },
+                omniFlow = { tab, functionId, key, onRunLog, onEnhance, onPlugin, onBack ->
+                    val omniFlowViewModel = remember(key) {
+                        ViewModelProvider(this@NativeHomeActivity,
+                            NativeOmniFlowViewModel.Factory(this@NativeHomeActivity, tab, functionId))[
+                                key, NativeOmniFlowViewModel::class.java]
+                    }
+                    NativeOmniFlowRoute(omniFlowViewModel, onRunLog, onEnhance, onPlugin, onBack)
+                },
+                runLog = { runId, key, onFunction, onBack ->
+                    val runLogViewModel = remember(key) {
+                        ViewModelProvider(this@NativeHomeActivity, NativeRunLogViewModel.Factory(this@NativeHomeActivity, runId))[
+                            key, NativeRunLogViewModel::class.java]
+                    }
+                    NativeRunLogRoute(runLogViewModel, onFunction, onBack)
+                },
                 permissions = { onBack -> NativePermissionsRoute(permissions, permissionAccess, this@NativeHomeActivity, onBack) },
             )
         }
@@ -459,7 +478,7 @@ class NativeHomeActivity : ComponentActivity() {
         val path = (action.payload["path"] ?: action.payload["workspacePath"])?.toString()?.trim().orEmpty()
         val shellPath = (action.payload["shellPath"] ?: action.payload["workspaceShellPath"])?.toString()?.trim().orEmpty()
         when {
-            type == "route" && target.startsWith("/") -> LegacyHomeNavigator(this).open(LegacyDestination.PluginRoute(target))
+            type == "route" && target.startsWith("/") -> navigator.open(LegacyDestination.PluginRoute(target))
             type == "workspace" -> openWorkspaceResource(path.ifEmpty { null }, shellPath.ifEmpty { null }, target, directory = true)
             type in setOf("save", "preview", "open") && path.isNotEmpty() ->
                 viewModel.requestDestination(LegacyDestination.WorkspaceFile(path))
