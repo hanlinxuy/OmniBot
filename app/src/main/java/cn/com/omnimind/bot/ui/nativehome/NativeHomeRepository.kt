@@ -117,6 +117,24 @@ internal class NativeHomeRepository(context: Context) {
         conversations.setConversationArchived(conversationId, archived)
     }
 
+    suspend fun setPinned(conversationId: Long, pinned: Boolean) = withContext(Dispatchers.IO) {
+        conversations.setConversationPinned(conversationId, pinned)
+    }
+
+    suspend fun rename(conversationId: Long, title: String) = withContext(Dispatchers.IO) {
+        conversations.updateConversationTitle(conversationId, title)
+    }
+
+    /** Deletes the conversation and its history; the domain owner also unbinds its ACP session. */
+    suspend fun delete(conversationId: Long) = withContext(Dispatchers.IO) {
+        conversations.deleteConversation(conversationId)
+    }
+
+    /** Message rows, newest first (the display order). */
+    suspend fun messages(conversation: ConversationSummary): List<Map<String, Any?>> = withContext(Dispatchers.IO) {
+        conversations.listConversationMessages(conversation.id, conversation.mode, finalizeInterruptedEntries = false)
+    }
+
     fun readPreferences(): NativeHomeState {
         val saved = UiPreferencesStore.get(context).read()
         val english = resolveNativeHomeLocale(saved.language).language == "en"

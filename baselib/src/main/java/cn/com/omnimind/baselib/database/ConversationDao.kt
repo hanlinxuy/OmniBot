@@ -61,6 +61,10 @@ interface ConversationDao {
     @Query("UPDATE conversations SET isArchived = :archived, updatedAt = MAX(updatedAt, :at) WHERE id = :id")
     suspend fun setArchived(id: Long, archived: Boolean, at: Long): Int
 
+    /** Pinning moves a conversation between sections; it is not new activity, so updatedAt stays. */
+    @Query("UPDATE conversations SET isPinned = :pinned WHERE id = :id")
+    suspend fun setPinned(id: Long, pinned: Boolean): Int
+
     @Query("SELECT * FROM conversations WHERE isArchived = 1 ORDER BY updatedAt DESC")
     suspend fun getArchived(): List<Conversation>
 

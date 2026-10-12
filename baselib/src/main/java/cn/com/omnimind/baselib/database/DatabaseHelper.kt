@@ -521,6 +521,9 @@ object DatabaseHelper {
     suspend fun setConversationArchived(id: Long, archived: Boolean, at: Long): Int =
         getDatabase().conversationDao().setArchived(id, archived, at)
 
+    suspend fun setConversationPinned(id: Long, pinned: Boolean): Int =
+        getDatabase().conversationDao().setPinned(id, pinned)
+
     suspend fun getUnarchivedConversations(): List<Conversation> {
         return getDatabase().conversationDao().getUnarchived()
     }

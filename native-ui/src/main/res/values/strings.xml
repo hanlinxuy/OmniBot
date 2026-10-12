@@ -1568,4 +1568,22 @@ Settings → Accessibility → Downloaded apps → XiaoWan → On. The run start
     <string name="omni_rl_action_details">Action details</string>
     <string name="omni_rl_screen_unavailable">Screenshot unavailable</string>
     <string name="omni_rl_view_tree">View tree</string>
+    <!-- Drawer conversation actions -->
+    <string name="omni_dr_pin">Pin</string>
+    <string name="omni_dr_unpin">Unpin</string>
+    <string name="omni_dr_rename">Rename</string>
+    <string name="omni_dr_rename_title">Rename conversation</string>
+    <string name="omni_dr_copy">Copy conversation</string>
+    <string name="omni_dr_delete">Delete conversation</string>
+    <string name="omni_dr_delete_body">“%1$s” and its messages will be deleted. This cannot be undone.</string>
+    <string name="omni_dr_deleted">Deleted</string>
+    <string name="omni_dr_delete_failed">Could not delete</string>
+    <string name="omni_dr_copied">Conversation copied</string>
+    <string name="omni_dr_copy_failed">Nothing to copy</string>
+    <string name="omni_dr_rename_failed">Could not rename</string>
+    <string name="omni_dr_pin_failed">Could not change the pin</string>
+    <string name="omni_dr_searching">Searching messages…</string>
+    <string name="omni_dr_archived_badge">Archived</string>
+    <string name="omni_copy_user">User</string>
+    <string name="omni_copy_assistant">Assistant</string>
 </resources>

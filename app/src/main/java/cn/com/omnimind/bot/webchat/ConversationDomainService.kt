@@ -335,6 +335,19 @@ class ConversationDomainService(
         return conversationToPayload(updated)
     }
 
+    /**
+     * Changes only the pin flag. Dart rewrote the whole row from its cached
+     * copy, which could undo the counts and last message a running turn had
+     * just written, and moved the conversation to today's date section.
+     */
+    suspend fun setConversationPinned(conversationId: Long, pinned: Boolean): Map<String, Any?> {
+        require(DatabaseHelper.setConversationPinned(conversationId, pinned) > 0) { "Conversation not found" }
+        val updated = DatabaseHelper.getConversationById(conversationId)
+            ?: throw IllegalArgumentException("Conversation not found")
+        publishConversationEvent("conversation_updated", updated)
+        return conversationToPayload(updated)
+    }
+
     suspend fun completeConversation(conversationId: Long): Map<String, Any?> {
         val existing = DatabaseHelper.getConversationById(conversationId)
             ?: throw IllegalArgumentException("Conversation not found")

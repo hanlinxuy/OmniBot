@@ -145,10 +145,10 @@ random greeting selection out of pixel comparisons.
   comparison still need
   their owning feature migrated and compared.
 - Drawer supports the live list, scheduled-parent/child groups, pinned/date/mode
-  sections, persisted expansion, title/last-message search, selection with the
-  resolved Harness identity, archive/restore and Agent Web quick actions. Full
-  message-content search, image previews, rename/delete/copy menus and remaining
-  visual differences still need migration/acceptance.
+  sections, persisted expansion, full message-text search, selection with the
+  resolved Harness identity, pin, rename, copy, archive/restore, delete
+  (batch 5o) and Agent Web quick actions. Image previews and remaining visual
+  differences still need migration/acceptance.
 - Settings overview, MCP toggle, local-service detail sheet, About/update and
   permissions, theme/language, home preferences, miscellaneous, background
   image settings, pet appearance, storage management, the two log pages and
@@ -814,6 +814,38 @@ sends a user without `flutter.welcome_completed` to the Flutter flow.
   death), the scene defaults and embedding detection, the install phase
   and progress easing, and the connection form checks.
 - Verification: `OnboardingModelsTest` (8). Nothing uses it yet.
+
+### 5o checkpoint: drawer conversation actions and message search (source complete; not device-verified)
+
+- Long-pressing a drawer conversation opens one sheet with every action:
+  open in the native chat, pin/unpin, rename, copy, archive/restore and
+  delete (with a confirmation naming the conversation). Dart spread these
+  over swipe actions and long-press title editing.
+- Search reads message text, not only titles: `DrawerMessageSearch` (app)
+  indexes each conversation once, keyed by its last update, so typing more of
+  a query reloads nothing; results show the matching fragment under the
+  title and mark archived conversations. Titles and previews still filter at
+  once while the message search runs.
+- Ownership: pin goes through the new `ConversationDomainService.setConversationPinned`;
+  rename, delete and the message read reuse the existing domain owner; copy
+  builds the text with `conversationClipboardText` (native-ui).
+- Legacy bugs fixed:
+  - Search took the whole query as one substring, so "weekly report" missed a
+    conversation about the "report for the weekly sync"; every word now has
+    to appear, in any order, as Dart's full-text search did
+    (`DrawerSearchTest.everyTokenMustAppearInAnyOrder`).
+  - Pinning rewrote the whole row from the drawer's cached copy, which could
+    undo the message count and last message a running turn had just written,
+    and bumped `updatedAt` so the conversation jumped to today. It now changes
+    only `isPinned`.
+  - Delete had no confirmation (a swipe deleted at once) and could not be
+    undone.
+  - Copy always labeled speakers 用户/助手; the labels follow the app language
+    (`DrawerSearchTest.clipboardTextLabelsEachSpeakerAndSkipsEmptyMessages`).
+- Verification:
+  - Tests: `DrawerSearchTest` (5), `DrawerMessageSearchTest` (2); the full
+    native-ui and app unit suites pass.
+  - Not device-verified.
 
 ### 5n checkpoint: native OmniFlow execution center and Run Logs (source complete; not device-verified)
 

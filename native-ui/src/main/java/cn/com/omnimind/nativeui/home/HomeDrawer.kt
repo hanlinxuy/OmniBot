@@ -49,7 +49,7 @@ internal fun HomeDrawer(
         Row(Modifier.padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically) {
             val searchLabel = stringResource(R.string.omni_home_drawer_search_hint)
             BasicTextField(
-                value = query, onValueChange = { query = it }, singleLine = true,
+                value = query, onValueChange = { query = it; actions.search(it) }, singleLine = true,
                 textStyle = TextStyle(fontSize = 13.sp, color = palette.text),
                 cursorBrush = SolidColor(palette.accent),
                 modifier = Modifier.weight(1f).semantics { contentDescription = searchLabel },

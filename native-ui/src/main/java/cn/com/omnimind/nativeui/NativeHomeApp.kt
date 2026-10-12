@@ -1,5 +1,8 @@
 package cn.com.omnimind.nativeui
 
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.platform.LocalContext
+import android.widget.Toast
 import cn.com.omnimind.nativeui.omniflow.OmniFlowTab
 import androidx.compose.runtime.remember
 import androidx.compose.foundation.layout.Box
@@ -175,6 +178,14 @@ fun NativeHomeApp(
         // Home's composer and quick prompts open the native page (5e-4); a draft only fills it.
         val openNativeChatWithDraft: (String) -> Unit = { draft ->
             backStack.add(HomeRoute.NativeNewChat(System.currentTimeMillis(), draft))
+        }
+        val context = LocalContext.current
+        val drawerNotice = state.drawerNotice?.let { stringResource(drawerNoticeText(it)) }
+        LaunchedEffect(drawerNotice) {
+            if (drawerNotice != null) {
+                Toast.makeText(context, drawerNotice, Toast.LENGTH_SHORT).show()
+                actions.consumeDrawerNotice()
+            }
         }
         LaunchedEffect(state.pendingDestination, state.loading) {
             when (val destination = state.pendingDestination) {
@@ -596,4 +607,13 @@ internal fun opensNatively(conversation: ConversationSummary): Boolean {
     val chatOnly = mode in setOf("chat_only", "chat", "chatonly", "chat-only")
     if (!agentMode && !chatOnly) return false
     return conversation.parentId == null && conversation.scheduledTaskId == null
+}
+
+private fun drawerNoticeText(notice: DrawerNotice): Int = when (notice) {
+    DrawerNotice.Deleted -> R.string.omni_dr_deleted
+    DrawerNotice.DeleteFailed -> R.string.omni_dr_delete_failed
+    DrawerNotice.Copied -> R.string.omni_dr_copied
+    DrawerNotice.CopyFailed -> R.string.omni_dr_copy_failed
+    DrawerNotice.RenameFailed -> R.string.omni_dr_rename_failed
+    DrawerNotice.PinFailed -> R.string.omni_dr_pin_failed
 }

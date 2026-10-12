@@ -1568,4 +1568,22 @@
     <string name="omni_rl_action_details">动作详情</string>
     <string name="omni_rl_screen_unavailable">状态截图不可用</string>
     <string name="omni_rl_view_tree">页面结构</string>
+    <!-- Drawer conversation actions -->
+    <string name="omni_dr_pin">置顶</string>
+    <string name="omni_dr_unpin">取消置顶</string>
+    <string name="omni_dr_rename">重命名</string>
+    <string name="omni_dr_rename_title">重命名对话</string>
+    <string name="omni_dr_copy">复制对话</string>
+    <string name="omni_dr_delete">删除对话</string>
+    <string name="omni_dr_delete_body">将删除“%1$s”及其全部消息，删除后无法恢复。</string>
+    <string name="omni_dr_deleted">已删除</string>
+    <string name="omni_dr_delete_failed">删除失败</string>
+    <string name="omni_dr_copied">已复制对话</string>
+    <string name="omni_dr_copy_failed">复制失败</string>
+    <string name="omni_dr_rename_failed">重命名失败</string>
+    <string name="omni_dr_pin_failed">置顶失败</string>
+    <string name="omni_dr_searching">正在搜索消息…</string>
+    <string name="omni_dr_archived_badge">已归档</string>
+    <string name="omni_copy_user">用户</string>
+    <string name="omni_copy_assistant">助手</string>
 </resources>

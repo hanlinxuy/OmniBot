@@ -1,6 +1,7 @@
 package cn.com.omnimind.nativeui.home
 
 import cn.com.omnimind.nativeui.ConversationSummary
+import cn.com.omnimind.nativeui.DrawerSearchHit
 import cn.com.omnimind.nativeui.ScheduledConversationTask
 import java.time.Instant
 import java.time.LocalDate
@@ -27,6 +28,8 @@ internal sealed interface DrawerRow {
         val expanded: Boolean = false,
         val childCount: Int = 0,
         val taskCount: Int = 0,
+        /** The matching text under the title while searching. */
+        val matchPreview: String? = null,
     ) : DrawerRow {
         override val key: String get() = conversation.key
     }
@@ -41,18 +44,28 @@ internal fun projectDrawerRows(
     archivedOnly: Boolean,
     recentOnly: Boolean = false,
     zone: ZoneId = ZoneId.systemDefault(),
+    /** Message-text matches for [query]; until they arrive, titles and previews filter alone. */
+    messageHits: List<DrawerSearchHit>? = null,
 ): List<DrawerRow> {
     val ordered = conversations.filter { archivedOnly || !recentOnly || !it.archived }.sortedWith(
         compareByDescending<ConversationSummary> { it.updatedAt }
             .thenBy { if (it.mode == "subagent") 1 else 0 }
             .thenByDescending { it.createdAt }.thenByDescending { it.id },
     )
-    val search = query.trim()
     // Search matches the existing sidebar policy: archived results can be restored from search.
-    if (search.isNotEmpty()) return ordered.filter {
-        (!archivedOnly || it.archived) &&
-            (it.title.contains(search, true) || it.preview.contains(search, true))
-    }.map { DrawerRow.Thread(it) }
+    val tokens = DrawerSearch.tokens(query)
+    if (tokens.isNotEmpty()) {
+        val hits = messageHits?.associateBy { it.key }
+        return ordered.filter { !archivedOnly || it.archived }.mapNotNull { conversation ->
+            val metadata = listOf(conversation.title, conversation.preview)
+            when {
+                hits != null -> hits[conversation.key]?.let { DrawerRow.Thread(conversation, matchPreview = it.preview) }
+                DrawerSearch.matches(metadata.joinToString("\n"), tokens) ->
+                    DrawerRow.Thread(conversation, matchPreview = DrawerSearch.preview(metadata, conversation.title, tokens))
+                else -> null
+            }
+        }
+    }
     val visible = ordered.filter { it.archived == archivedOnly }
     if (archivedOnly) return visible.map { DrawerRow.Thread(it) }
     val byKey = visible.associateBy { it.key }

@@ -1,5 +1,7 @@
 package cn.com.omnimind.bot.ui.nativehome
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -7,11 +9,19 @@ import androidx.lifecycle.viewModelScope
 import cn.com.omnimind.baselib.util.OmniLog
 import cn.com.omnimind.bot.mcp.McpServerState
 import cn.com.omnimind.nativeui.ConversationSummary
+import cn.com.omnimind.nativeui.DrawerNotice
+import cn.com.omnimind.nativeui.DrawerSearchResults
+import cn.com.omnimind.nativeui.home.CopiedMessage
+import cn.com.omnimind.nativeui.home.DrawerSearch
+import cn.com.omnimind.nativeui.home.conversationClipboardText
 import cn.com.omnimind.nativeui.LegacyDestination
 import cn.com.omnimind.nativeui.LocalServiceDetails
 import cn.com.omnimind.nativeui.R
 import cn.com.omnimind.nativeui.WebQuickAction
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -46,6 +56,8 @@ internal class NativeHomeViewModel(
                             busyWebAction = it.busyWebAction,
                             pendingDestination = it.pendingDestination,
                             error = it.error,
+                            searchHits = it.searchHits,
+                            drawerNotice = it.drawerNotice,
                         )
                     }
                 }
@@ -116,6 +128,82 @@ internal class NativeHomeViewModel(
         }
     }
 
+    fun setPinned(conversation: ConversationSummary, pinned: Boolean) =
+        conversationOperation(conversation, DrawerNotice.PinFailed) { repository.setPinned(conversation.id, pinned) }
+
+    fun rename(conversation: ConversationSummary, title: String) {
+        val trimmed = title.trim()
+        if (trimmed.isEmpty() || trimmed == conversation.title) return
+        conversationOperation(conversation, DrawerNotice.RenameFailed) { repository.rename(conversation.id, trimmed) }
+    }
+
+    fun delete(conversation: ConversationSummary) =
+        conversationOperation(conversation, DrawerNotice.DeleteFailed, DrawerNotice.Deleted) { repository.delete(conversation.id) }
+
+    /** The conversation's text messages as plain text on the clipboard. */
+    fun copy(conversation: ConversationSummary) = conversationOperation(conversation, DrawerNotice.CopyFailed, DrawerNotice.Copied) {
+        val messages = repository.messages(conversation).asReversed().mapNotNull { row ->
+            if ((row["type"] as? Number)?.toInt() != 1) return@mapNotNull null
+            val text = (row["content"] as? Map<*, *>)?.get("text")?.toString() ?: return@mapNotNull null
+            CopiedMessage(fromUser = (row["user"] as? Number)?.toInt() == 1, text = text)
+        }
+        val labels = localizedContext()
+        val text = conversationClipboardText(messages, labels.getString(R.string.omni_copy_user), labels.getString(R.string.omni_copy_assistant))
+        check(text.isNotEmpty()) { "Nothing to copy" }
+        val clipboard = context.getSystemService(ClipboardManager::class.java) ?: error("No clipboard")
+        withContext(Dispatchers.Main) { clipboard.setPrimaryClip(ClipData.newPlainText(conversation.title, text)) }
+    }
+
+    /**
+     * One drawer operation on [conversation]: the row is busy meanwhile and
+     * the Room observer shows the result; [failure] and [success] notices
+     * tell the user what happened. Dart showed rows as changed before the
+     * write and put them back on failure.
+     */
+    private fun conversationOperation(conversation: ConversationSummary, failure: DrawerNotice, success: DrawerNotice? = null,
+                                      operation: suspend () -> Unit) {
+        if (conversation.id in mutableState.value.busyConversationIds) return
+        mutableState.update { it.copy(busyConversationIds = it.busyConversationIds + conversation.id) }
+        viewModelScope.launch {
+            val notice = try {
+                operation()
+                success
+            } catch (cancelled: CancellationException) {
+                throw cancelled
+            } catch (error: Exception) {
+                OmniLog.w(TAG, "Drawer operation failed: ${error.javaClass.simpleName}")
+                failure
+            }
+            mutableState.update { it.copy(busyConversationIds = it.busyConversationIds - conversation.id, drawerNotice = notice ?: it.drawerNotice) }
+        }
+    }
+
+    fun consumeDrawerNotice() = mutableState.update { it.copy(drawerNotice = null) }
+
+    private val messageSearch = DrawerMessageSearch(repository::messages)
+    private var searchJob: Job? = null
+
+    /** Message-text search, debounced; titles and previews filter in the drawer at once. */
+    fun search(query: String) {
+        searchJob?.cancel()
+        if (DrawerSearch.tokens(query).isEmpty()) {
+            mutableState.update { it.copy(searchHits = null) }
+            return
+        }
+        searchJob = viewModelScope.launch {
+            delay(SEARCH_DEBOUNCE_MS)
+            val hits = messageSearch.search(query, mutableState.value.conversations)
+            mutableState.update { it.copy(searchHits = DrawerSearchResults(query, hits)) }
+        }
+    }
+
+    private fun localizedContext(): Context {
+        val preferences = context.getSharedPreferences("FlutterSharedPreferences", Context.MODE_PRIVATE)
+        val locale = resolveNativeHomeLocale(preferences.getString("flutter.language_option", "system"))
+        val configuration = android.content.res.Configuration(context.resources.configuration).apply { setLocale(locale) }
+        return context.createConfigurationContext(configuration)
+    }
+
     fun setSectionExpanded(key: String, expanded: Boolean) {
         viewModelScope.launch {
             try {
@@ -171,14 +259,11 @@ internal class NativeHomeViewModel(
     }
 
     private fun showMessage(resource: Int) {
-        val preferences = context.getSharedPreferences("FlutterSharedPreferences", Context.MODE_PRIVATE)
-        val locale = resolveNativeHomeLocale(preferences.getString("flutter.language_option", "system"))
-        val configuration = android.content.res.Configuration(context.resources.configuration).apply { setLocale(locale) }
-        mutableState.update { it.copy(error = context.createConfigurationContext(configuration).getString(resource)) }
+        mutableState.update { it.copy(error = localizedContext().getString(resource)) }
     }
 
     private fun reportError(error: Exception) {
-        OmniLog.e("NativeHome", "Native home operation failed", error)
+        OmniLog.e(TAG, "Native home operation failed", error)
         mutableState.update { it.copy(loading = false) }
         showMessage(R.string.omni_operation_failed)
     }
@@ -190,5 +275,10 @@ internal class NativeHomeViewModel(
             @Suppress("UNCHECKED_CAST")
             return NativeHomeViewModel(NativeHomeRepository(application), NativeWebActionRepository(application), application) as T
         }
+    }
+
+    private companion object {
+        const val TAG = "NativeHome"
+        const val SEARCH_DEBOUNCE_MS = 250L
     }
 }

@@ -26,7 +26,20 @@ data class NativeHomeState(
     val pendingDestination: LegacyDestination? = null,
     val recentConversationsOnly: Boolean = false,
     val leftHanded: Boolean = false,
+    /** Message-text matches for the drawer query; null until that search finishes. */
+    val searchHits: DrawerSearchResults? = null,
+    /** A one-shot drawer message (deleted, copied, failed). */
+    val drawerNotice: DrawerNotice? = null,
 )
+
+/** A conversation found by text, with the matching fragment to show under its title. */
+@Immutable
+data class DrawerSearchHit(val key: String, val preview: String?)
+
+@Immutable
+data class DrawerSearchResults(val query: String, val hits: List<DrawerSearchHit>)
+
+enum class DrawerNotice { Deleted, DeleteFailed, Copied, CopyFailed, RenameFailed, PinFailed }
 
 @Immutable
 data class ConversationSummary(
@@ -78,6 +91,13 @@ data class NativeHomeActions(
     val setLocalServiceEnabled: (Boolean) -> Unit,
     val refreshLocalServiceToken: () -> Unit,
     val setArchived: (ConversationSummary, Boolean) -> Unit,
+    val setPinned: (ConversationSummary, Boolean) -> Unit = { _, _ -> },
+    val rename: (ConversationSummary, String) -> Unit = { _, _ -> },
+    val delete: (ConversationSummary) -> Unit = {},
+    val copy: (ConversationSummary) -> Unit = {},
+    /** Searches message text too; titles and previews filter at once without it. */
+    val search: (String) -> Unit = {},
+    val consumeDrawerNotice: () -> Unit = {},
     val setSectionExpanded: (String, Boolean) -> Unit,
     val invokeWebAction: (WebQuickAction, Boolean) -> Unit,
     val refresh: () -> Unit,
