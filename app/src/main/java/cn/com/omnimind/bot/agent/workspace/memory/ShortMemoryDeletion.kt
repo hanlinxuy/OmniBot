@@ -1,5 +1,7 @@
 package cn.com.omnimind.bot.agent
 
+import java.io.File
+
 internal fun selectShortMemoryIndexes(
     entries: List<WorkspaceShortMemoryEntry>,
     expected: List<WorkspaceShortMemoryEntry>,
@@ -21,7 +23,7 @@ internal fun removeShortMemoryBlocks(
 ): String {
     var entryIndex = -1
     var removing = false
-    return content.lineSequence().filter { line ->
+    val result = content.lineSequence().filter { line ->
         val trimmed = line.trim()
         if (trimmed.startsWith("- ") || trimmed.startsWith("#")) {
             removing = false
@@ -32,4 +34,16 @@ internal fun removeShortMemoryBlocks(
         }
         !removing
     }.joinToString("\n")
+    return if (content.endsWith("\n") && result.isNotEmpty() && !result.endsWith("\n")) {
+        "$result\n"
+    } else {
+        result
+    }
+}
+
+internal fun appendDailyMemoryLine(file: File, line: String) {
+    if (file.isFile && file.length() > 0 && !file.readText().endsWith("\n")) {
+        file.appendText("\n")
+    }
+    file.appendText("$line\n")
 }

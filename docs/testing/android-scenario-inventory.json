@@ -597,7 +597,14 @@
       "acceptance": "重新打开本轮白板，画面可辨认脸的轮廓、两只眼睛和嘴；相对基线只新增一个测试白板。",
       "recovery": "仅删除本轮创建的测试白板，确认恢复基线；不清空回收站。",
       "status": "unverified",
-      "next_action": "核实设备与候选能力后执行受控验证"
+      "next_action": "核实设备与候选能力后执行受控验证",
+      "runtime_subscenarios": [
+        {
+          "id": "BA21.smile_note_image_adaptation",
+          "outcome": "normal_chat_completed_with_unresolved_side_effects",
+          "finding": "The ACP turn ended after about 10m56s and independently reopened note contained a generated smile image, not a hand-drawn whiteboard. Agent incorrectly stated the Notes app lacks graffiti, inserted an unrelated image before removing it from the note, and created additional workspace files without a prior baseline. Marked note/photo/memory were removed, but unmarked workspace files remain pending user decision. Full BA21 is not passed."
+        }
+      ]
     },
     {
       "source": "phone-real-use scenario",

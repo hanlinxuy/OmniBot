@@ -1,5 +1,6 @@
 package cn.com.omnimind.bot.agent
 
+import java.nio.file.Files
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -48,7 +49,29 @@ class ShortMemoryDeletionTest {
         assertEquals(text, remove(text))
     }
 
+    @Test fun `append after last deletion remains a separate entry`() {
+        val file = Files.createTempFile("daily-memory", ".md").toFile()
+        try {
+            file.writeText(remove("# day\n- [08:00] delete\n", 0))
+            appendDailyMemoryLine(file, "- [09:00] new")
+            assertEquals("# day\n- [09:00] new\n", file.readText())
+        } finally {
+            file.delete()
+        }
+    }
+
+    @Test fun `append repairs existing missing final newline without altering content`() {
+        val file = Files.createTempFile("daily-memory", ".md").toFile()
+        try {
+            file.writeText("# day")
+            appendDailyMemoryLine(file, "- [09:00] new")
+            assertEquals("# day\n- [09:00] new\n", file.readText())
+        } finally {
+            file.delete()
+        }
+    }
+
     @Test fun `deleting last entry removes remaining private text`() {
-        assertEquals("# day", remove("# day\n- [08:00] delete\nprivate continuation\n", 0))
+        assertEquals("# day\n", remove("# day\n- [08:00] delete\nprivate continuation\n", 0))
     }
 }

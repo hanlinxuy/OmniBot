@@ -313,7 +313,7 @@ class WorkspaceMemoryService(
             }
             val timestamp = DateTimeFormatter.ofPattern("HH:mm:ss")
                 .format(LocalDateTime.now())
-            file.appendText("- [$timestamp] $normalized\n")
+            appendDailyMemoryLine(file, "- [$timestamp] $normalized")
             file
         }
     }
@@ -402,7 +402,7 @@ class WorkspaceMemoryService(
                 file.writeText("# ${date.format(DateTimeFormatter.ISO_LOCAL_DATE)} Daily Memory\n\n")
             }
             val timestamp = DateTimeFormatter.ofPattern("HH:mm:ss").format(LocalDateTime.now())
-            file.appendText("- [$timestamp] ${buildQuickLogBody(normalizedLogId, normalizedContent)}\n")
+            appendDailyMemoryLine(file, "- [$timestamp] ${buildQuickLogBody(normalizedLogId, normalizedContent)}")
             parseDailyShortMemoryEntries(date, file.readText())
                 .lastOrNull { it.quickLogId == normalizedLogId }
                 ?: WorkspaceShortMemoryEntry(
