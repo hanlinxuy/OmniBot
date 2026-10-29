@@ -1680,7 +1680,16 @@
           "outcome": "gui_component_readonly_exploration",
           "run_id": "debug-vlm-352b981b-7c10-4ace-9260-b286dfa5f80f",
           "finding": "Explicitly opening Notes returned to the previously selected todo tab in one action; independent observation found todo reminder controls. The retained state and more specific prompt prevent a controlled speed comparison."
+        },
+        {
+          "id": "LI21.single_todo_no_reminder",
+          "outcome": "gui_component_passed",
+          "run_id": "debug-vlm-775bef53-72f3-40f1-b9cc-e17d467306e8",
+          "finding": "One uniquely marked incomplete todo was created, independently observed, and deleted by host automation; visible baseline was restored. Does not cover three items or reminder times."
         }
+      ],
+      "regression_cases": [
+        "li21-todo-single"
       ]
     },
     {

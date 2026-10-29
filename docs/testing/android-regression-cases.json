@@ -252,6 +252,35 @@
         "attempt_id": "REGee8952b018b3",
         "report": "docs/testing/android-regression-results-2026-10-29.md"
       }
+    },
+    {
+      "id": "li21-todo-single",
+      "source_id": "LI21",
+      "layer": "gui_component",
+      "adapter": "todo",
+      "prompt_template": "在 vivo 便签的待办标签新建一条待办，内容精确为“[测试] {marker}”，不要设置提醒，不要勾选完成，完成后停在待办列表。",
+      "preconditions": [
+        "待办标签可见、唯一测试标题不存在；记录可见待办基线"
+      ],
+      "acceptance": [
+        "独立读回唯一未完成的标记待办，可见基线仍在"
+      ],
+      "cleanup": [
+        "仅左滑并删除唯一标记待办，确认消失且可见基线仍在"
+      ],
+      "api_args": {},
+      "baseline_evidence_refs": [],
+      "variant_evidence_refs": [],
+      "skill": "omnibot-android-regression",
+      "status": "unverified",
+      "execution_layer": "gui_component",
+      "cleanup_actor": "host_automation",
+      "variant_type": "exploratory_variant",
+      "latest_regression": {
+        "status": "passed",
+        "attempt_id": "REG2e9de28207da",
+        "report": "docs/testing/android-scan-batch-2026-10-29-todo.md"
+      }
     }
   ]
 }

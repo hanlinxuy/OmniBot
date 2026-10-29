@@ -27,7 +27,7 @@ OMNI = 'cn.com.omnimind.bot'
 CLOCK = 'com.android.BBKClock'
 NOTES = 'com.android.notes'
 CALC = 'com.android.bbkcalculator'
-PACKAGES = {'calculator': CALC, 'notes': NOTES, 'timer': CLOCK, 'alarm': CLOCK, 'calendar': OMNI, 'stopwatch': CLOCK}
+PACKAGES = {'calculator': CALC, 'notes': NOTES, 'timer': CLOCK, 'alarm': CLOCK, 'calendar': OMNI, 'stopwatch': CLOCK, 'todo': NOTES}
 
 
 def read_cases(path=MANIFEST):
@@ -466,6 +466,17 @@ def run_case(harness, case):
             h.screen('baseline', CALC)
             if not h.calculator_blank('baseline')['passed']:
                 raise RuntimeError('calculator_baseline_not_blank')
+        elif adapter == 'todo':
+            h.launch(NOTES)
+            obs = h.observe(NOTES)
+            if not any(n['resource_id'] == NOTES + ':id/todo_list' for n in obs['nodes']):
+                h.tap(NOTES, resource_id=NOTES + ':id/tab_todo')
+                obs = h.observe(NOTES)
+            if not any(n['resource_id'] == NOTES + ':id/todo_list' for n in obs['nodes']):
+                raise RuntimeError('todo_list_not_visible')
+            baseline['todo_rows'] = [(n['text'], n['description']) for n in obs['nodes'] if n['resource_id'] == NOTES + ':id/content_tv']
+            if any(title in text for text, _ in baseline['todo_rows']):
+                raise RuntimeError('test_todo_already_exists')
         elif adapter == 'notes':
             obs = h.note_search(title)
             if any(n['text'] == title and n['class_name'] != 'android.widget.EditText' for n in obs['nodes']):
@@ -519,7 +530,13 @@ def run_case(harness, case):
             if len(creates) != 1 or creates[0]['success'] is not True or (creates[0]['args'] or {}).get('title') != title:
                 report['execution']['passed'] = False
                 raise RuntimeError('single_owned_native_creation_not_proven')
-        if adapter in ('calculator', 'notes'):
+        if adapter == 'todo':
+            obs = h.observe(NOTES)
+            rows = [(n['text'], n['description']) for n in obs['nodes'] if n['resource_id'] == NOTES + ':id/content_tv']
+            report['acceptance'] = {'passed': rows.count((title, '未完成,' + title)) == 1 and not (Counter(map(tuple, baseline['todo_rows'][:-1])) - Counter(rows)),
+                                    'unique_incomplete': rows.count((title, '未完成,' + title)) == 1,
+                                    'visible_baseline_prefix_preserved': not bool(Counter(map(tuple, baseline['todo_rows'][:-1])) - Counter(rows))}
+        elif adapter in ('calculator', 'notes'):
             if adapter == 'notes':
                 h.open_note(title)
             obs, xml = h.screen('acceptance', PACKAGES[adapter])
@@ -595,6 +612,38 @@ def run_case(harness, case):
                     h.tap(CALC, text='AC')
                     h.screen('cleanup', CALC)
                     report['cleanup'] = h.calculator_blank('cleanup')
+                elif adapter == 'todo':
+                    obs = h.observe(NOTES)
+                    targets = [n for n in obs['nodes'] if n['resource_id'] == NOTES + ':id/content_tv' and n['text'] == title and n['description'] == '未完成,' + title]
+                    if len(targets) != 1:
+                        raise RuntimeError('cleanup_todo_not_unique_incomplete')
+                    target = targets[0]
+                    x1, y1, x2, y2 = target['bounds']
+                    width = obs['context']['width']
+                    region = {'x': int(width * .055), 'y': y1 - 40, 'width': int(width * .89), 'height': y2 - y1 + 80}
+                    h.call('swipe', {'direction': 'left', 'region': region, 'observation_id': obs['observation_id']})
+                    obs = h.observe(NOTES)
+                    targets = [n for n in obs['nodes'] if n['resource_id'] == NOTES + ':id/content_tv' and n['text'] == title]
+                    if len(targets) != 1 or targets[0]['bounds'][0] >= x1:
+                        raise RuntimeError('cleanup_todo_swipe_not_verified')
+                    buttons = [n for n in obs['nodes'] if n['resource_id'] == NOTES + ':id/bt_todo_item_delete' and n['bounds'][1] <= y1 and n['bounds'][3] >= y2]
+                    if len(buttons) != 1:
+                        raise RuntimeError('cleanup_todo_delete_not_unique_on_row')
+                    x1, y1, x2, y2 = buttons[0]['bounds']
+                    point = ((x1 + x2)//2, (y1 + y2)//2)
+                    if h.wait_for_clear_input(obs, point):
+                        raise RuntimeError('cleanup_todo_observation_changed')
+                    result = h.runtime.call('tap', {'x': point[0], 'y': point[1], 'observation_id': obs['observation_id']}, recover=False)
+                    if not result.get('ok'):
+                        raise RuntimeError('cleanup_todo_delete_tap_unconfirmed')
+                    obs = h.observe(NOTES)
+                    if not any(n['text'] == '从手机、云端及其他同步设备中删除此待办？' for n in obs['nodes']):
+                        raise RuntimeError('cleanup_todo_confirmation_missing')
+                    h.tap(NOTES, resource_id='android:id/button1', description='删除')
+                    obs = h.observe(NOTES)
+                    rows = [(n['text'], n['description']) for n in obs['nodes'] if n['resource_id'] == NOTES + ':id/content_tv']
+                    report['cleanup'] = {'passed': not any(title in text for text, _ in rows) and not (Counter(map(tuple, baseline['todo_rows'])) - Counter(rows)),
+                                         'visible_baseline_preserved': not bool(Counter(map(tuple, baseline['todo_rows'])) - Counter(rows))}
                 elif adapter == 'notes':
                     # Only delete the exact marked detail page, never a list selection by position.
                     h.launch(NOTES)
