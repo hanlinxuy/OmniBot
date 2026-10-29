@@ -128,7 +128,15 @@
       "acceptance": "文件存在、路径正确、ZIP 可读",
       "recovery": "记录执行前基线；仅恢复本轮授权变更和测试对象，具体方式待适配并验证。",
       "status": "unverified",
-      "next_action": "设备与候选能力核实后设计适配和独立判分"
+      "next_action": "设备与候选能力核实后设计适配和独立判分",
+      "runtime_subscenarios": [
+        {
+          "id": "BA04.filemanager_home_readonly",
+          "outcome": "gui_component_readonly_exploration",
+          "run_id": "debug-vlm-7b086196-a1f2-4956-ad31-2347e38d27d0",
+          "finding": "One open_app action opened vivo File Manager; independent post-terminal observation confirmed its home categories. Health export, file content and archive verification were not tested."
+        }
+      ]
     },
     {
       "source": "phone-real-use scenario",
@@ -1627,7 +1635,15 @@
       "acceptance": "重开便签并对照来源核验小时、天气、降水信息和带伞建议，注明查询时间。",
       "recovery": "仅清理本轮创建的测试便签。",
       "status": "unverified",
-      "next_action": "核实设备与候选能力后执行受控验证"
+      "next_action": "核实设备与候选能力后执行受控验证",
+      "runtime_subscenarios": [
+        {
+          "id": "LI20.weather_hourly_readonly",
+          "outcome": "gui_component_readonly_exploration",
+          "run_id": "debug-vlm-5d73f19d-176b-4d80-a4b8-e6f04bb2e599",
+          "finding": "One open_app action opened vivo Weather; an independent post-terminal observation confirmed current-city hourly forecast. Shanghai city selection, full hourly coverage, note creation and source-to-note validation were not tested."
+        }
+      ]
     },
     {
       "source": "phone-real-use scenario",
@@ -1651,7 +1667,21 @@
       "acceptance": "三项各出现一次，提醒日期和本地时间均为下周五 17:00，已有待办不变。",
       "recovery": "仅清理本轮创建的三项测试待办并读回。",
       "status": "unverified",
-      "next_action": "核实设备与候选能力后执行受控验证"
+      "next_action": "核实设备与候选能力后执行受控验证",
+      "runtime_subscenarios": [
+        {
+          "id": "LI21.todo_entry_readonly",
+          "outcome": "gui_component_readonly_exploration",
+          "run_id": "debug-vlm-d4fcf67b-ae53-4f38-99b0-72b2e4267750",
+          "finding": "Seven navigation actions led to the vivo Notes todo tab; independent post-terminal observation confirmed the Notes foreground and todo controls. No test item or reminder was created; creation, independent verification and cleanup are untested."
+        },
+        {
+          "id": "LI21.todo_direct_readonly",
+          "outcome": "gui_component_readonly_exploration",
+          "run_id": "debug-vlm-352b981b-7c10-4ace-9260-b286dfa5f80f",
+          "finding": "Explicitly opening Notes returned to the previously selected todo tab in one action; independent observation found todo reminder controls. The retained state and more specific prompt prevent a controlled speed comparison."
+        }
+      ]
     },
     {
       "source": "phone-real-use scenario",
