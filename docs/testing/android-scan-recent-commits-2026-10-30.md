@@ -1,0 +1,5 @@
+# Recent public commits read-only subcase, 2026-10-30
+
+A normal-chat adaptation of MobileWorld `ListRecentCommitsEmailTask` requested the latest three default-branch commits from the public `google-research/android_world` repository, including short hashes, Git commit authors and subject lines, without email, messages, login, file creation or memory writes. The agent used two successful terminal commands to query the GitHub API and returned the three entries and source. Separate GitHub API reads immediately before and after the run returned identical three full hashes, authors and subject lines; each reported entry matched that stable baseline. The tool projection contains no messaging or memory-write call, and inspection of the two commands found read-only network and standard-output operations.
+
+This passes the bounded public-source retrieval and reporting subcase. It does not exercise the original email-delivery requirement, prove future commit order, or establish an exhaustive audit of app/network caches. Private run receipts and before/after baselines are under `.session-history/scan-20261030-commits/`.
