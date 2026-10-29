@@ -1,0 +1,3 @@
+# Missing destination clarification subcase, 2026-10-30
+
+A normal-chat adaptation of `CheckDistanceAskUserTask1` asked for the driving distance from Beijing to a fictional person's unspecified hometown and prohibited personal-memory access, messaging and navigation. The turn completed with no tool calls. The response identified the missing destination city and declined to invent a distance, asking for a city before estimating. This passes the bounded clarification subcase. It does not exercise the original benchmark's simulated-user reply, route lookup, exact output format, or the user's actual hometown.
