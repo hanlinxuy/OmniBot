@@ -24,3 +24,5 @@ These paths are retained because their pre-run state or ownership was not establ
 - Agent workspace `/workspace/tmpverify/latest.jpg`: the foreground form trial copied a screenshot to this unmarked shared path; pre-run existence and ownership were not established. Retain, do not overwrite or delete.
 
 For subsequent file-producing scenarios, specify a unique test workspace as the output boundary without prescribing the solution; record whether the agent follows it. Record any newly discovered unmarked side effects here before deciding disposition.
+
+- 失败运行日志复验自动外存 `/workspace/.omnibot/offloads/conversation_63/offload_1793303417742_c4bc30be.txt`，内容是该次虚构表单运行的详细记录；本次未删除，保留以供复盘。外存由工具流程生成，未核查相关目录的完整基线。
