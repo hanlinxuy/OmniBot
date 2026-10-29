@@ -13,4 +13,6 @@ These paths are retained because their pre-run state or ownership was not establ
 
 - NetEase Cloud Music, Dianping and Xiaohongshu search histories: these apps were searched during the scan. Persistence and pre-run histories are unknown; do not clear or reconstruct them without a baseline.
 
+- Termux `/tmp/avss.html`: the web-count task wrote this unmarked path despite an explicit no-file request; no pre-run baseline is available. Retain, do not clear.
+
 For subsequent file-producing scenarios, specify a unique test workspace as the output boundary without prescribing the solution; record whether the agent follows it. Record any newly discovered unmarked side effects here before deciding disposition.
