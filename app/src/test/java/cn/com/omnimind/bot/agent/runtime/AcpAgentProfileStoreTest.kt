@@ -15,9 +15,21 @@ class AcpAgentProfileStoreTest {
     val directory = TemporaryFolder()
 
     @Test
+    fun `account-free registry excludes Na and falls back from a saved Na selection`() {
+        val context = acpProfileStoreTestContext(directory.root)
+        context.getSharedPreferences("acp_agent_profiles", Context.MODE_PRIVATE).edit()
+            .putString("selected_profile_id", NA_AGENT_ID)
+            .commit()
+        val store = AcpAgentProfileStore(context)
+        assertFalse(store.list().any { it.id == NA_AGENT_ID })
+        assertTrue(store.list().any { it.id == AcpAgentProfileStore.XIAOWAN_AGENT_ID })
+        assertFalse(store.selected().id == NA_AGENT_ID)
+    }
+
+    @Test
     fun `fresh and reset Na remain available before the first cloud check`() {
         val store = AcpAgentProfileStore(acpProfileStoreTestContext(directory.root))
-        val profile = store.list().single { it.id == NA_AGENT_ID }
+        val profile = AcpAgentCatalog.load(acpProfileStoreTestContext(directory.root)).agents.single { it.id == NA_AGENT_ID }
         repeat(2) {
             val payload = profile.toPayload(health = store.health(NA_AGENT_ID))
             assertEquals(true, payload["enabled"])
@@ -46,7 +58,7 @@ class AcpAgentProfileStoreTest {
             .commit()
 
         val store = AcpAgentProfileStore(context)
-        val payload = store.list().single { it.id == NA_AGENT_ID }
+        val payload = AcpAgentCatalog.load(acpProfileStoreTestContext(directory.root)).agents.single { it.id == NA_AGENT_ID }
             .toPayload(health = store.health(NA_AGENT_ID))
         assertEquals(true, payload["installed"])
         assertEquals(AcpAgentHealth.STATUS_UNCHECKED, payload["status"])
@@ -77,7 +89,7 @@ class AcpAgentProfileStoreTest {
         assertEquals(AcpAgentHealth.STATUS_UNCHECKED, store.health(NA_AGENT_ID).status)
         assertEquals(true, store.health(NA_AGENT_ID).installed)
         assertEquals(null, store.health(NA_AGENT_ID).error)
-        val naPayload = store.list().single { it.id == NA_AGENT_ID }.toPayload(health = missing)
+        val naPayload = AcpAgentCatalog.load(acpProfileStoreTestContext(directory.root)).agents.single { it.id == NA_AGENT_ID }.toPayload(health = missing)
         assertEquals(AcpAgentHealth.STATUS_UNCHECKED, naPayload["status"])
         assertEquals(true, naPayload["installed"])
         val external = store.list().single { it.id == AcpAgentProfileStore.CODEX_AGENT_ID }

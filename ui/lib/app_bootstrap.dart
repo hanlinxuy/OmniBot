@@ -17,7 +17,6 @@ import 'package:ui/services/storage_service.dart';
 import 'package:ui/theme/app_theme_controller.dart';
 import 'package:ui/theme/app_theme_mode.dart';
 import 'package:ui/theme/app_theme.dart';
-import 'package:ui/widgets/startup_account_prompt.dart';
 import 'package:ui/widgets/omnibot_error_widget.dart';
 
 import 'core/router/go_router_manager.dart';
@@ -209,15 +208,7 @@ class _MyAppState extends ConsumerState<MyApp> {
           value: AppTheme.overlayStyleForBrightness(brightness),
           child: ColoredBox(
             color: theme.scaffoldBackgroundColor,
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                StartupAccountPrompt(
-                  routeListenable: _router.routeInformationProvider,
-                  child: child ?? const SizedBox.shrink(),
-                ),
-              ],
-            ),
+            child: child ?? const SizedBox.shrink(),
           ),
         );
       },

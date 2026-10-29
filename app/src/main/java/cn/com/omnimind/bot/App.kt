@@ -93,8 +93,9 @@ class App : BaseApplication() {
         OfficialOmniPluginProviders.register()
         OmniAccount.initialize(
             context = this,
-            baseUrl = BuildConfig.BASE_URL,
-            platformGatewayUrl = BuildConfig.AI_GATEWAY_URL,
+            // Personal build: use BYOK without an OmniBot account.
+            baseUrl = "",
+            platformGatewayUrl = "",
             allowInsecureLoopback = BuildConfig.DEBUG,
             cloudServiceAccessProvider = {
                 AppUpdateManager.getCloudServiceAccessState(this)

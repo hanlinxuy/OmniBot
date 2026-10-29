@@ -209,7 +209,8 @@ internal class AcpAgentProfileStore(context: Context) {
         val custom = stored
             .filterNot { it.id in catalog.officialIds }
             .map { it.copy(builtIn = false) }
-        return official + custom
+        // Na requires an OmniBot account; keep local/BYOK agents available.
+        return (official + custom).filterNot { it.id == NA_AGENT_ID }
     }
 
     fun selected(): AcpAgentProfile {

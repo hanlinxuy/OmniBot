@@ -342,8 +342,7 @@ class _OnboardingChoicePageState extends State<OnboardingChoicePage> {
                     sizing: StackFit.expand,
                     index: _flow.page == TutorialPage.provider ? 0 : 1,
                     children: [
-                      // Keep in-progress sign-in/registration (including the
-                      // verification request) alive while exploring model setup.
+                      // Keep the provider overview mounted during model setup.
                       TickerMode(
                         enabled: _flow.page == TutorialPage.provider,
                         child: _flow.isVisited(TutorialPage.provider)

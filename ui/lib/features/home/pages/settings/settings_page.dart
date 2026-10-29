@@ -277,22 +277,6 @@ class _SettingsPageState extends State<SettingsPage> {
     final isEnglish = Localizations.localeOf(context).languageCode == 'en';
     return [
       _SettingSection(
-        label: isEnglish ? 'Account' : '账号',
-        isAccount: true,
-        items: [
-          _SettingItem(
-            icon: LucideIcons.userRoundCog,
-            title: isEnglish ? 'Account & AI service' : '账号与 AI 服务',
-            subtitle: isEnglish
-                ? 'Sign in, view platform quota'
-                : '注册登录、查看平台额度',
-            onTap: () {
-              GoRouterManager.push('/my/account');
-            },
-          ),
-        ],
-      ),
-      _SettingSection(
         label: context.l10n.settingsSectionModelMemory,
         items: [
           _SettingItem(
@@ -431,7 +415,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Widget _buildSettingsSection(_SettingSection section) {
     return OmniSettingsGroup(
-      title: section.isAccount ? null : section.label,
+      title: section.label,
       translateTitle: false,
       children: [
         for (final item in section.items)
@@ -444,10 +428,7 @@ class _SettingsPageState extends State<SettingsPage> {
               trailing: item.trailing,
               onTap: item.onTap,
               translateText: false,
-              padding: EdgeInsets.symmetric(
-                horizontal: 18,
-                vertical: section.isAccount ? 22 : 16,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
             ),
           ),
       ],
@@ -458,12 +439,10 @@ class _SettingsPageState extends State<SettingsPage> {
 class _SettingSection {
   final String label;
   final List<_SettingItem> items;
-  final bool isAccount;
 
   const _SettingSection({
     required this.label,
     required this.items,
-    this.isAccount = false,
   });
 }
 
