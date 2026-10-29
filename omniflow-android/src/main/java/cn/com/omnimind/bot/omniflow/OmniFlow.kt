@@ -18,6 +18,7 @@ import cn.com.omnimind.bot.omniflow.ui.initialExecutionPhase
 import java.io.File
 import java.io.ByteArrayOutputStream
 import java.util.Base64
+import java.time.ZonedDateTime
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
@@ -802,6 +803,7 @@ internal fun manualCompletionResult(
 internal fun State.asHostMap(
     includeImage: Boolean,
     executionHostPackage: String? = null,
+    observedAt: ZonedDateTime = ZonedDateTime.now(),
 ): Map<String, Any?> {
     val screenshot = screenshotPath
         ?.takeIf { includeImage }
@@ -814,6 +816,13 @@ internal fun State.asHostMap(
         val extra = buildMap {
             visualRgb?.let { put("visual_rgb", it) }
             executionHostPackage?.let { put("execution_host_package", it) }
+            if (executionHostPackage != null) {
+                put("device_time", mapOf(
+                    "local_date" to observedAt.toLocalDate().toString(),
+                    "timezone" to observedAt.zone.id,
+                    "day_of_week" to observedAt.dayOfWeek.name,
+                ))
+            }
         }
         if (extra.isNotEmpty()) put("extra", extra)
     }

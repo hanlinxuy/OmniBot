@@ -229,6 +229,12 @@ def _turn_text(
         lines.append(page_context.evidence)
     raw_extra = state.get("extra")
     if isinstance(raw_extra, dict):
+        device_time = raw_extra.get("device_time")
+        if isinstance(device_time, dict):
+            lines.append(
+                f"Device local date: {device_time['local_date']}; "
+                f"timezone: {device_time['timezone']}; day of week: {device_time['day_of_week']}"
+            )
         host_package = str(raw_extra.get("execution_host_package") or "").strip()
         if host_package and state.get("package_name") == host_package:
             lines.append(

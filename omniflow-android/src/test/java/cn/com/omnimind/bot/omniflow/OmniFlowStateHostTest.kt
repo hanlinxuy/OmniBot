@@ -3,12 +3,24 @@ package cn.com.omnimind.bot.omniflow
 import cn.com.omnimind.baselib.runlog.State
 import java.nio.file.Files
 import java.util.Base64
+import java.time.ZonedDateTime
 import java.util.zip.InflaterInputStream
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Test
 
 class OmniFlowStateHostTest {
+    @Test
+    fun `host observation uses the device local date and zone across the year boundary`() {
+        val state = State.create("test.app", "Screen", 1080, 2400, "<hierarchy />")
+        val observedAt = ZonedDateTime.parse("2027-01-01T00:15:00+14:00[Pacific/Kiritimati]")
+        val extra = state.asHostMap(includeImage = false, executionHostPackage = "test.host", observedAt = observedAt)["extra"] as Map<*, *>
+        assertEquals(
+            mapOf("local_date" to "2027-01-01", "timezone" to "Pacific/Kiritimati", "day_of_week" to "FRIDAY"),
+            extra["device_time"],
+        )
+    }
+
     @Test
     fun `host observation includes screenshot bytes only when requested`() {
         val screenshot = Files.createTempFile("omniflow-state", ".png").toFile()

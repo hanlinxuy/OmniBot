@@ -1,7 +1,9 @@
 import ast
+import dataclasses
 import pathlib
 import types
 import unittest
+import zipfile
 
 HERE = pathlib.Path(__file__).parent
 
@@ -23,6 +25,29 @@ def turn_text():
     return ns['_turn_text']
 
 class HistoryTests(unittest.TestCase):
+    def test_device_observation_date_reaches_planner_text(self):
+        tree = ast.parse((HERE / 'planner.py').read_text())
+        node = next(n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == 'build_model_turn_request')
+        ns = {'Any': object, 'Function': object, '_turn_text': turn_text(), '_state_image_data_uri': lambda state: None,
+              'function_tools': lambda functions: [], 'vlm_action_tools': lambda: [],
+              'constrain_open_app_tool': lambda tools, apps: tools, 'SYSTEM_PROMPT': 'system'}
+        future = ast.ImportFrom(module='__future__', names=[ast.alias(name='annotations')], level=0)
+        exec(compile(ast.fix_missing_locations(ast.Module(body=[future, node], type_ignores=[])), 'planner.py', 'exec'), ns)
+        archive = HERE.parents[2] / 'artifacts/omniflow-gui-runtime-2.1.8.zip'
+        with zipfile.ZipFile(archive) as runtime:
+            source = runtime.read('scripts/runtime/python/omniflow/core/model.py')
+        runtime_ns = {'__name__': __name__, 'dataclass': dataclasses.dataclass, 'field': dataclasses.field, 'Any': object}
+        runtime_tree = ast.parse(source)
+        observation_node = next(n for n in runtime_tree.body if isinstance(n, ast.ClassDef) and n.name == 'Observation')
+        exec(compile(ast.fix_missing_locations(ast.Module(body=[future, observation_node], type_ignores=[])), 'model.py', 'exec'), runtime_ns)
+        observation = runtime_ns['Observation'].from_value({'extra': {'device_time': {
+            'local_date': '2027-01-01', 'timezone': 'Pacific/Kiritimati', 'day_of_week': 'FRIDAY'
+        }}})
+        state_node = next(n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == '_planner_state')
+        exec(compile(ast.fix_missing_locations(ast.Module(body=[future, state_node], type_ignores=[])), 'planner.py', 'exec'), ns)
+        request = ns['build_model_turn_request'](goal='set reminder', model='test', turn_index=0, state=ns['_planner_state'](observation))
+        self.assertIn('Device local date: 2027-01-01; timezone: Pacific/Kiritimati; day of week: FRIDAY', request['messages'][1]['content'][0]['text'])
+
     def test_recent_trace_is_bounded_and_excludes_input_values(self):
         trace = [{'action': {'tool': 'input_text', 'args': {'target_description': f'field{i}', 'text': 'SECRET'}}, 'result': {'success': i % 2 == 0}} for i in range(22)]
         projected = eval(source_expression(), {'trace': trace})
