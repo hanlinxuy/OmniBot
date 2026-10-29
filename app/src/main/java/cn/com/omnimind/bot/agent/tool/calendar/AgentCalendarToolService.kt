@@ -157,8 +157,8 @@ class AgentCalendarToolService(
     fun createEvent(request: CalendarEventCreateRequest): Map<String, Any?> {
         val calendarId = resolveWritableCalendarId(request.calendarId)
         val zone = resolveZone(request.timezone)
-        val start = parseDateTime(request.startAt, zone)
-        val end = parseDateTime(request.endAt, zone)
+        val start = parseCalendarDateTime(request.startAt, zone, !request.timezone.isNullOrBlank())
+        val end = parseCalendarDateTime(request.endAt, zone, !request.timezone.isNullOrBlank())
         val (normalizedStart, normalizedEnd) = normalizeEventRange(start, end, request.allDay)
 
         val values = ContentValues().apply {
@@ -209,11 +209,11 @@ class AgentCalendarToolService(
 
         val rangeStart = request.startAt
             ?.takeIf { it.isNotBlank() }
-            ?.let { parseDateTime(it, defaultZone) }
+            ?.let { parseCalendarDateTime(it, defaultZone, false) }
             ?: now.minusDays(30)
         val rangeEnd = request.endAt
             ?.takeIf { it.isNotBlank() }
-            ?.let { parseDateTime(it, defaultZone) }
+            ?.let { parseCalendarDateTime(it, defaultZone, false) }
             ?: now.plusDays(180)
 
         require(rangeEnd.toInstant().toEpochMilli() > rangeStart.toInstant().toEpochMilli()) {
@@ -338,9 +338,9 @@ class AgentCalendarToolService(
         val currentStart = Instant.ofEpochMilli(current.startMillis).atZone(zone)
         val currentEnd = Instant.ofEpochMilli(current.endMillis).atZone(zone)
 
-        val nextStart = request.startAt?.takeIf { it.isNotBlank() }?.let { parseDateTime(it, zone) }
+        val nextStart = request.startAt?.takeIf { it.isNotBlank() }?.let { parseCalendarDateTime(it, zone, !request.timezone.isNullOrBlank()) }
             ?: currentStart
-        val nextEnd = request.endAt?.takeIf { it.isNotBlank() }?.let { parseDateTime(it, zone) }
+        val nextEnd = request.endAt?.takeIf { it.isNotBlank() }?.let { parseCalendarDateTime(it, zone, !request.timezone.isNullOrBlank()) }
             ?: currentEnd
         val (normalizedStart, normalizedEnd) = normalizeEventRange(nextStart, nextEnd, allDay)
 
@@ -567,18 +567,6 @@ class AgentCalendarToolService(
         return normalizedStart to normalizedEnd
     }
 
-    private fun parseDateTime(value: String, zone: ZoneId): ZonedDateTime {
-        val normalized = value.trim()
-        require(normalized.isNotEmpty()) { "时间不能为空" }
-
-        runCatching { return ZonedDateTime.parse(normalized) }
-        runCatching { return OffsetDateTime.parse(normalized).toZonedDateTime().withZoneSameInstant(zone) }
-        runCatching { return Instant.parse(normalized).atZone(zone) }
-        runCatching { return LocalDateTime.parse(normalized).atZone(zone) }
-
-        throw IllegalArgumentException("无法解析时间：$normalized")
-    }
-
     private fun resolveZone(rawZone: String?): ZoneId {
         val zone = rawZone?.trim().orEmpty()
         if (zone.isEmpty()) return ZoneId.systemDefault()
@@ -586,4 +574,18 @@ class AgentCalendarToolService(
             throw IllegalArgumentException("Invalid timezone: $zone")
         }
     }
+}
+
+internal fun parseCalendarDateTime(value: String, zone: ZoneId, explicitZone: Boolean): ZonedDateTime {
+    val normalized = value.trim()
+    require(normalized.isNotEmpty()) { "时间不能为空" }
+
+    runCatching {
+        val parsed = ZonedDateTime.parse(normalized)
+        return if (explicitZone) parsed.withZoneSameInstant(zone) else parsed
+    }
+    runCatching { return OffsetDateTime.parse(normalized).toZonedDateTime().withZoneSameInstant(zone) }
+    runCatching { return Instant.parse(normalized).atZone(zone) }
+    runCatching { return LocalDateTime.parse(normalized).atZone(zone) }
+    throw IllegalArgumentException("无法解析时间：$normalized")
 }

@@ -84,6 +84,35 @@ class PersonalContextAndroidTest {
         assertEquals("UTC", provider.inserted!!.getAsString(CalendarContract.Events.EVENT_TIMEZONE))
     }
 
+    @Test fun `calendar create and update keep explicit region with offset timestamps`() {
+        val provider = object : CalendarProvider() {
+            var updated: ContentValues? = null
+            override fun query(uri: Uri, projection: Array<out String>?, selection: String?, selectionArgs: Array<out String>?, sortOrder: String?): Cursor? {
+                if (uri.path == "/events/1") {
+                    return MatrixCursor(projection!!).apply {
+                        addRow(arrayOf<Any?>(1L, 1L, "Test", "", "", 1793775600000L, 1793777400000L, "+08:00", 0))
+                    }
+                }
+                return super.query(uri, projection, selection, selectionArgs, sortOrder)
+            }
+            override fun update(uri: Uri, values: ContentValues?, selection: String?, selectionArgs: Array<out String>?): Int {
+                updated = values
+                return 1
+            }
+        }
+        ShadowContentResolver.registerProviderInternal("com.android.calendar", provider)
+        val service = AgentCalendarToolService(context)
+        val start = "2026-11-04T15:00:00+08:00"
+        val end = "2026-11-04T15:30:00+08:00"
+        val expectedStart = Instant.parse("2026-11-04T07:00:00Z").toEpochMilli()
+        service.createEvent(CalendarEventCreateRequest("Test", start, end, "1", null, null, "Asia/Shanghai", false, emptyList()))
+        assertEquals("Asia/Shanghai", provider.inserted!!.getAsString(CalendarContract.Events.EVENT_TIMEZONE))
+        assertEquals(expectedStart, provider.inserted!!.getAsLong(CalendarContract.Events.DTSTART))
+        service.updateEvent(CalendarEventUpdateRequest("1", null, start, end, null, null, "Asia/Shanghai", false, emptyList()))
+        assertEquals("Asia/Shanghai", provider.updated!!.getAsString(CalendarContract.Events.EVENT_TIMEZONE))
+        assertEquals(expectedStart, provider.updated!!.getAsLong(CalendarContract.Events.DTSTART))
+    }
+
     @Test fun `media distinguishes selected photos from full library`() {
         context.permissions += Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED
         assertEquals("partial", PersonalContextAccess(context).snapshot("media_visual").status)
