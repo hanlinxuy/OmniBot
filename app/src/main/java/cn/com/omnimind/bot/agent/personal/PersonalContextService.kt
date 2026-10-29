@@ -38,7 +38,7 @@ internal class PersonalContextService(private val context: Context) {
         catch (error: PersonalContextException) { failure(error.code, error.message, error.capability) }
         catch (_: SecurityException) { failure("permission_changed", "Access is no longer available. Recheck context_capabilities and App permissions.") }
         catch (error: IllegalArgumentException) { failure("invalid_argument", error.message ?: "Invalid tool arguments.") }
-        catch (_: Exception) { failure("provider_error", "The Android provider could not complete this operation. A write may have an uncertain outcome; query before deciding what to do next.") }
+        catch (_: Exception) { failure("provider_error", "The Android provider could not complete this operation. A write may have an uncertain outcome. Do not repeat it through any tool or UI unless a reliable independent check confirms the result; if absence cannot be established, stop and report the uncertainty.") }
     }
 
     private fun failure(code: String, message: String, capability: String? = null) = mapOf("success" to false, "code" to code, "message" to message,

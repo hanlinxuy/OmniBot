@@ -163,6 +163,32 @@ class PersonalContextAndroidTest {
         assertEquals(0, provider.writes)
     }
 
+    @Test fun `contacts query does not report redacted provider rows as an empty result`() = runBlocking {
+        context.permissions += Manifest.permission.READ_CONTACTS
+        val provider = object : CalendarProvider() {
+            override fun query(uri: Uri, projection: Array<out String>?, selection: String?, selectionArgs: Array<out String>?, sortOrder: String?): Cursor =
+                MatrixCursor(projection!!).apply {
+                    if (selectionArgs?.size == 5) addRow(arrayOfNulls<Any?>(projection.size))
+                }
+        }
+        ShadowContentResolver.registerProviderInternal(ContactsContract.AUTHORITY, provider)
+        val service = PersonalContextService(context)
+        for (args in listOf(json("{}"), json("""{"query":"missing"}"""))) {
+            val result = service.execute("contacts_query", args)
+            assertEquals(false, result["success"])
+            assertEquals("provider_data_unavailable", result["code"])
+            assertFalse(result.containsKey("items"))
+        }
+    }
+
+    @Test fun `contacts query can still report an actually empty provider`() = runBlocking {
+        context.permissions += Manifest.permission.READ_CONTACTS
+        ShadowContentResolver.registerProviderInternal(ContactsContract.AUTHORITY, CalendarProvider())
+        val result = PersonalContextService(context).execute("contacts_query", json("""{"query":"missing"}"""))
+        assertEquals(true, result["success"])
+        assertEquals(0, result["count"])
+    }
+
     @Test fun `contact updates use a single batch and do not replay failed writes`() = runBlocking {
         context.permissions += listOf(Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS)
         val provider = ContactProvider()
@@ -180,6 +206,8 @@ class PersonalContextAndroidTest {
         assertEquals(false, failed["success"])
         assertEquals(2, provider.batches)
         assertEquals(false, failed["retryable"])
+        assertTrue(failed["message"].toString().contains("any tool or UI"))
+        assertTrue(failed["message"].toString().contains("if absence cannot be established"))
     }
 
     @Test fun `document grants are revoked without granting arbitrary content URIs`() {

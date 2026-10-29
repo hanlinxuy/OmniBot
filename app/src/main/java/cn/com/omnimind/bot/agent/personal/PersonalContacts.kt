@@ -3,6 +3,7 @@ package cn.com.omnimind.bot.agent.personal
 import android.content.ContentProviderOperation
 import android.content.ContentUris
 import android.content.Context
+import android.database.Cursor
 import android.provider.ContactsContract
 import android.provider.ContactsContract.CommonDataKinds.*
 import android.provider.ContactsContract.Data
@@ -45,6 +46,13 @@ internal class PersonalContacts(private val context: Context) {
         val contactId = args.text("contactId")?.let { requireNotNull(it.toLongOrNull()) { "contactId must be numeric" } }
         val selection = mutableListOf("${Data.MIMETYPE} IN (?,?,?,?,?)")
         val values = mutableListOf(StructuredName.CONTENT_ITEM_TYPE, Phone.CONTENT_ITEM_TYPE, Email.CONTENT_ITEM_TYPE, Organization.CONTENT_ITEM_TYPE, StructuredPostal.CONTENT_ITEM_TYPE)
+        val supportedTypes = values.toTypedArray()
+        fun requireReadableId(cursor: Cursor): Long = cursor.longValue(Data.CONTACT_ID) ?: throw PersonalContextException(
+            "provider_data_unavailable",
+            "The contacts provider returned a row without a readable contact ID. " +
+                "Contact visibility cannot be verified; do not treat this as an empty result.",
+            "contacts_read",
+        )
         if (query.isNotBlank()) {
             selection += "(${Data.DISPLAY_NAME} LIKE ? ESCAPE '\\' OR ${Data.DATA1} LIKE ? ESCAPE '\\')"
             values += likePattern(query); values += likePattern(query)
@@ -55,11 +63,17 @@ internal class PersonalContacts(private val context: Context) {
             val rows = mutableListOf<MutableMap<String, Any?>>()
             while (cursor.moveToNext() && rows.size <= page.limit) {
                 check()
-                val id = cursor.longValue(Data.CONTACT_ID) ?: continue
+                val id = requireReadableId(cursor)
                 if (!seen.add(id) || seen.size <= page.offset) continue
                 rows += mutableMapOf("contactId" to id.toString(), "lookupKey" to cursor.value(Data.LOOKUP_KEY), "name" to cursor.value(Data.DISPLAY_NAME))
             }
             rows
+        }
+        if (contacts.isEmpty() && (query.isNotBlank() || contactId != null)) {
+            resolver.contextQuery(Data.CONTENT_URI, arrayOf(Data.CONTACT_ID),
+                "${Data.MIMETYPE} IN (?,?,?,?,?)", supportedTypes) { cursor, check ->
+                if (cursor.moveToNext()) { check(); requireReadableId(cursor) }
+            }
         }
         for (contact in contacts.take(page.limit)) {
             currentCoroutineContext().ensureActive()
