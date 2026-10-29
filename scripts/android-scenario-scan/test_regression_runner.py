@@ -30,6 +30,13 @@ class RunnerContracts(unittest.TestCase):
         entry['payload']['streamMeta']['isFinal'] = False
         self.assertEqual([], runner.acp_terminal([entry])['final_texts'])
 
+    def test_last_owned_final_assistant_message_is_answer(self):
+        def message(text):
+            return {'type': 'assistant_message', 'status': 'completed', 'payload': {
+                'sessionId': 's', 'turnId': 't', 'content': {'text': text},
+                'streamMeta': {'stopReason': 'end_turn', 'isFinal': True}}}
+        self.assertEqual(['9'], runner.acp_terminal([message('说明'), message('9')])['final_texts'])
+
     def test_multiple_owners_and_missing_owner_rejected(self):
         def entry(session, turn):
             return {'type': 'assistant_message', 'status': 'completed', 'payload': {

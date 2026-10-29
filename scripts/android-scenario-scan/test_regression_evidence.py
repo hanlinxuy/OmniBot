@@ -3,11 +3,52 @@ from regression_evidence import parse_screen, verify_clock_timer, verify_alarm, 
 
 class EvidenceTests(unittest.TestCase):
     def test_zip_requires_exact_owned_read_and_final_answer(self):
-        call = {'tool': 'terminal_execute', 'success': True, 'args': {'command': 'unzip -p /test/fixture.zip file_1.txt | wc -l'}, 'result': {'stdout': '6'}}
+        call = {'tool': 'terminal_execute', 'success': True, 'args': {'command': 'unzip -p /test/fixture.zip file_1.txt | wc -l'}, 'result': {'stdout': '6', 'success': True, 'resultCode': 0}}
         self.assertTrue(verify_zip_turn([call], ['6'], '/test/fixture.zip', 6)['passed'])
         self.assertFalse(verify_zip_turn([call], ['6'], '/other/fixture.zip', 6)['passed'])
         self.assertFalse(verify_zip_turn([call], ['4'], '/test/fixture.zip', 6)['passed'])
         self.assertFalse(verify_zip_turn([call, call], ['6'], '/test/fixture.zip', 6)['passed'])
+
+    def test_zip_python_read_requires_exact_provenance_and_success(self):
+        program = """import zipfile
+p='/test/fixture.zip'
+z=zipfile.ZipFile(p)
+print(z.namelist())
+d=z.read('file_1.txt')
+print('bytes',len(d))
+print('newlines',d.count(b'\\n'))
+print('crlf',d.count(b'\\r\\n'))
+print('endsWithNewline', d.endswith(b'\\n'))"""
+        call = {'tool': 'terminal_execute', 'success': True, 'args': {'command': "python3 - <<'EOF'\n" + program + "\nEOF"}, 'result': {'success': True, 'resultCode': 0, 'stdout': "['file_1.txt']\nbytes 231\nnewlines 7\ncrlf 0\nendsWithNewline True"}}
+        self.assertTrue(verify_zip_turn([call], ['7'], '/test/fixture.zip', 7)['passed'])
+        self.assertFalse(verify_zip_turn([call], ['7'], '/other/fixture.zip', 7)['passed'])
+        changed = {**call, 'args': {'command': call['args']['command'].replace('file_1.txt', 'other.txt')}}
+        self.assertFalse(verify_zip_turn([changed], ['7'], '/test/fixture.zip', 7)['passed'])
+        self.assertFalse(verify_zip_turn([{**call, 'success': False}], ['7'], '/test/fixture.zip', 7)['passed'])
+        self.assertFalse(verify_zip_turn([{**call, 'args': {'command': 'echo 7'}}], ['7'], '/test/fixture.zip', 7)['passed'])
+
+    def test_zip_python_inline_read_is_bound_to_owned_fixture(self):
+        program = "import zipfile\np='/test/fixture.zip'\nz=zipfile.ZipFile(p)\nd=z.read('file_1.txt')\nprint(d.count(b'\\n'))\nprint(z.namelist())\n"
+        call = {'tool': 'terminal_execute', 'success': True, 'args': {'command': 'python3 -c "' + program + '"'}, 'result': {'success': True, 'resultCode': 0, 'stdout': "9\n['file_1.txt']"}}
+        self.assertTrue(verify_zip_turn([call], ['9'], '/test/fixture.zip', 9)['passed'])
+        self.assertFalse(verify_zip_turn([call], ['9'], '/other/fixture.zip', 9)['passed'])
+        self.assertFalse(verify_zip_turn([{**call, 'result': {**call['result'], 'resultCode': 1}}], ['9'], '/test/fixture.zip', 9)['passed'])
+        self.assertFalse(verify_zip_turn([{**call, 'args': {'command': call['args']['command'].replace('file_1.txt', 'other.txt')}}], ['9'], '/test/fixture.zip', 9)['passed'])
+
+    def test_zip_python_diagnostic_requires_owned_entry_and_nonconstant_count(self):
+        program = """import zipfile
+p='/test/fixture.zip'
+z=zipfile.ZipFile(p)
+print(z.namelist())
+data=z.read('file_1.txt')
+print(repr(data[-50:]))
+print('newlines:', data.count(b'\\n'))
+print('len:', len(data))"""
+        call = {'tool': 'terminal_execute', 'success': True, 'args': {'command': "python3 - <<'EOF'\n" + program + "\nEOF"}, 'result': {'success': True, 'resultCode': 0, 'stdout': "['file_1.txt']\nb'abc\\n'\nnewlines: 11\nlen: 363"}}
+        self.assertTrue(verify_zip_turn([call], ['11'], '/test/fixture.zip', 11)['passed'])
+        self.assertFalse(verify_zip_turn([call], ['11'], '/other/fixture.zip', 11)['passed'])
+        altered = {**call, 'args': {'command': call['args']['command'].replace("data.count(b'\\n')", '11')}}
+        self.assertFalse(verify_zip_turn([altered], ['11'], '/test/fixture.zip', 11)['passed'])
 
     def test_weather_note_requires_both_source_lines_inside_body(self):
         weather = [('02:00', '17', '多云'), ('04:00', '16', '多云')]

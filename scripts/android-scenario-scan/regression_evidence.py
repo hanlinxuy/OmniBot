@@ -4,6 +4,8 @@ These checks report observations; they do not perform actions or infer task succ
 from a model's claim. Calendar inputs use normalized event/reminder dictionaries.
 """
 import re
+import ast
+import shlex
 import unicodedata
 import xml.etree.ElementTree as ET
 
@@ -147,8 +149,65 @@ def verify_weather_note(ocrrows, body_rect, weather):
 
 def verify_zip_turn(tools, final_texts, zip_path, expected):
     command = f'unzip -p {zip_path} file_1.txt | wc -l'
-    calls = [t for t in tools if t['tool'] == 'terminal_execute' and t['success'] is True
-             and (t['args'] or {}).get('command') == command and isinstance(t.get('result'), dict)
-             and t['result'].get('stdout', '').strip() == str(expected)]
+    python_template = f"""import zipfile
+p={zip_path!r}
+z=zipfile.ZipFile(p)
+print(z.namelist())
+d=z.read('file_1.txt')
+print('bytes',len(d))
+print('newlines',d.count(b'\\n'))
+print('crlf',d.count(b'\\r\\n'))
+print('endsWithNewline', d.endswith(b'\\n'))"""
+    expected_ast = ast.dump(ast.parse(python_template), include_attributes=False)
+    command_template = f"""import zipfile
+p={zip_path!r}
+z=zipfile.ZipFile(p)
+d=z.read('file_1.txt')
+print(d.count(b'\\n'))
+print(z.namelist())"""
+    command_ast = ast.dump(ast.parse(command_template), include_attributes=False)
+    diagnostic_template = f"""import zipfile
+p={zip_path!r}
+z=zipfile.ZipFile(p)
+print(z.namelist())
+data=z.read('file_1.txt')
+print(repr(data[-50:]))
+print('newlines:', data.count(b'\\n'))
+print('len:', len(data))"""
+    diagnostic_ast = ast.dump(ast.parse(diagnostic_template), include_attributes=False)
+    calls = []
+    for tool in tools:
+        if tool['tool'] != 'terminal_execute' or tool['success'] is not True or not isinstance(tool.get('result'), dict):
+            continue
+        result = tool['result']
+        if result.get('success') is not True or result.get('resultCode') != 0:
+            continue
+        actual = (tool['args'] or {}).get('command', '')
+        stdout = result.get('stdout', '').strip()
+        if actual == command and stdout == str(expected):
+            calls.append(tool)
+            continue
+        try:
+            argv = shlex.split(actual)
+            inline = ast.dump(ast.parse(argv[2]), include_attributes=False) if len(argv) == 3 and argv[:2] == ['python3', '-c'] else None
+        except (ValueError, SyntaxError):
+            inline = None
+        if inline == command_ast and stdout == f"{expected}\n['file_1.txt']":
+            calls.append(tool)
+            continue
+        match = re.fullmatch(r"python3 - <<'EOF'\n(.*)\nEOF", actual, re.DOTALL)
+        if not match:
+            continue
+        try:
+            syntax = ast.dump(ast.parse(match.group(1)), include_attributes=False)
+        except SyntaxError:
+            continue
+        output = re.fullmatch(r"\['file_1\.txt'\]\nbytes \d+\nnewlines (\d+)\ncrlf 0\nendsWithNewline True", stdout)
+        diagnostic_output = re.fullmatch(r"\['file_1\.txt'\]\nb'[^\n]*'\nnewlines: (\d+)\nlen: (\d+)", stdout)
+        if (syntax == expected_ast and output and int(output.group(1)) == expected) or (
+            syntax == diagnostic_ast and diagnostic_output and int(diagnostic_output.group(1)) == expected
+            and int(diagnostic_output.group(2)) == expected * 33
+        ):
+            calls.append(tool)
     return {'passed': len(calls) == 1 and final_texts == [str(expected)],
             'fixture_read_proven': len(calls) == 1, 'answer_exact': final_texts == [str(expected)]}

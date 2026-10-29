@@ -99,7 +99,7 @@ def acp_terminal(entries):
     if len(owners) > 1:
         raise RuntimeError('multiple_acp_turns_in_single_submission')
     return {'terminal': bool(reasons), 'passed': reasons == {'end_turn'},
-            'owners': [list(x) for x in owners], 'stop_reasons': sorted(reasons), 'tools': tools, 'final_texts': final_texts}
+            'owners': [list(x) for x in owners], 'stop_reasons': sorted(reasons), 'tools': tools, 'final_texts': final_texts[-1:]}
 
 
 def status_for(execution, acceptance, cleanup, submitted):
@@ -486,7 +486,7 @@ def run_case(harness, case):
         elif adapter in ('zip_lines', 'zip_natural'):
             fixture = h.output / 'fixture.zip'
             with zipfile.ZipFile(fixture, 'w') as archive:
-                contents = 'one\ntwo\nthree\nfour\nfive\nsix\n' if adapter == 'zip_lines' else ''.join(uuid.uuid4().hex + '\n' for _ in range(7))
+                contents = 'one\ntwo\nthree\nfour\nfive\nsix\n' if adapter == 'zip_lines' else ''.join(uuid.uuid4().hex + '\n' for _ in range(11))
                 archive.writestr('file_1.txt', contents)
             baseline['zip_hash'] = hashlib.sha256(fixture.read_bytes()).hexdigest()
             baseline['zip_dir'] = '/sdcard/Download/OBZIP' + marker
@@ -572,7 +572,7 @@ def run_case(harness, case):
                 raise RuntimeError('single_owned_native_creation_not_proven')
         if adapter in ('zip_lines', 'zip_natural'):
             final = report['execution'].pop('final_texts', [])
-            report['acceptance'] = verify_zip_turn(report['execution']['tools'], final, baseline['zip_dir'] + '/fixture.zip', 6 if adapter == 'zip_lines' else 7)
+            report['acceptance'] = verify_zip_turn(report['execution']['tools'], final, baseline['zip_dir'] + '/fixture.zip', 6 if adapter == 'zip_lines' else 11)
         elif adapter == 'todo':
             obs = h.observe(NOTES)
             rows = [(n['text'], n['description']) for n in obs['nodes'] if n['resource_id'] == NOTES + ':id/content_tv']

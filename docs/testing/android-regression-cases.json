@@ -350,7 +350,7 @@
         "宿主创建唯一测试目录及 ZIP 并核对哈希"
       ],
       "acceptance": [
-        "持久 ACP end_turn；成功读取指定 ZIP 条目的工具证据及正确整数"
+        "持久 ACP end_turn；限定支持的成功工具读取精确 ZIP 条目并输出预期计数，最终文本严格匹配"
       ],
       "cleanup": [
         "确认目录仅含本轮 ZIP 且哈希未变，删除 ZIP 和空目录并核对消失"
@@ -365,7 +365,7 @@
       "variant_type": "exploratory_variant",
       "latest_regression": {
         "status": "failed",
-        "attempt_id": "REG664ce732c144",
+        "attempt_id": "REG17fc337e518d",
         "report": "docs/testing/android-scan-batch-2026-10-30-zip.md"
       }
     }
