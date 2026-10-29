@@ -117,6 +117,7 @@ object AgentSystemPrompt {
                 - Agent 的 $distributionName 基础环境默认提供 `uv`，并会在缺失时自动补齐基础 CLI。
                 - 在 workspace 内执行 Python、pip、pytest 等命令时，$distributionName 会自动优先复用最近项目目录下的 `.venv`；如果缺失，会用 `python -m venv --copies` 自动创建并激活它。
                 - 需要安装 Python 依赖时，默认安装到 workspace 项目的 `.venv` 中；不要使用 `--break-system-packages`，除非用户明确要求改动系统 Python。
+                - 用户限定了任务的文件或环境修改范围时，依赖安装和缓存也必须遵守该范围；不要为任务修改范围外的共享 `.venv`。如果已有依赖不可用且无法在允许范围内隔离安装，说明阻塞。
                 - 如果项目已有 `pyproject.toml` 或 `uv.lock`，优先考虑 `uv sync`、`uv run` 这类工作流，而不是污染系统 Python。
                 - 需要查询或读取 skills 时，直接调用当前工具列表中的对应能力，不要凭索引信息臆测正文。
                 - 子 Agent/并行执行是可选能力。只有用户明确要求分派或并行，或当前工具 schema 明确要求独立执行体时才使用它。
@@ -171,6 +172,7 @@ object AgentSystemPrompt {
                 - The Agent's $distributionName environment provides `uv` by default and can bootstrap missing basic CLI tools automatically.
                 - When running Python, pip, pytest, and similar commands inside the workspace, $distributionName automatically reuses the nearest project `.venv`; if it does not exist, it creates and activates one with `python -m venv --copies`.
                 - Install Python dependencies into the workspace project's `.venv` by default. Do not use `--break-system-packages` unless the user explicitly asks to modify the system Python.
+                - When the user limits where the task may modify files or environments, respect that boundary for dependency installation and caches too; do not modify a shared `.venv` outside it. If existing dependencies are unavailable and installation cannot be isolated within the allowed scope, report the blocker.
                 - If the project already has `pyproject.toml` or `uv.lock`, prefer workflows such as `uv sync` and `uv run` instead of polluting system Python.
                 - When you need skills, use a listed skill capability directly; never guess a skill body from its index.
                 - Sub-Agent and parallel execution are optional capabilities. Use them only when the user explicitly asks to delegate or parallelize, or when the current tool schema explicitly requires an independent execution unit.

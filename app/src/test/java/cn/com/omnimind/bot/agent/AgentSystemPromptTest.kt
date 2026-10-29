@@ -37,6 +37,8 @@ class AgentSystemPromptTest {
         assertTrue(prompt.contains("uv"))
         assertTrue(prompt.contains("--copies"))
         assertTrue(prompt.contains("不要使用 `--break-system-packages`"))
+        assertTrue(prompt.contains("依赖安装和缓存也必须遵守该范围"))
+        assertTrue(prompt.contains("无法在允许范围内隔离安装，说明阻塞"))
         assertTrue(!prompt.contains("tools_search"))
         assertTrue(prompt.contains("完整的能力目录"))
         assertTrue(prompt.contains("完整工具 schema"))
@@ -91,6 +93,8 @@ class AgentSystemPromptTest {
         )
 
         assertTrue(prompt.contains("You are an AI Agent operating inside the Alpine environment"))
+        assertTrue(prompt.contains("respect that boundary for dependency installation and caches too"))
+        assertTrue(prompt.contains("installation cannot be isolated within the allowed scope"))
         assertTrue(prompt.contains("File and artifact rules"))
         assertTrue(prompt.contains("Skills:"))
         assertTrue(!prompt.contains("tools_search"))
