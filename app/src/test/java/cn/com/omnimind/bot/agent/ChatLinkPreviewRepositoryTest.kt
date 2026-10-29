@@ -10,6 +10,16 @@ import org.junit.Test
 class ChatLinkPreviewRepositoryTest {
     private val repository = ChatLinkPreviewRepository { error("Unexpected HTTP request") }
 
+    @Test fun `Chinese punctuation separates a URL from following instructions`() {
+        assertEquals(listOf("http://127.0.0.1:65515/index.html"), repository.extractUrls(
+            "打开 http://127.0.0.1:65515/index.html，读取页标题和工具返回的字段。"
+        ))
+        assertEquals(listOf("https://example.com/中文路径", "https://example.org/a%EF%BC%8Cb"), repository.extractUrls(
+            "查看 https://example.com/中文路径；然后看 https://example.org/a%EF%BC%8Cb！"
+        ))
+        assertEquals(listOf("https://example.com/docs"), repository.extractUrls("查看 example.com/docs，然后继续"))
+    }
+
     @Test fun resourceUrlsImagesAndCommandsAreNotWebPreviews() {
         assertEquals(listOf("https://example.com/docs"), repository.extractUrls(
             "先看 omnibot://workspace/demo/index.html 再看 https://example.com/docs",

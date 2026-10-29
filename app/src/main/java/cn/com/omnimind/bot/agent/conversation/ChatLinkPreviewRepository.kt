@@ -28,9 +28,9 @@ internal class ChatLinkPreviewRepository(
             "cloud shop store blog pro biz name edu gov mil int us uk ca au eu de fr jp kr sg hk tw " +
             "in br ru it es nl co.uk org.uk ac.uk gov.uk com.cn net.cn org.cn gov.cn edu.cn co.jp " +
             "ne.jp or.jp com.au net.au org.au com.hk com.tw com.sg com.br").split(' ').toSet()
-        private val webUrl = Regex("""https?://[^\s<>"\]\[]+""", RegexOption.IGNORE_CASE)
+        private val webUrl = Regex("""https?://[^\s<>"\]\[，。；！？]+""", RegexOption.IGNORE_CASE)
         private val bareUrl = Regex(
-            """(?:www\.)?[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)*\.[a-z][a-z0-9-]{1,62}(?:/[^\s<>"\]\[]*)?""",
+            """(?:www\.)?[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)*\.[a-z][a-z0-9-]{1,62}(?:/[^\s<>"\]\[，。；！？]*)?""",
             RegexOption.IGNORE_CASE,
         )
         private val ignoredUrl = Regex("""omnibot://[^\s<>"\]\[)]+""", RegexOption.IGNORE_CASE)
