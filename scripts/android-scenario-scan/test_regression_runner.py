@@ -15,6 +15,23 @@ from regression_evidence import verify_alarm, verify_clock_timer, verify_runlog
 
 
 class RunnerContracts(unittest.TestCase):
+    def test_partial_streamed_tool_arguments_are_polled_without_resending(self):
+        import json
+        from unittest.mock import Mock
+        h = runner.Harness.__new__(runner.Harness)
+        h.args = SimpleNamespace(timeout=5)
+        h.backend = SimpleNamespace(unlocked=lambda: None, start=lambda: SimpleNamespace(start_uiautomator=lambda: None))
+        h.launch = h.tap = h.type = h.stop_u2 = h.save = lambda *args, **kwargs: None
+        h.observe = lambda *args: {'nodes': [{'description': '', 'class_name': 'android.widget.EditText', 'text': ''}], 'observation_id': 'obs'}
+        h.read_retry = lambda operation: operation()
+        h.call = Mock()
+        h.chat_snapshot = Mock(side_effect=[json.JSONDecodeError('partial', '{', 1), {'terminal': True, 'passed': True}])
+        with patch.object(runner.time, 'sleep'):
+            result = h.chat('test', 'execute')
+        self.assertTrue(result['passed'])
+        self.assertEqual(2, h.chat_snapshot.call_count)
+        self.assertEqual(1, h.call.call_count)
+
     def test_nonterminal_entry_cannot_forge_prompt_completion(self):
         entry = {'type': 'user_message', 'status': 'completed', 'payload': {
             'sessionId': 'session', 'turnId': 'turn', 'streamMeta': {'stopReason': 'end_turn'}}}

@@ -344,6 +344,8 @@ class Harness:
                 try:
                     gate = self.chat_snapshot(token)
                     break
+                except json.JSONDecodeError:
+                    break  # a streamed tool payload can be incomplete; poll the same request again
                 except sqlite3.DatabaseError:
                     if read_attempt == 3:
                         raise
