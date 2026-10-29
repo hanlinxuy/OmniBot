@@ -96,3 +96,19 @@ BA02 原目标组件 run `debug-vlm-8e0eff05-2c8c-4c66-ab37-8bd975b1592e`：19 �
 本轮Python覆盖回归12项、Node扫描/分析器7项通过；timer/MCP定向7项、日历定向14项通过；构建安装成功。APK SHA-256：`f9b67807e205dd3726f959cfc9a36fa9c69a419bbab8b1fdf1057455c72b33f4`。Python覆盖另外通过官方apply/reload应用，构建APK不会自动替代覆盖文件。
 
 最终恢复：计时选择器恢复run `debug-vlm-607e7fc3-a488-4aa3-a429-10b903d17724` 7动作、38.036秒通过；独立核对00:28:53、无运行中计时、原可见常用预设仍在。勿扰zen_mode=0，临时USB常亮恢复原值0。测试笔记已软删除、未清空回收站，测试日历事件和提醒已删除。
+
+## 2026-10-30 01:51–03:00 breadth-first continuation
+
+This accounting covers this continuation only, not the entire 280-item inventory or a claim of original benchmark completion. A source is counted once even if it has multiple subcases. “Accepted” means the deliberately bounded subcase and its relevant side-effect checks met the stated conditions; “partial” includes missing source fields, wrong extra claims or unverified side effects. Fixture/dependency blocks are reported separately and can overlap an exercised source.
+
+| Measure | Count | Scope |
+|---|---:|---|
+| Distinct source scenarios exercised | 13 | LI03, LI15, RC07, PlanCommuteRouteSmsTask, LI12, HE07, ListRecentCommitsEmailTask, ExtractBenchmarkComparisonEmailTask, LI16, CheckDistanceAskUserTask1, SendWebpageAudioCountSmsTask, HE05, MattermostResourceConflictResolutionTask |
+| Broad capability groups | 11 | Scheduling/conflict reasoning; filtered calendar plus weather; public content/restaurant search; route reading; music catalog; still-image understanding; repository source retrieval; paper comparison; missing-information clarification; web text counting; video playback/temporal description |
+| Bounded subcases accepted | 3 | HE07 synthetic image, public recent-commit retrieval, missing-destination clarification |
+| Partial or with observed defects/side effects | 10 | The other exercised sources; see linked individual batch records. No original external-message or booking workflow is claimed complete. |
+| Dependency/fixture blocks | 2 | LI10 intended reading app/baseline unavailable; LI03 calendar fixture insert not verified. LI03 also has a separate text subcase above. |
+
+Product changes in this continuation: `122b229b` adds a narrow VLM result-context notice for the recorded permanent-denial button; `bb31f57d` adds bilingual guidance to respect explicit dependency/environment boundaries. Both passed focused JVM tests and were installed on the phone; neither has live end-to-end proof of model compliance or enforcement. The latter is prompt guidance, not a sandbox; the later no-file failure demonstrates that prompts alone do not guarantee boundaries. Earlier production memory/truncation changes and their evidence are recorded in their own batch notes. Host scanner fixes `7b709468`, `32fc52e3`, and `f5115622` cover partial streamed JSON and guarded transient focus reads; 15 offline runner tests passed, without replay or access-denial bypass. They are not mobile-product fixes.
+
+The video follow-up (`362f6a46`) shows screenshot-attachment metadata and a pre-seek player state at 00:05; the following state is essentially the same frame with controls hidden, so the supposed 00:03 seek is not independently established. The error cannot be attributed solely to visual reasoning. Outstanding unknown-baseline files, environment and app state remain in [the pending list](android-scan-pending-artifacts-2026-10-30.md).
