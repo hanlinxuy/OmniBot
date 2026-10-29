@@ -6,6 +6,7 @@ import cn.com.omnimind.bot.agent.personal.PersonalContextTools
 import cn.com.omnimind.bot.agent.personal.PersonalContextService
 import cn.com.omnimind.bot.agent.AgentRuntimeContextRepository
 import cn.com.omnimind.bot.agent.AgentAlarmCreateRequest
+import cn.com.omnimind.bot.agent.parseAlarmRepeatDays
 import cn.com.omnimind.bot.agent.AgentAlarmToolService
 import cn.com.omnimind.bot.agent.WorkspaceScheduledTaskScheduler
 import cn.com.omnimind.bot.agent.HttpAgentLlmClient
@@ -170,7 +171,7 @@ internal object AndroidDeviceMcpServer {
         DeviceTool(
             name = "alarm_reminder_create",
             operation = "alarm_reminder_create",
-            description = "Create a persistent reminder alarm on this device.",
+            description = "For system clock alarms, especially daily repeats, prefer clock_app over GUI navigation. clock_app dispatches an intent; creation is not verified. exact_alarm is an app reminder and does not support repeatDays.",
             properties = mapOf(
                 "mode" to schema("string", "exact_alarm or clock_app."),
                 "title" to schema("string", "Reminder title."),
@@ -178,7 +179,8 @@ internal object AndroidDeviceMcpServer {
                 "message" to schema("string", "Optional reminder message."),
                 "timezone" to schema("string", "Optional IANA timezone."),
                 "allowWhileIdle" to schema("boolean", "Allow delivery while idle."),
-                "skipUi" to schema("boolean", "Do not open the system clock UI."),
+                "skipUi" to schema("boolean", "Default true: ask the clock app to create directly. Set false only when the user wants to edit before saving. Device confirmation may still be required."),
+                "repeatDays" to JsonObject(mapOf("type" to JsonPrimitive("array"), "description" to JsonPrimitive("ISO weekdays: 1=Monday through 7=Sunday; clock_app only."), "items" to JsonObject(mapOf("type" to JsonPrimitive("integer"), "minimum" to JsonPrimitive(1), "maximum" to JsonPrimitive(7))), "uniqueItems" to JsonPrimitive(true))),
             ),
             required = listOf("mode", "title", "triggerAt"),
         ),
@@ -432,7 +434,8 @@ internal object AndroidDeviceMcpServer {
                 message = arguments["message"]?.toString(),
                 timezone = arguments["timezone"]?.toString(),
                 allowWhileIdle = arguments["allowWhileIdle"] as? Boolean ?: true,
-                skipUi = arguments["skipUi"] as? Boolean ?: false,
+                skipUi = arguments["skipUi"] as? Boolean ?: true,
+                repeatDays = parseAlarmRepeatDays(arguments["repeatDays"]),
             )
         )
         "alarm_reminder_list" -> {

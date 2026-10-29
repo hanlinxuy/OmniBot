@@ -260,30 +260,33 @@ internal object ExecutionOverlay {
             feedbackView?.show(feedback)
         }
 
-        suspend fun avoidTarget(relativeY: Double?) {
-            val targetY = relativeY ?: return
+        suspend fun avoidTarget(feedback: ExecutionActionFeedback) {
             val moved = withContext(Dispatchers.Main.immediate) {
                 if (manuallyPositioned) return@withContext false
                 val attached = view ?: return@withContext false
                 val layout = params ?: return@withContext false
-                val gravity = executionOverlayGravityForTarget(targetY)
+                val location = IntArray(2)
+                attached.getLocationOnScreen(location)
+                val target = when (feedback) {
+                    is ExecutionActionFeedback.Press -> feedback.x to feedback.y
+                    is ExecutionActionFeedback.Swipe -> feedback.x1 to feedback.y1
+                }
+                if (!executionOverlayContainsPoint(
+                        target.first, target.second,
+                        location[0], location[1], attached.width, attached.height,
+                    )
+                ) return@withContext false
+                val gravity = if (layout.gravity and Gravity.VERTICAL_GRAVITY_MASK == Gravity.TOP) {
+                    Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
+                } else {
+                    Gravity.TOP or Gravity.CENTER_HORIZONTAL
+                }
                 if (layout.gravity == gravity) return@withContext false
                 layout.gravity = gravity
                 manager.updateViewLayout(attached, layout)
                 true
             }
             if (moved) delay(80L)
-        }
-
-        suspend fun restoreDefaultPosition() {
-            withContext(Dispatchers.Main.immediate) {
-                if (manuallyPositioned) return@withContext
-                val attached = view ?: return@withContext
-                val layout = params ?: return@withContext
-                if (layout.gravity == DEFAULT_GRAVITY) return@withContext
-                layout.gravity = DEFAULT_GRAVITY
-                manager.updateViewLayout(attached, layout)
-            }
         }
 
         suspend fun hideForScreenshot() {
@@ -442,12 +445,10 @@ internal fun executionFeedbackWindowPolicy(sdkInt: Int): ExecutionFeedbackWindow
         )
     }
 
-internal fun executionOverlayGravityForTarget(relativeY: Double): Int =
-    if (relativeY >= 500.0) {
-        Gravity.TOP or Gravity.CENTER_HORIZONTAL
-    } else {
-        Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
-    }
+internal fun executionOverlayContainsPoint(
+    x: Float, y: Float, left: Int, top: Int, width: Int, height: Int,
+): Boolean = width > 0 && height > 0 &&
+    x >= left && x < left + width && y >= top && y < top + height
 
 internal enum class ExecutionOverlayHost(val windowType: Int) {
     ACCESSIBILITY(WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY),

@@ -121,7 +121,9 @@ class SystemToolHandler(
                     val message = args["message"]?.jsonPrimitive?.contentOrNull?.trim()
                     val timezone = args["timezone"]?.jsonPrimitive?.contentOrNull?.trim()
                     val allowWhileIdle = args["allowWhileIdle"]?.jsonPrimitive?.contentOrNull?.toBooleanStrictOrNull() ?: true
-                    val skipUi = args["skipUi"]?.jsonPrimitive?.contentOrNull?.toBooleanStrictOrNull() ?: false
+                    val skipUi = args["skipUi"]?.jsonPrimitive?.contentOrNull?.toBooleanStrictOrNull() ?: true
+                    val repeatDays = parseAlarmRepeatDays(args["repeatDays"])
+                    require(mode != "exact_alarm" || repeatDays.isEmpty()) { "repeatDays is unsupported for exact_alarm" }
                     if (title.isBlank()) { throw IllegalArgumentException("title 不能为空") }
                     if (triggerAt.isBlank()) { throw IllegalArgumentException("triggerAt 不能为空") }
                     if (mode == "exact_alarm" && !alarmToolService.hasExactAlarmPermission()) {
@@ -132,7 +134,7 @@ class SystemToolHandler(
                         val granted = alarmToolService.requestNotificationPermission()
                         if (!granted) { return helper.permissionRequiredResult(callback, listOf("通知权限(POST_NOTIFICATIONS)")) }
                     }
-                    val payload = alarmToolService.createReminder(AgentAlarmCreateRequest(mode = mode, title = title, triggerAt = triggerAt, message = message, timezone = timezone, allowWhileIdle = allowWhileIdle, skipUi = skipUi))
+                    val payload = alarmToolService.createReminder(AgentAlarmCreateRequest(mode = mode, title = title, triggerAt = triggerAt, message = message, timezone = timezone, allowWhileIdle = allowWhileIdle, skipUi = skipUi, repeatDays = repeatDays))
                     val payloadJson = helper.encodeLocalizedPayload(payload)
                     ToolExecutionResult.ContextResult(
                         toolName = toolName,

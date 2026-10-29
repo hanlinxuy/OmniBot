@@ -38,20 +38,20 @@ internal class ExecutionControls private constructor(
 
     suspend fun avoidAction(action: Action) {
         val activeControls = controls ?: return
-        activeControls.avoidTarget(action.relativeTargetY())
         val display = guiEnvironment.displaySize()
         val feedback = executionActionFeedback(
             action = action,
             displayWidth = display.first,
             displayHeight = display.second,
-        ) ?: return
+        )
+        val target = feedback ?: if (action.tool == OobActionSchema.TOOL_INPUT_TEXT) {
+            executionActionFeedback(action.copy(tool = OobActionSchema.TOOL_CLICK), display.first, display.second)
+        } else null
+        if (target != null) activeControls.avoidTarget(target)
+        if (feedback == null) return
         withContext(Dispatchers.Main.immediate) {
             activeControls.showActionFeedback(feedback)
         }
-    }
-
-    suspend fun restoreDefaultPosition() {
-        controls?.restoreDefaultPosition()
     }
 
     suspend fun hideForScreenshot() {
@@ -112,14 +112,3 @@ internal class ExecutionControls private constructor(
 }
 
 internal class ManualCompletionRequested : CancellationException("GUI task completed by user")
-
-private fun Action.relativeTargetY(): Double? = when (tool) {
-    OobActionSchema.TOOL_CLICK,
-    OobActionSchema.TOOL_LONG_PRESS,
-    -> (args[OobActionSchema.ARG_Y] as? Number)?.toDouble()
-    OobActionSchema.TOOL_SWIPE -> listOfNotNull(
-        (args[OobActionSchema.ARG_Y1] as? Number)?.toDouble(),
-        (args[OobActionSchema.ARG_Y2] as? Number)?.toDouble(),
-    ).takeIf(List<Double>::isNotEmpty)?.average()
-    else -> null
-}

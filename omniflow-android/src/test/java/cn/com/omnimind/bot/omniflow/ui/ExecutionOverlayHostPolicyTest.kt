@@ -1,22 +1,19 @@
 package cn.com.omnimind.bot.omniflow.ui
 
 import android.view.WindowManager
-import android.view.Gravity
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class ExecutionOverlayHostPolicyTest {
     @Test
-    fun `execution overlay moves away from action target`() {
-        assertEquals(
-            Gravity.TOP or Gravity.CENTER_HORIZONTAL,
-            executionOverlayGravityForTarget(867.0),
-        )
-        assertEquals(
-            Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL,
-            executionOverlayGravityForTarget(120.0),
-        )
+    fun `only actual screen bounds contain the target`() {
+        assertTrue(executionOverlayContainsPoint(100f, 2300f, 20, 2200, 1000, 200))
+        assertFalse(executionOverlayContainsPoint(100f, 1800f, 20, 2200, 1000, 200))
+        assertFalse(executionOverlayContainsPoint(10f, 2300f, 20, 2200, 1000, 200))
+        assertFalse(executionOverlayContainsPoint(100f, 2300f, 20, 2200, 0, 200))
     }
 
     @Test

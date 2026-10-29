@@ -179,7 +179,6 @@ object OmniFlow {
                             stopRequested = { stopped.get() || hooks.stopRequested() },
                             onPhase = executionUi::updatePhase,
                             beforeAction = executionUi::avoidAction,
-                            afterAction = executionUi::restoreDefaultPosition,
                             beforeScreenshot = executionUi::hideForScreenshot,
                             afterScreenshot = executionUi::showAfterScreenshot,
                             onProgress = { progress, extras ->

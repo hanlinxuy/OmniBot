@@ -26,6 +26,10 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.UUID
+import java.util.Calendar
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.intOrNull
 import kotlin.coroutines.resume
 
 data class AgentAlarmCreateRequest(
@@ -35,8 +39,29 @@ data class AgentAlarmCreateRequest(
     val message: String?,
     val timezone: String?,
     val allowWhileIdle: Boolean,
-    val skipUi: Boolean
+    val skipUi: Boolean,
+    val repeatDays: List<Int> = emptyList()
 )
+
+fun parseAlarmRepeatDays(value: Any?): List<Int> {
+    if (value == null) return emptyList()
+    val values = when (value) {
+        is JsonArray -> value.map { element ->
+            val primitive = element as? JsonPrimitive
+            require(primitive != null && !primitive.isString) { "repeatDays must contain integers" }
+            primitive.intOrNull ?: throw IllegalArgumentException("repeatDays must contain integers")
+        }
+        is List<*> -> value.map { element ->
+            require(element is Int || element is Long) { "repeatDays must contain integers" }
+            val number = (element as Number).toLong()
+            require(number in 1L..7L) { "repeatDays must be ISO weekdays 1..7" }
+            number.toInt()
+        }
+        else -> throw IllegalArgumentException("repeatDays must be an array")
+    }
+    require(values.all { it in 1..7 } && values.distinct().size == values.size) { "repeatDays must contain unique ISO weekdays 1..7" }
+    return values
+}
 
 class AgentAlarmToolService(
     private val context: Context
@@ -152,6 +177,7 @@ class AgentAlarmToolService(
     }
 
     fun createReminder(request: AgentAlarmCreateRequest): Map<String, Any?> {
+        require(request.mode != MODE_EXACT_ALARM || request.repeatDays.isEmpty()) { "repeatDays is unsupported for exact_alarm" }
         return when (request.mode) {
             MODE_EXACT_ALARM -> createExactAlarm(request)
             MODE_CLOCK_APP -> createSystemClockAlarm(request)
@@ -399,6 +425,9 @@ class AgentAlarmToolService(
             putExtra(AlarmClock.EXTRA_MINUTES, localTrigger.minute)
             putExtra(AlarmClock.EXTRA_MESSAGE, request.title.trim())
             putExtra(AlarmClock.EXTRA_SKIP_UI, request.skipUi)
+            if (request.repeatDays.isNotEmpty()) {
+                putIntegerArrayListExtra(AlarmClock.EXTRA_DAYS, ArrayList(request.repeatDays.map { if (it == 7) Calendar.SUNDAY else it + 1 }))
+            }
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
         }
 
@@ -411,6 +440,8 @@ class AgentAlarmToolService(
         return mapOf(
             "success" to true,
             "mode" to MODE_CLOCK_APP,
+            "creationVerified" to false,
+            "repeatDays" to request.repeatDays,
             "title" to request.title.trim(),
             "triggerAt" to localTrigger.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
             "timezone" to ZoneId.systemDefault().id,

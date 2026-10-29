@@ -338,7 +338,7 @@ object AgentToolDefinitions {
             "Delete an existing scheduled task. Wait for the tool result after calling it.",
         "删除完成后等待工具结果，再输出最终回复。" to
             "Wait for the tool result after deleting, then produce the final reply.",
-        "创建提醒闹钟。exact_alarm 模式使用 AlarmManager 精确提醒；clock_app 模式调用系统闹钟应用创建闹钟；若用户未明确指定，优先使用 exact_alarm。用于单纯提醒，不执行自动化任务。" to
+        "创建提醒闹钟。系统闹钟尤其每日重复优先用 clock_app 原生工具，勿逐屏操作 GUI；clock_app 只派发系统时钟 Intent，不代表闹钟已创建或验证。exact_alarm 是应用内精确提醒，不支持 repeatDays。" to
             "Create a reminder alarm. The exact_alarm mode uses AlarmManager for precise reminders, while clock_app uses the system clock app to create an alarm. If the user does not specify a mode, prefer exact_alarm. This is for reminders only and does not execute automation tasks.",
         "创建后等待工具结果，再决定是否继续。" to
             "Wait for the tool result after creation before deciding what to do next.",
@@ -352,7 +352,7 @@ object AgentToolDefinitions {
             "Optional IANA timezone. Uses the system timezone when omitted.",
         "仅 exact_alarm 模式生效，是否在待机时也精确触发。默认 true。" to
             "Only applies in exact_alarm mode. Whether the reminder should remain precise while idle. Default true.",
-        "仅 clock_app 模式生效，是否尝试跳过系统闹钟界面。默认 false。" to
+        "仅 clock_app：默认 true，请求直接创建，避免打开编辑页；仅用户希望先编辑时设 false。设备仍可能要求确认。" to
             "Only applies in clock_app mode. Whether to try skipping the system alarm UI. Default false.",
         "查看由本应用创建并托管的 exact_alarm 提醒闹钟列表。" to
             "List exact_alarm reminders created and managed by this app.",
@@ -1706,7 +1706,7 @@ object AgentToolDefinitions {
             put("toolType", "alarm")
             put(
                 "description",
-                "创建提醒闹钟。exact_alarm 模式使用 AlarmManager 精确提醒；clock_app 模式调用系统闹钟应用创建闹钟；若用户未明确指定，优先使用 exact_alarm。用于单纯提醒，不执行自动化任务。"
+                "创建提醒闹钟。系统闹钟尤其每日重复优先用 clock_app 原生工具，勿逐屏操作 GUI；clock_app 只派发系统时钟 Intent，不代表闹钟已创建或验证。exact_alarm 是应用内精确提醒，不支持 repeatDays。"
             )
             put("postToolRule", "创建后等待工具结果，再决定是否继续。")
             putJsonObject("parameters") {
@@ -1742,7 +1742,13 @@ object AgentToolDefinitions {
                     }
                     putJsonObject("skipUi") {
                         put("type", "boolean")
-                        put("description", "仅 clock_app 模式生效，是否尝试跳过系统闹钟界面。默认 false。")
+                        put("description", "仅 clock_app：默认 true，请求直接创建，避免打开编辑页；仅用户希望先编辑时设 false。设备仍可能要求确认。")
+                    }
+                    putJsonObject("repeatDays") {
+                        put("type", "array")
+                        put("description", "仅 clock_app：ISO 星期，1=周一，7=周日；每日为 [1,2,3,4,5,6,7]。")
+                        put("uniqueItems", true)
+                        putJsonObject("items") { put("type", "integer"); put("minimum", 1); put("maximum", 7) }
                     }
                 }
                 putJsonArray("required") {
