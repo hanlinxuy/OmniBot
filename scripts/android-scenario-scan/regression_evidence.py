@@ -143,3 +143,12 @@ def verify_weather_note(ocrrows, body_rect, weather):
     lines = [''.join(unicodedata.normalize('NFKC', r['text']).split()).replace('℃', '°C') for r in rows]
     expected = [f'{clock}{temp}°C{condition}' for clock, temp, condition in weather]
     return {'passed': lines == expected, 'source_lines_match': lines == expected}
+
+
+def verify_zip_turn(tools, final_texts, zip_path, expected):
+    command = f'unzip -p {zip_path} file_1.txt | wc -l'
+    calls = [t for t in tools if t['tool'] == 'terminal_execute' and t['success'] is True
+             and (t['args'] or {}).get('command') == command and isinstance(t.get('result'), dict)
+             and t['result'].get('stdout', '').strip() == str(expected)]
+    return {'passed': len(calls) == 1 and final_texts == [str(expected)],
+            'fixture_read_proven': len(calls) == 1, 'answer_exact': final_texts == [str(expected)]}

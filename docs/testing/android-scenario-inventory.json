@@ -5613,7 +5613,15 @@
           "id": "CountFileLinesTask.isolated_zip",
           "outcome": "normal_chat_passed_assisted_fixture",
           "finding": "Host created a unique ZIP containing a four-line file and verified its hash. A uniquely owned ACP turn used terminal_execute to read that ZIP and returned exactly 4; host confirmed fixture hash unchanged and removed only the empty test directory after deleting the ZIP. This isolated adaptation does not cover earliest July ZIP selection or the original benchmark fixture."
+        },
+        {
+          "id": "CountFileLinesTask.isolated_oldest_zip",
+          "outcome": "normal_chat_passed_assisted_fixture",
+          "finding": "In a unique test directory with two July-dated ZIPs, a persisted ACP turn inspected timestamps, read the earlier named ZIP, and answered four, matching the host fixture. The host verified both hashes, deleted only those two ZIPs and removed the directory. Original benchmark snapshot and entire Downloads selection were not exercised."
         }
+      ],
+      "regression_cases": [
+        "count-file-lines-zip"
       ]
     },
     {

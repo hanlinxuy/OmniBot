@@ -1,7 +1,14 @@
 import unittest
-from regression_evidence import parse_screen, verify_clock_timer, verify_alarm, verify_calendar, verify_ocr_lines, verify_note_lines, verify_runlog, verify_todo, verify_weather_note
+from regression_evidence import parse_screen, verify_clock_timer, verify_alarm, verify_calendar, verify_ocr_lines, verify_note_lines, verify_runlog, verify_todo, verify_weather_note, verify_zip_turn
 
 class EvidenceTests(unittest.TestCase):
+    def test_zip_requires_exact_owned_read_and_final_answer(self):
+        call = {'tool': 'terminal_execute', 'success': True, 'args': {'command': 'unzip -p /test/fixture.zip file_1.txt | wc -l'}, 'result': {'stdout': '6'}}
+        self.assertTrue(verify_zip_turn([call], ['6'], '/test/fixture.zip', 6)['passed'])
+        self.assertFalse(verify_zip_turn([call], ['6'], '/other/fixture.zip', 6)['passed'])
+        self.assertFalse(verify_zip_turn([call], ['4'], '/test/fixture.zip', 6)['passed'])
+        self.assertFalse(verify_zip_turn([call, call], ['6'], '/test/fixture.zip', 6)['passed'])
+
     def test_weather_note_requires_both_source_lines_inside_body(self):
         weather = [('02:00', '17', '多云'), ('04:00', '16', '多云')]
         rows = [{'text': '02:00 17°C 多云', 'x': .1, 'y': .2, 'width': .4, 'height': .05}, {'text': '04:00 16°C 多云', 'x': .1, 'y': .3, 'width': .4, 'height': .05}]

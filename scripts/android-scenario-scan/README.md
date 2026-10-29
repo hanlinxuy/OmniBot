@@ -39,3 +39,5 @@ The default output is JSON on stdout; `--format markdown` prints a table. Every 
 Current device evidence and retained failures: [2026-10-29 results](../../docs/testing/android-regression-results-2026-10-29.md). The inventory links to each scoped regression; it does not promote a source scenario based on a subcase.
 
 For a synthetic check of the pinned 2.1.8 action-feedback boundary, run `../phone-real-use/.venv/bin/python scripts/android-scenario-scan/runtime-feedback-check.py` with a Python 3.12 environment. It extracts only runtime Python/JSON into a temporary directory and uses a fake host; it does not exercise a phone or prove a product fix.
+
+`count-file-lines-zip` is an isolated normal-chat ZIP adaptation with host fixture setup and cleanup. It explicitly supplies the read-only command and counts newline bytes in six newline-terminated lines; it does not cover an unterminated trailing fragment, full Downloads selection, or the upstream benchmark fixture.

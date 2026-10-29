@@ -5,6 +5,8 @@ import base64
 from collections import Counter
 from datetime import datetime, timedelta
 import fcntl
+import hashlib
+import zipfile
 import json
 import os
 from pathlib import Path
@@ -19,7 +21,7 @@ import uuid
 import xml.etree.ElementTree as ET
 from zoneinfo import ZoneInfo
 
-from regression_evidence import verify_alarm, verify_calendar, verify_clock_timer, verify_ocr_lines, verify_runlog, verify_note_lines, verify_todo, verify_weather_note
+from regression_evidence import verify_alarm, verify_calendar, verify_clock_timer, verify_ocr_lines, verify_runlog, verify_note_lines, verify_todo, verify_weather_note, verify_zip_turn
 
 ROOT = Path(__file__).resolve().parents[2]
 MANIFEST = ROOT / 'docs/testing/android-regression-cases.json'
@@ -27,7 +29,7 @@ OMNI = 'cn.com.omnimind.bot'
 CLOCK = 'com.android.BBKClock'
 NOTES = 'com.android.notes'
 CALC = 'com.android.bbkcalculator'
-PACKAGES = {'calculator': CALC, 'notes': NOTES, 'timer': CLOCK, 'alarm': CLOCK, 'calendar': OMNI, 'stopwatch': CLOCK, 'todo': NOTES, 'weather_notes': NOTES}
+PACKAGES = {'calculator': CALC, 'notes': NOTES, 'timer': CLOCK, 'alarm': CLOCK, 'calendar': OMNI, 'stopwatch': CLOCK, 'todo': NOTES, 'weather_notes': NOTES, 'zip_lines': OMNI}
 
 
 def read_cases(path=MANIFEST):
@@ -65,6 +67,7 @@ def acp_terminal(entries):
     owners = set()
     reasons = set()
     tools = []
+    final_texts = []
     for entry in entries:
         # Raw notifications and user input are not the reducer's PromptResponse projection.
         if entry['type'] not in ('assistant_message', 'ui_card', 'tool_event'):
@@ -79,6 +82,8 @@ def acp_terminal(entries):
             if not session or not turn:
                 raise RuntimeError('terminal_without_acp_owner')
             reasons.add(meta['stopReason'])
+        if entry['type'] == 'assistant_message' and meta.get('isFinal') and meta.get('stopReason') == 'end_turn':
+            final_texts.append((payload.get('content') or {}).get('text'))
         if entry['type'] == 'tool_event':
             if not session or not turn:
                 raise RuntimeError('tool_without_acp_owner')
@@ -94,7 +99,7 @@ def acp_terminal(entries):
     if len(owners) > 1:
         raise RuntimeError('multiple_acp_turns_in_single_submission')
     return {'terminal': bool(reasons), 'passed': reasons == {'end_turn'},
-            'owners': [list(x) for x in owners], 'stop_reasons': sorted(reasons), 'tools': tools}
+            'owners': [list(x) for x in owners], 'stop_reasons': sorted(reasons), 'tools': tools, 'final_texts': final_texts}
 
 
 def status_for(execution, acceptance, cleanup, submitted):
@@ -457,6 +462,7 @@ def run_case(harness, case):
     baseline = {}
     event_id = None
     prepared = False
+    fixture_created = False
     try:
         h.backend.unlocked()
         h.backend.ensure_primary_display()
@@ -477,6 +483,17 @@ def run_case(harness, case):
             baseline['todo_rows'] = [(n['text'], n['description']) for n in obs['nodes'] if n['resource_id'] == NOTES + ':id/content_tv']
             if any(title in text for text, _ in baseline['todo_rows']):
                 raise RuntimeError('test_todo_already_exists')
+        elif adapter == 'zip_lines':
+            fixture = h.output / 'fixture.zip'
+            with zipfile.ZipFile(fixture, 'w') as archive:
+                archive.writestr('file_1.txt', 'one\ntwo\nthree\nfour\nfive\nsix\n')
+            baseline['zip_hash'] = hashlib.sha256(fixture.read_bytes()).hexdigest()
+            baseline['zip_dir'] = '/sdcard/Download/OBZIP' + marker
+            h.backend.shell('mkdir', baseline['zip_dir'])
+            fixture_created = True
+            h.backend.adb_call('push', str(fixture), baseline['zip_dir'] + '/fixture.zip')
+            if h.backend.shell('sha256sum', baseline['zip_dir'] + '/fixture.zip').split()[0] != baseline['zip_hash']:
+                raise RuntimeError('fixture_hash_mismatch')
         elif adapter == 'weather_notes':
             obs = h.note_search(title)
             if any(n['text'] == title and n['class_name'] != 'android.widget.EditText' for n in obs['nodes']):
@@ -528,6 +545,8 @@ def run_case(harness, case):
         prepared = True
         h.save('baseline-checks.json', baseline)
         prompt = case['prompt_template'].format(**values)
+        if adapter == 'zip_lines':
+            prompt += f" 使用terminal_execute执行只读命令 `unzip -p {baseline['zip_dir']}/fixture.zip file_1.txt | wc -l`，依据结果回答；不访问网络或其他路径，不解压到存储，不修改文件。"
         if adapter == 'weather_notes':
             prompt += f" 读取{baseline['weather'][0][0]}和{baseline['weather'][1][0]}两条，各写一行，格式为“时:分 温度°C 天气”，不要补充其他正文。"
         if adapter == 'calendar':
@@ -539,14 +558,17 @@ def run_case(harness, case):
         report['execution'] = h.chat(prompt, 'execute') if case['layer'] == 'normal_chat' else h.gui(prompt, 'execute')
         if not report['execution'].get('passed'):
             raise RuntimeError('execution_failed')
-        if case['layer'] == 'normal_chat':
+        if case['layer'] == 'normal_chat' and adapter != 'zip_lines':
             expected_tool = {'alarm': 'alarm_reminder_create', 'timer': 'timer_create', 'calendar': 'calendar_event_create'}[adapter]
             creates = [tool for tool in report['execution']['tools'] if tool['tool'] == expected_tool]
             report['execution']['creation_calls'] = len(creates)
             if len(creates) != 1 or creates[0]['success'] is not True or (creates[0]['args'] or {}).get('title') != title:
                 report['execution']['passed'] = False
                 raise RuntimeError('single_owned_native_creation_not_proven')
-        if adapter == 'todo':
+        if adapter == 'zip_lines':
+            final = report['execution'].pop('final_texts', [])
+            report['acceptance'] = verify_zip_turn(report['execution']['tools'], final, baseline['zip_dir'] + '/fixture.zip', 6)
+        elif adapter == 'todo':
             obs = h.observe(NOTES)
             rows = [(n['text'], n['description']) for n in obs['nodes'] if n['resource_id'] == NOTES + ':id/content_tv']
             report['acceptance'] = verify_todo(rows, title)
@@ -607,13 +629,21 @@ def run_case(harness, case):
     except (RuntimeError, ValueError, OSError, sqlite3.Error, subprocess.SubprocessError) as error:
         report['error'] = str(error)[:240]
     finally:
-        if prepared and h.submitted:
+        if (prepared and h.submitted) or fixture_created:
             report['cleanup'] = {'passed': False, 'required': adapter != 'stopwatch'}
             try:
                 if h.running:
                     # Never launch another task over a possibly live action. Operator recovery is explicit.
                     raise RuntimeError('execution_terminal_unconfirmed_cleanup_blocked')
-                if adapter == 'calendar':
+                if adapter == 'zip_lines':
+                    names = h.backend.shell('ls', '-A', baseline['zip_dir']).splitlines()
+                    if names != ['fixture.zip'] or h.backend.shell('sha256sum', baseline['zip_dir'] + '/fixture.zip').split()[0] != baseline['zip_hash']:
+                        raise RuntimeError('fixture_cleanup_ownership_or_content_mismatch')
+                    h.backend.shell('rm', baseline['zip_dir'] + '/fixture.zip')
+                    h.backend.shell('rmdir', baseline['zip_dir'])
+                    parent_names = h.backend.shell('ls', '-A', '/sdcard/Download').splitlines()
+                    report['cleanup'] = {'passed': baseline['zip_dir'].rsplit('/', 1)[-1] not in parent_names, 'fixture_hash_unchanged': True}
+                elif adapter == 'calendar':
                     events, _ = h.calendar(title, baseline['calendar_id'])
                     if events:
                         if len(events) != 1:
