@@ -16,3 +16,5 @@ GUI navigation between similarly named apps is not yet stable. Identify the actu
 Respect the project's device-access policy and current authorization, including exclusions for bank, payment, WeChat, `huawei.lock` and `com.huawei.works`. Preserve existing data; stop on uncertain state and never replay a potentially submitted action. Keep private captures and raw logs out of tracked files. Record actual attempt, independent verification and restoration separately; do not infer a complete original scenario from a subscenario.
 
 For development discovery, a quick next scenario batch, or performance work, read [the development scan reference](references/dev-scan.md). It records the demonstrated vivo integration pitfalls and distinguishes host test overhead from product execution time.
+
+For changes to previously observed contacts, RunLog, link-preview, browser-surface or GUI-date boundaries, use [focused repair regressions](references/repair-regressions.md).

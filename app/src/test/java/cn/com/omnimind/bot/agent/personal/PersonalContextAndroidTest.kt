@@ -189,6 +189,29 @@ class PersonalContextAndroidTest {
         assertEquals(0, result["count"])
     }
 
+    @Test fun `contacts query accepts readable data and a filtered no-match`() = runBlocking {
+        context.permissions += Manifest.permission.READ_CONTACTS
+        val provider = object : CalendarProvider() {
+            override fun query(uri: Uri, projection: Array<out String>?, selection: String?, selectionArgs: Array<out String>?, sortOrder: String?): Cursor =
+                MatrixCursor(projection!!).apply {
+                    if (uri == ContactsContract.Data.CONTENT_URI && projection.contentEquals(arrayOf(ContactsContract.Data.CONTACT_ID))) {
+                        addRow(arrayOf(42L))
+                    } else if (uri == ContactsContract.Data.CONTENT_URI && projection.size == 3 && selectionArgs?.lastOrNull() != "%missing%") {
+                        addRow(arrayOf<Any?>(42L, "fixture-lookup", "Fixture Name"))
+                    }
+                }
+        }
+        ShadowContentResolver.registerProviderInternal(ContactsContract.AUTHORITY, provider)
+        val service = PersonalContextService(context)
+        val found = service.execute("contacts_query", json("""{"query":"Fixture"}"""))
+        assertEquals(true, found["success"])
+        assertEquals(1, found["count"])
+        assertEquals("Fixture Name", ((found["items"] as List<*>).single() as Map<*, *>)["name"])
+        val missing = service.execute("contacts_query", json("""{"query":"missing"}"""))
+        assertEquals(true, missing["success"])
+        assertEquals(0, missing["count"])
+    }
+
     @Test fun `contact updates use a single batch and do not replay failed writes`() = runBlocking {
         context.permissions += listOf(Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS)
         val provider = ContactProvider()

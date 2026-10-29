@@ -22,6 +22,8 @@ class OmniFlowManagementToolHandlerTest {
         assertTrue(isOmniFlowManagementFailure(OmniFlowManagementTools.GET_RUN_LOG, mapOf("success" to false, "error_code" to "NOT_FOUND")))
         assertTrue(isOmniFlowManagementFailure(OmniFlowManagementTools.SAVE_FUNCTION, failedRun))
         assertTrue(isOmniFlowManagementFailure(OmniFlowManagementTools.GET_RUN_LOG, failedRun - "steps"))
+        assertTrue(isOmniFlowManagementFailure(OmniFlowManagementTools.GET_RUN_LOG, failedRun + ("schema_version" to "other")))
+        assertFalse(isOmniFlowManagementFailure(OmniFlowManagementTools.GET_RUN_LOG, failedRun + ("success" to true)))
     }
 
     @Test
