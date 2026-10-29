@@ -37,3 +37,5 @@ python3 scripts/android-scenario-scan/test_summarize.py
 The default output is JSON on stdout; `--format markdown` prints a table. Every attempt is retained, including earlier failures. Cases absent from all reports are `not_run`; a passed subcase never implies its source scenario passed. Invalid or conflicting inputs are rejected rather than silently omitted.
 
 Current device evidence and retained failures: [2026-10-29 results](../../docs/testing/android-regression-results-2026-10-29.md). The inventory links to each scoped regression; it does not promote a source scenario based on a subcase.
+
+For a synthetic check of the pinned 2.1.8 action-feedback boundary, run `../phone-real-use/.venv/bin/python scripts/android-scenario-scan/runtime-feedback-check.py` with a Python 3.12 environment. It extracts only runtime Python/JSON into a temporary directory and uses a fake host; it does not exercise a phone or prove a product fix.
