@@ -97,15 +97,15 @@ BA02 原目标组件 run `debug-vlm-8e0eff05-2c8c-4c66-ab37-8bd975b1592e`：19 �
 
 最终恢复：计时选择器恢复run `debug-vlm-607e7fc3-a488-4aa3-a429-10b903d17724` 7动作、38.036秒通过；独立核对00:28:53、无运行中计时、原可见常用预设仍在。勿扰zen_mode=0，临时USB常亮恢复原值0。测试笔记已软删除、未清空回收站，测试日历事件和提醒已删除。
 
-## 2026-10-30 01:51–03:13 breadth-first continuation
+## 2026-10-30 01:51–03:18 breadth-first continuation
 
 This accounting covers this continuation only, not the entire 280-item inventory or a claim of original benchmark completion. A source is counted once even if it has multiple subcases. “Accepted” means the deliberately bounded subcase and its relevant side-effect checks met the stated conditions; “partial” includes missing source fields, wrong extra claims or unverified side effects. Fixture/dependency blocks are reported separately and can overlap an exercised source.
 
 | Measure | Count | Scope |
 |---|---:|---|
-| Distinct source scenarios exercised | 14 | LI03, LI15, RC07, PlanCommuteRouteSmsTask, LI12, HE07, ListRecentCommitsEmailTask, ExtractBenchmarkComparisonEmailTask, LI16, CheckDistanceAskUserTask1, SendWebpageAudioCountSmsTask, HE05, MattermostResourceConflictResolutionTask, GoogleMapsAlibabaPhoneContactTask |
-| Broad capability groups | 12 | Scheduling/conflict reasoning; filtered calendar plus weather; public content/restaurant search; route reading; music catalog; still-image understanding; repository source retrieval; paper comparison; missing-information clarification; web text counting; video playback/temporal description; contact creation/provider visibility |
-| Bounded subcases accepted | 3 | HE07 synthetic image, public recent-commit retrieval, missing-destination clarification |
+| Distinct source scenarios exercised | 15 | LI03, LI15, RC07, PlanCommuteRouteSmsTask, LI12, HE07, ListRecentCommitsEmailTask, ExtractBenchmarkComparisonEmailTask, LI16, CheckDistanceAskUserTask1, SendWebpageAudioCountSmsTask, HE05, MattermostResourceConflictResolutionTask, GoogleMapsAlibabaPhoneContactTask, PhotoManagementTask |
+| Broad capability groups | 13 | Scheduling/conflict reasoning; filtered calendar plus weather; public content/restaurant search; route reading; music catalog; still-image understanding; repository source retrieval; paper comparison; missing-information clarification; web text counting; video playback/temporal description; contact creation/provider visibility; native media metadata |
+| Bounded subcases accepted | 4 | HE07 synthetic image, public recent-commit retrieval, missing-destination clarification, unique media metadata query |
 | Partial or with observed defects/side effects | 11 | The other exercised sources; see linked individual batch records. No original external-message or booking workflow is claimed complete. |
 | Dependency/fixture blocks | 2 | LI10 intended reading app/baseline unavailable; LI03 calendar fixture insert not verified. LI03 also has a separate text subcase above. |
 

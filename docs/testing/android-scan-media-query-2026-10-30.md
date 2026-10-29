@@ -1,0 +1,5 @@
+# Synthetic media metadata query subcase, 2026-10-30
+
+A uniquely named synthetic PNG was transferred to shared Pictures after confirming the path absent, then hash-verified and indexed. An independent media-provider query found exactly one image with the expected name, MIME type and byte size. A normal-chat request asked only for that named image's metadata, prohibited browsing other photos, importing content, sharing, modification, deletion and memory writes, and instructed the agent to stop at permission prompts. `context_media_query` returned one matching item with the same name, `image/png` and size; the answer matched. The captured projection contained one media metadata query and no import or memory-write action.
+
+Afterward the exact test file still matched its original SHA-256; it was removed, path absence checked, the media scanner notified and exact-name provider query returned no row. The synthetic source image remains in Codex's generated-images area. This validates only the bounded metadata query and test-object cleanup, not original `PhotoManagementTask` classification, private-photo search, geolocation or broader app cache cleanup.
