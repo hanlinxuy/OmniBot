@@ -12,6 +12,19 @@ class OmniFlowManagementToolHandlerTest {
     private val json = Json { explicitNulls = false }
 
     @Test
+    fun `failed run log is readable without converting run failure into tool failure`() {
+        val failedRun = mapOf<String, Any?>(
+            "schema_version" to "omniflow.run_log.v1", "run_id" to "gui-1",
+            "status" to "failed", "success" to false, "steps" to listOf(mapOf("step_index" to 0)),
+        )
+        assertFalse(isOmniFlowManagementFailure(OmniFlowManagementTools.GET_RUN_LOG, failedRun))
+        assertEquals(false, failedRun["success"])
+        assertTrue(isOmniFlowManagementFailure(OmniFlowManagementTools.GET_RUN_LOG, mapOf("success" to false, "error_code" to "NOT_FOUND")))
+        assertTrue(isOmniFlowManagementFailure(OmniFlowManagementTools.SAVE_FUNCTION, failedRun))
+        assertTrue(isOmniFlowManagementFailure(OmniFlowManagementTools.GET_RUN_LOG, failedRun - "steps"))
+    }
+
+    @Test
     fun `saving a runlog preserves the official arguments`() {
         val args = json.parseToJsonElement(
             """{"run_id":"gui-123"}""",

@@ -85,7 +85,7 @@ class OmniFlowManagementToolHandler(context: Context) : ToolHandler {
                 modelClient = modelClient,
             ).payload
             val encoded = helper.mapToJsonElement(payload).toString()
-            if (payload["success"] == false) {
+            if (isOmniFlowManagementFailure(toolName, payload)) {
                 ToolExecutionResult.Error(
                     toolName,
                     payload["error_message"]?.toString()
@@ -180,6 +180,14 @@ class OmniFlowManagementToolHandler(context: Context) : ToolHandler {
             OmniFlowManagementTools.RELOAD_PYTHON_OVERRIDE,
         )
     }
+}
+
+internal fun isOmniFlowManagementFailure(toolName: String, payload: Map<String, Any?>): Boolean {
+    if (payload["success"] != false) return false
+    val failedRunLog = toolName == OmniFlowManagementTools.GET_RUN_LOG &&
+        payload["schema_version"] == "omniflow.run_log.v1" &&
+        payload["run_id"] is String && payload["steps"] is List<*>
+    return !failedRunLog
 }
 
 internal fun isRegisterableRunLog(record: CanonicalRunLogRecord?): Boolean =
