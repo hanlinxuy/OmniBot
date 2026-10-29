@@ -21,4 +21,6 @@ These paths are retained because their pre-run state or ownership was not establ
 
 - Form test browser artifact: the offscreen browser screenshot was generated in its app-managed run directory and retained as evidence; broader browser cache/session state was not audited. The host fixture remains in untracked session history; the temporary reverse mapping and listener were removed.
 
+- Agent workspace `/workspace/tmpverify/latest.jpg`: the foreground form trial copied a screenshot to this unmarked shared path; pre-run existence and ownership were not established. Retain, do not overwrite or delete.
+
 For subsequent file-producing scenarios, specify a unique test workspace as the output boundary without prescribing the solution; record whether the agent follows it. Record any newly discovered unmarked side effects here before deciding disposition.
