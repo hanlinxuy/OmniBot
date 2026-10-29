@@ -1083,7 +1083,15 @@
       "acceptance": "结构、时间、单位与确认内容一致；目标服务或文件可读。写入服务、同步设备、真实训练完成是不同状态。",
       "recovery": "记录执行前基线；仅恢复本轮授权变更和测试对象，具体方式待适配并验证。",
       "status": "unverified",
-      "next_action": "设备与候选能力核实后设计适配和独立判分"
+      "next_action": "设备与候选能力核实后设计适配和独立判分",
+      "runtime_subscenarios": [
+        {
+          "id": "HE08.synthetic_training_note",
+          "outcome": "normal_chat_verified_with_extra_memory_write",
+          "run_id": "gui-6db5a96a-124f-4f89-bcb4-e6c316bb0c8a",
+          "finding": "A synthetic two-exercise plan was saved in a unique note; host reopened and OCR-checked action, sets and units, then deleted it. The Agent also wrote a marked daily memory beyond the request; host removed only that entry through Memory Center and verified other visible cards remained. Full original source remains unverified."
+        }
+      ]
     },
     {
       "source": "phone-real-use scenario",
@@ -2408,7 +2416,14 @@
         ],
         "missing_upstream_packages": [],
         "note": "Checks original benchmark packages only; missing packages may be replaceable through a separately validated Android adaptation."
-      }
+      },
+      "runtime_subscenarios": [
+        {
+          "id": "AdjustBrightnessMaximumTask.natural_gui",
+          "outcome": "normal_chat_assisted_restore",
+          "finding": "Normal-chat turn first used a failed 20-step GUI run, then a one-step GUI recovery. Settings value was 255 and the retained screenshot showed the slider at the end, while auto brightness was disabled; host restored baseline mode and settings. Auto-brightness values later drifted and were restored again. Native privileged action was not available in the session; original benchmark evaluator was not run."
+        }
+      ]
     },
     {
       "source": "MobileWorld",
