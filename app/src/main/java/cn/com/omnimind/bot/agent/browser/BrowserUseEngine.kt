@@ -2196,6 +2196,7 @@ class BrowserUseEngine(
             "throttleDelayMs" to throttleDelayMs
         ).apply {
             putAll(extra)
+            putAll(BrowserToolResultPayloads.surface(tab.webView.isAttachedToWindow))
         }
     }
 
@@ -2212,7 +2213,7 @@ class BrowserUseEngine(
                     "riskChallengeDetected" to tab.riskChallengeDetected,
                     "riskChallengeKind" to tab.riskChallengeKind,
                     "recommendedNextAction" to tab.recommendedNextAction
-                )
+                ) + BrowserToolResultPayloads.surface(tab.webView.isAttachedToWindow)
             }
         )
     }

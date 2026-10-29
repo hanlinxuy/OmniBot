@@ -8,6 +8,12 @@ package cn.com.omnimind.bot.agent.browser
  * prompt. The model needs the same complete facts that the browser produced.
  */
 internal object BrowserToolResultPayloads {
+    fun surface(attachedToWindow: Boolean): Map<String, Any?> = mapOf(
+        "executionSurface" to "embedded_webview",
+        "attachedToWindow" to attachedToWindow,
+        "userVisibility" to "not_verified",
+    )
+
     fun text(
         text: String,
         extra: Map<String, Any?> = emptyMap()

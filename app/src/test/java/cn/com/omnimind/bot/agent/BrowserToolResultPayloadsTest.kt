@@ -7,6 +7,15 @@ import org.junit.Test
 
 class BrowserToolResultPayloadsTest {
     @Test
+    fun `browser surface reports attachment without claiming user visibility`() {
+        for (attached in listOf(false, true)) {
+            val payload = BrowserToolResultPayloads.surface(attached)
+            assertEquals("embedded_webview", payload["executionSurface"])
+            assertEquals(attached, payload["attachedToWindow"])
+            assertEquals("not_verified", payload["userVisibility"])
+        }
+    }
+    @Test
     fun `long browser text remains complete in the tool payload`() {
         val text = buildString {
             repeat(25_000) { append(('a'.code + it % 26).toChar()) }
