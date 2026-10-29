@@ -1,0 +1,5 @@
+# LI03 calendar fixture attempt, 2026-10-30
+
+Preparation targeted a uniquely marked synthetic event on local calendar ID 1 for 2026-11-20. A direct Android provider insert command returned, but the exact title readback returned zero rows. Preparation stopped immediately: no later fixtures were attempted and no agent planning request was submitted. A repeat query for overlapping non-recurring rows on that local calendar and time range returned zero before and after the attempt; the unique marker query also returned zero. These checks do not establish a complete recurrence audit or prove there was no malformed object outside that range. The command's captured output was not retained, so the reason and actual write outcome are not established. Do not replay the uncertain insert or delete unrelated events. The failed preparation is not evidence of a product planning failure.
+
+Private baseline and readback receipts are retained in `.session-history/scan-20261030-li03-calendar/`; no fixture was verified and no cleanup was claimed.
