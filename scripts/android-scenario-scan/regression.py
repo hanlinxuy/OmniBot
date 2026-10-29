@@ -19,7 +19,7 @@ import uuid
 import xml.etree.ElementTree as ET
 from zoneinfo import ZoneInfo
 
-from regression_evidence import verify_alarm, verify_calendar, verify_clock_timer, verify_ocr_lines, verify_runlog, verify_note_lines, verify_todo
+from regression_evidence import verify_alarm, verify_calendar, verify_clock_timer, verify_ocr_lines, verify_runlog, verify_note_lines, verify_todo, verify_weather_note
 
 ROOT = Path(__file__).resolve().parents[2]
 MANIFEST = ROOT / 'docs/testing/android-regression-cases.json'
@@ -27,7 +27,7 @@ OMNI = 'cn.com.omnimind.bot'
 CLOCK = 'com.android.BBKClock'
 NOTES = 'com.android.notes'
 CALC = 'com.android.bbkcalculator'
-PACKAGES = {'calculator': CALC, 'notes': NOTES, 'timer': CLOCK, 'alarm': CLOCK, 'calendar': OMNI, 'stopwatch': CLOCK, 'todo': NOTES}
+PACKAGES = {'calculator': CALC, 'notes': NOTES, 'timer': CLOCK, 'alarm': CLOCK, 'calendar': OMNI, 'stopwatch': CLOCK, 'todo': NOTES, 'weather_notes': NOTES}
 
 
 def read_cases(path=MANIFEST):
@@ -397,7 +397,7 @@ class Harness:
         self.launch(NOTES)
         obs = self.observe(NOTES)
         if any(n['description'] == '返回' for n in obs['nodes']):
-            self.tap(NOTES, description='返回')
+            self.tap(NOTES, description='返回', postcondition=[{'description': '搜索'}, {'resource_id': NOTES + ':id/search_et'}])
             obs = self.observe(NOTES)
         if not any(n['resource_id'] == NOTES + ':id/search_et' for n in obs['nodes']):
             self.tap(NOTES, description='搜索', postcondition={'class_name': 'android.widget.EditText'})
@@ -477,6 +477,20 @@ def run_case(harness, case):
             baseline['todo_rows'] = [(n['text'], n['description']) for n in obs['nodes'] if n['resource_id'] == NOTES + ':id/content_tv']
             if any(title in text for text, _ in baseline['todo_rows']):
                 raise RuntimeError('test_todo_already_exists')
+        elif adapter == 'weather_notes':
+            obs = h.note_search(title)
+            if any(n['text'] == title and n['class_name'] != 'android.widget.EditText' for n in obs['nodes']):
+                raise RuntimeError('test_note_already_exists')
+            h.launch('com.vivo.weather')
+            obs = h.observe('com.vivo.weather')
+            hourly = []
+            for n in obs['nodes']:
+                match = re.match(r'^(\d{2}:\d{2}),(\d+)度,([^,]+),', n['description'])
+                if match:
+                    hourly.append(match.groups())
+            if len(hourly) < 2 or hourly[0][0] == hourly[1][0]:
+                raise RuntimeError('weather_hourly_source_not_available')
+            baseline['weather'] = hourly[:2]
         elif adapter == 'notes':
             obs = h.note_search(title)
             if any(n['text'] == title and n['class_name'] != 'android.widget.EditText' for n in obs['nodes']):
@@ -514,6 +528,8 @@ def run_case(harness, case):
         prepared = True
         h.save('baseline-checks.json', baseline)
         prompt = case['prompt_template'].format(**values)
+        if adapter == 'weather_notes':
+            prompt += f" 读取{baseline['weather'][0][0]}和{baseline['weather'][1][0]}两条，各写一行，格式为“时:分 温度°C 天气”，不要补充其他正文。"
         if adapter == 'calendar':
             prompt += f' 只使用本地calendarId={baseline["calendar_id"]}，时区Asia/Shanghai，不邀请他人。使用calendar_event_create，随后calendar_event_list核对本次读取的提醒字段。'
         if adapter in ('alarm', 'timer'):
@@ -536,8 +552,8 @@ def run_case(harness, case):
             report['acceptance'] = verify_todo(rows, title)
             report['acceptance']['visible_baseline_prefix_preserved'] = not bool(Counter(map(tuple, baseline['todo_rows'][:-1])) - Counter(rows))
             report['acceptance']['passed'] &= report['acceptance']['visible_baseline_prefix_preserved']
-        elif adapter in ('calculator', 'notes'):
-            if adapter == 'notes':
+        elif adapter in ('calculator', 'notes', 'weather_notes'):
+            if adapter in ('notes', 'weather_notes'):
                 h.open_note(title)
             obs, xml = h.screen('acceptance', PACKAGES[adapter])
             rows = h.ocr('acceptance')
@@ -551,7 +567,10 @@ def run_case(harness, case):
                     x1, y1, x2, y2 = bodies[0]['bounds']
                     w, ht = obs['context']['width'], obs['context']['height']
                     rectangle = (x1/w, y1/ht, x2/w, y2/ht)
-                report['acceptance'] = verify_note_lines(rows, rectangle)
+                if adapter == 'weather_notes':
+                    report['acceptance'] = verify_weather_note(rows, rectangle, baseline['weather'])
+                else:
+                    report['acceptance'] = verify_note_lines(rows, rectangle)
                 report['acceptance']['title_matches'] = any(n['text'] == title for n in obs['nodes'])
                 report['acceptance']['passed'] &= report['acceptance']['title_matches']
         elif adapter in ('alarm', 'timer'):
@@ -645,7 +664,7 @@ def run_case(harness, case):
                     rows = [(n['text'], n['description']) for n in obs['nodes'] if n['resource_id'] == NOTES + ':id/content_tv']
                     report['cleanup'] = {'passed': not any(title in text for text, _ in rows) and not (Counter(map(tuple, baseline['todo_rows'])) - Counter(rows)),
                                          'visible_baseline_preserved': not bool(Counter(map(tuple, baseline['todo_rows'])) - Counter(rows))}
-                elif adapter == 'notes':
+                elif adapter in ('notes', 'weather_notes'):
                     # Only delete the exact marked detail page, never a list selection by position.
                     h.launch(NOTES)
                     obs = h.observe(NOTES)
@@ -738,7 +757,7 @@ def main():
     args.adb = shutil.which(args.adb)
     if not args.serial or not args.adb or not args.device_runtime_root or not args.output or args.timeout < 1:
         parser.error('live requires serial, adb, runtime root, output and positive timeout')
-    if any(c['adapter'] in ('calculator', 'notes') for c in cases) and not shutil.which('swift'):
+    if any(c['adapter'] in ('calculator', 'notes', 'weather_notes') for c in cases) and not shutil.which('swift'):
         parser.error('calculator/notes visual acceptance requires local macOS Vision via swift')
     args.output = args.output.resolve()
     if args.output.is_relative_to(ROOT):

@@ -1642,7 +1642,16 @@
           "outcome": "gui_component_readonly_exploration",
           "run_id": "debug-vlm-5d73f19d-176b-4d80-a4b8-e6f04bb2e599",
           "finding": "One open_app action opened vivo Weather; an independent post-terminal observation confirmed current-city hourly forecast. Shanghai city selection, full hourly coverage, note creation and source-to-note validation were not tested."
+        },
+        {
+          "id": "LI20.two_hour_weather_note",
+          "outcome": "gui_component_passed",
+          "run_id": "debug-vlm-81c63eea-6889-4ace-8ca5-58d4653db30c",
+          "finding": "Two visible current-city hourly forecasts were independently observed, written into one test note, checked by body-region OCR after reopening, and deleted by host automation. Full-day, precipitation, umbrella advice, and query-time requirements are not covered."
         }
+      ],
+      "regression_cases": [
+        "li20-weather-two-hours"
       ]
     },
     {

@@ -132,3 +132,14 @@ def verify_todo(rows, title):
     return {'passed': len(matches) == 1 and matches[0] == '未完成,' + title,
             'exact_title_unique': len(matches) == 1,
             'incomplete': len(matches) == 1 and matches[0] == '未完成,' + title}
+
+
+def verify_weather_note(ocrrows, body_rect, weather):
+    if body_rect is None or len(weather) != 2:
+        return {'passed': False, 'source_lines_match': False}
+    left, top, right, bottom = body_rect
+    rows = [r for r in ocrrows if left <= r['x'] and top <= r['y'] and r['x'] + r['width'] <= right and r['y'] + r['height'] <= bottom]
+    rows.sort(key=lambda r: (r['y'], r['x']))
+    lines = [''.join(unicodedata.normalize('NFKC', r['text']).split()).replace('℃', '°C') for r in rows]
+    expected = [f'{clock}{temp}°C{condition}' for clock, temp, condition in weather]
+    return {'passed': lines == expected, 'source_lines_match': lines == expected}

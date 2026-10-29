@@ -1,7 +1,14 @@
 import unittest
-from regression_evidence import parse_screen, verify_clock_timer, verify_alarm, verify_calendar, verify_ocr_lines, verify_note_lines, verify_runlog, verify_todo
+from regression_evidence import parse_screen, verify_clock_timer, verify_alarm, verify_calendar, verify_ocr_lines, verify_note_lines, verify_runlog, verify_todo, verify_weather_note
 
 class EvidenceTests(unittest.TestCase):
+    def test_weather_note_requires_both_source_lines_inside_body(self):
+        weather = [('02:00', '17', '多云'), ('04:00', '16', '多云')]
+        rows = [{'text': '02:00 17°C 多云', 'x': .1, 'y': .2, 'width': .4, 'height': .05}, {'text': '04:00 16°C 多云', 'x': .1, 'y': .3, 'width': .4, 'height': .05}]
+        self.assertTrue(verify_weather_note(rows, (0, 0, 1, 1), weather)['passed'])
+        self.assertFalse(verify_weather_note(rows, (0, 0, 1, .29), weather)['passed'])
+        self.assertFalse(verify_weather_note(rows, (0, 0, 1, 1), [('02:00', '18', '多云'), weather[1]])['passed'])
+
     def test_todo_rejects_same_title_in_another_state(self):
         self.assertTrue(verify_todo([('MARK', '未完成,MARK')], 'MARK')['passed'])
         self.assertFalse(verify_todo([('MARK', '未完成,MARK'), ('MARK', '已完成,MARK')], 'MARK')['passed'])

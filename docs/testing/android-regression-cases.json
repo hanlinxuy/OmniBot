@@ -281,6 +281,35 @@
         "attempt_id": "REGc55c996777ce",
         "report": "docs/testing/android-scan-batch-2026-10-29-todo.md"
       }
+    },
+    {
+      "id": "li20-weather-two-hours",
+      "source_id": "LI20",
+      "layer": "gui_component",
+      "adapter": "weather_notes",
+      "prompt_template": "读取系统天气当前城市逐小时预报，在 vivo 便签新建标题“[测试] {marker}”的笔记。",
+      "preconditions": [
+        "天气页面展示至少两个不同时段；唯一标题不存在"
+      ],
+      "acceptance": [
+        "独立来源观察后重新打开笔记，以正文区域 OCR 核对两个时段、温度和天气"
+      ],
+      "cleanup": [
+        "仅删除本轮唯一标记笔记并搜索核验消失"
+      ],
+      "api_args": {},
+      "baseline_evidence_refs": [],
+      "variant_evidence_refs": [],
+      "skill": "omnibot-android-regression",
+      "status": "unverified",
+      "execution_layer": "gui_component",
+      "cleanup_actor": "host_automation",
+      "variant_type": "exploratory_variant",
+      "latest_regression": {
+        "status": "passed",
+        "attempt_id": "REG04e17039c530",
+        "report": "docs/testing/android-scan-batch-2026-10-30-weather.md"
+      }
     }
   ]
 }
