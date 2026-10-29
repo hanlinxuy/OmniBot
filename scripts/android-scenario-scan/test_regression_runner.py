@@ -39,6 +39,10 @@ class RunnerContracts(unittest.TestCase):
         with patch.object(runner.time, 'sleep'):
             self.assertEqual('snapshot', h.read_retry(read, 'request-id'))
         self.assertEqual(2, read.call_count)
+        denied = Mock(side_effect=RuntimeError('app_access_denied: blocked'))
+        with self.assertRaisesRegex(RuntimeError, 'app_access_denied'):
+            h.read_retry(denied, 'request-id')
+        self.assertEqual(1, denied.call_count)
 
     def test_nonterminal_entry_cannot_forge_prompt_completion(self):
         entry = {'type': 'user_message', 'status': 'completed', 'payload': {
