@@ -21,3 +21,7 @@ A further investigation found why the outer agent's `get_run_log` call for the f
 修复提交 `e15291de` 的 APK SHA-256 为 `694d7f7d77cd332b179a290d7a39e3ea7191b9292a9f3520f71234234d5ad146`，安装后从设备 base.apk 读回一致，无障碍服务仍启用。正常聊天入口对原失败运行 `gui-891519a1-b140-490d-a513-ace9555ef36d` 调用 `get_run_log` 返回工具成功，结果保留运行自身 `success=false` 和完整 15 步；无需重跑表单。模型进一步用文件读取和终端解析自动外存的日志，未执行 GUI 或写记忆。日志显示第 13 个索引步骤意图点击退格键，语义定位未找到目标而回退坐标。
 
 模型最终仍声称全程未点击提交；但独立保存的本地服务器请求日志记录过一次 `/submitted?...budget=90`。不能由这次日志读取复验推断提交被阻止，也不能把模型的结论当成没有提交请求的证据。日志自动外存文件留存，详见待处理清单。
+
+### 浏览器表面字段真机复验
+
+在修复版上，正常聊天明确调用 `browser_use.new_tab` 打开唯一的本机只读静态页面。该工具结果及标签列表均返回 `executionSurface=embedded_webview`、`attachedToWindow=false`、`userVisibility=not_verified`，页面标题与测试页面一致；随后按返回的 tabId 关闭，返回列表为空。本次未请求截图、终端或写记忆；唯一 ADB reverse 已移除、服务器已停止并检查无监听。服务端还记录了一次路径拼入提示语的 404 请求，随后正常页面请求为 200，不能据此把所有网络行为归因于某一个工具调用。WebView 缓存与其他内部状态未做完整审计。这验证字段确实到达正常工具结果，不证明用户可见，也不验证前台路由可靠性。测试记录位于 `.session-history/scan-20261030-browser-surface/`。
