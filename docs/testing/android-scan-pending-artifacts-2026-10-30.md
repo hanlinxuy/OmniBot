@@ -11,4 +11,6 @@ These paths are retained because their pre-run state or ownership was not establ
 
 - Shared `/workspace/.venv`: the paper task installed `pypdf` after its import was observed missing, and ran `pip install pdfplumber`; the latter and dependency baselines are unknown. A `pymupdf` attempt failed. Retain installed packages and caches pending review; no uninstall or reset has been performed.
 
+- NetEase Cloud Music and Dianping search histories: both apps were searched during the scan. Persistence and pre-run histories are unknown; do not clear or reconstruct them without a baseline.
+
 For subsequent file-producing scenarios, specify a unique test workspace as the output boundary without prescribing the solution; record whether the agent follows it. Record any newly discovered unmarked side effects here before deciding disposition.
