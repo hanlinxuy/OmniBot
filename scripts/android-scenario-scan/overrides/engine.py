@@ -723,7 +723,9 @@ class OmniFlow:
             )
             record_action_result = getattr(self.planner, "record_action_result", None)
             if callable(record_action_result):
-                record_action_result(bool(step.success), previous_action_error)
+                semantic = (step.detail or {}).get("semantic_grounding") or {}
+                ambiguity = semantic if semantic.get("reason") == "target_ambiguous" else None
+                record_action_result(bool(step.success), previous_action_error, ambiguity)
             if planner_steps >= self.config.runtime.max_steps:
                 return finish(
                     False,

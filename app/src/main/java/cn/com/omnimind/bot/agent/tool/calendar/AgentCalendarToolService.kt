@@ -294,6 +294,26 @@ class AgentCalendarToolService(
             }
         }
 
+        val page = limit?.let(items::take) ?: items
+        val eventIds = page.map { it.getValue("eventId") as String }.distinct()
+        val reminders = mutableMapOf<String, MutableList<Int>>()
+        if (eventIds.isNotEmpty()) {
+            val placeholders = eventIds.joinToString(",") { "?" }
+            query(
+                CalendarContract.Reminders.CONTENT_URI,
+                arrayOf(CalendarContract.Reminders.EVENT_ID, CalendarContract.Reminders.MINUTES),
+                "${CalendarContract.Reminders.EVENT_ID} IN ($placeholders)",
+                eventIds.toTypedArray(),
+                "${CalendarContract.Reminders.EVENT_ID} ASC, ${CalendarContract.Reminders.MINUTES} ASC"
+            ).use { cursor ->
+                while (cursor.moveToNext()) {
+                    cancellation?.throwIfCanceled()
+                    reminders.getOrPut(cursor.getLong(0).toString()) { mutableListOf() }.add(cursor.getInt(1))
+                }
+            }
+        }
+        val enriched = page.map { event -> event + ("reminderMinutes" to (reminders[event.getValue("eventId")] ?: emptyList<Int>())) }
+
         return mapOf(
             "success" to true,
             "count" to if (limit == null) items.size else minOf(items.size, limit),
@@ -303,7 +323,7 @@ class AgentCalendarToolService(
             "nextOffset" to if (limit != null && items.size > limit) request.offset + limit else null,
             "rangeStart" to rangeStart.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
             "rangeEnd" to rangeEnd.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
-            "items" to (limit?.let(items::take) ?: items)
+            "items" to enriched
         )
     }
 

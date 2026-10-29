@@ -43,6 +43,17 @@ data class AgentAlarmCreateRequest(
     val repeatDays: List<Int> = emptyList()
 )
 
+fun parseTimerDuration(value: Any?): Int {
+    val duration = when (value) {
+        is JsonPrimitive -> if (!value.isString) value.content.toLongOrNull() else null
+        is Int -> value.toLong()
+        is Long -> value
+        else -> null
+    }
+    require(duration != null && duration in 1L..Int.MAX_VALUE.toLong()) { "durationSeconds must be a positive integer within 32-bit range" }
+    return duration.toInt()
+}
+
 fun parseAlarmRepeatDays(value: Any?): List<Int> {
     if (value == null) return emptyList()
     val values = when (value) {
@@ -183,6 +194,25 @@ class AgentAlarmToolService(
             MODE_CLOCK_APP -> createSystemClockAlarm(request)
             else -> throw IllegalArgumentException("Unsupported alarm mode: ${request.mode}")
         }
+    }
+
+    fun createSystemTimer(durationSeconds: Int, title: String?, skipUi: Boolean = true): Map<String, Any?> {
+        val intent = Intent(AlarmClock.ACTION_SET_TIMER).apply {
+            putExtra(AlarmClock.EXTRA_LENGTH, durationSeconds)
+            if (!title.isNullOrBlank()) putExtra(AlarmClock.EXTRA_MESSAGE, title.trim())
+            putExtra(AlarmClock.EXTRA_SKIP_UI, skipUi)
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        }
+        if (intent.resolveActivity(context.packageManager) == null) {
+            throw IllegalStateException("当前设备不支持系统计时器")
+        }
+        context.startActivity(intent)
+        return mapOf(
+            "success" to true,
+            "creationVerified" to false,
+            "durationSeconds" to durationSeconds,
+            "summary" to "已派发系统计时器请求，是否创建或运行尚未验证"
+        )
     }
 
     fun listExactReminders(): List<Map<String, Any?>> {

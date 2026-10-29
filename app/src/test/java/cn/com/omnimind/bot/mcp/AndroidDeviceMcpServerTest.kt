@@ -22,6 +22,7 @@ class AndroidDeviceMcpServerTest {
                     "schedule_task_list",
                     "schedule_task_update",
                     "schedule_task_delete",
+                    "timer_create",
                     "alarm_reminder_create",
                     "alarm_reminder_list",
                     "alarm_reminder_delete",

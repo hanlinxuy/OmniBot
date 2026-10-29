@@ -1698,6 +1698,25 @@ object AgentToolDefinitions {
         }
     }
 
+    val timerCreateTool: JsonObject = buildJsonObject {
+        put("type", "function")
+        putJsonObject("function") {
+            put("name", "timer_create")
+            put("displayName", "创建系统计时器")
+            put("toolType", "alarm")
+            put("description", "派发系统时钟计时器 Intent；仅表示请求已派发，不代表计时器已创建或运行。")
+            putJsonObject("parameters") {
+                put("type", "object")
+                putJsonObject("properties") {
+                    putJsonObject("durationSeconds") { put("type", "integer"); put("minimum", 1); put("maximum", Int.MAX_VALUE) }
+                    putJsonObject("title") { put("type", "string"); put("description", "可选计时器标题。") }
+                    putJsonObject("skipUi") { put("type", "boolean"); put("description", "尝试跳过时钟界面，默认 true。") }
+                }
+                putJsonArray("required") { add("durationSeconds") }
+            }
+        }
+    }
+
     val alarmReminderCreateTool: JsonObject = buildJsonObject {
         put("type", "function")
         putJsonObject("function") {
@@ -2243,6 +2262,7 @@ object AgentToolDefinitions {
     )
 
     private val alarmToolDefinitions: List<JsonObject> = listOf(
+        timerCreateTool,
         alarmReminderCreateTool,
         alarmReminderListTool,
         alarmReminderDeleteTool

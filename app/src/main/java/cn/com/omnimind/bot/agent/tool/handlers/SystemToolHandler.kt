@@ -22,7 +22,7 @@ class SystemToolHandler(
 ) : ToolHandler {
     override val toolNames: Set<String> = setOf(
         "schedule_task_create", "schedule_task_list", "schedule_task_update", "schedule_task_delete",
-        "alarm_reminder_create", "alarm_reminder_list", "alarm_reminder_delete",
+        "alarm_reminder_create", "alarm_reminder_list", "alarm_reminder_delete", "timer_create",
         "music_playback_control"
     )
 
@@ -41,7 +41,7 @@ class SystemToolHandler(
         return when (toolName) {
             in setOf("schedule_task_create", "schedule_task_list", "schedule_task_update", "schedule_task_delete") ->
                 executeScheduleTool(toolName, args, env.runtimeContextRepository, callback)
-            in setOf("alarm_reminder_create", "alarm_reminder_list", "alarm_reminder_delete") ->
+            in setOf("alarm_reminder_create", "alarm_reminder_list", "alarm_reminder_delete", "timer_create") ->
                 executeAlarmTool(toolName, args, callback)
             "music_playback_control" -> executeMusicTool(args, env.workspaceDescriptor, callback)
             else -> ToolExecutionResult.Error(toolName, "Unknown system tool")
@@ -113,6 +113,18 @@ class SystemToolHandler(
     private suspend fun executeAlarmTool(toolName: String, args: JsonObject, callback: AgentCallback): ToolExecutionResult {
         return try {
             when (toolName) {
+                "timer_create" -> {
+                    val duration = parseTimerDuration(args["durationSeconds"])
+                    val title = args["title"]?.jsonPrimitive?.contentOrNull
+                    val skipUi = args["skipUi"]?.jsonPrimitive?.booleanOrNull ?: true
+                    val payload = alarmToolService.createSystemTimer(duration, title, skipUi)
+                    val payloadJson = helper.encodeLocalizedPayload(payload)
+                    ToolExecutionResult.ContextResult(
+                        toolName = toolName,
+                        summaryText = helper.localized(payload["summary"].toString()),
+                        previewJson = payloadJson, rawResultJson = payloadJson, success = true
+                    )
+                }
                 "alarm_reminder_create" -> {
                     helper.reportToolProgress(callback, toolName, "正在创建提醒闹钟")
                     val mode = args["mode"]?.jsonPrimitive?.contentOrNull?.trim().orEmpty()

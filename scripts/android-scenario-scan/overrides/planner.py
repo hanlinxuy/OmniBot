@@ -455,7 +455,7 @@ class VLMPlanner:
             self._metadata_sink(dict(metadata))
         return tool_call
 
-    def record_action_result(self, success: bool, error: str | None) -> None:
+    def record_action_result(self, success: bool, error: str | None, ambiguity: dict[str, Any] | None = None) -> None:
         if self._pending_assistant is None:
             return
         call_id = self._pending_assistant["tool_calls"][0]["id"]
@@ -465,6 +465,8 @@ class VLMPlanner:
                 "action_success": success,
                 "error": error,
                 "note": "Action dispatch does not establish task completion; inspect current state.",
+                **({"semantic_ambiguity": ambiguity, "ambiguity_note":
+                    "Candidates are distinct accessibility rows, not a resolved target or safe tap coordinates. Inspect the current screen before choosing."} if ambiguity else {}),
             }, ensure_ascii=False)},
         ])
         self._pending_assistant = None

@@ -6,6 +6,7 @@ import cn.com.omnimind.bot.agent.personal.PersonalContextTools
 import cn.com.omnimind.bot.agent.personal.PersonalContextService
 import cn.com.omnimind.bot.agent.AgentRuntimeContextRepository
 import cn.com.omnimind.bot.agent.AgentAlarmCreateRequest
+import cn.com.omnimind.bot.agent.parseTimerDuration
 import cn.com.omnimind.bot.agent.parseAlarmRepeatDays
 import cn.com.omnimind.bot.agent.AgentAlarmToolService
 import cn.com.omnimind.bot.agent.WorkspaceScheduledTaskScheduler
@@ -167,6 +168,17 @@ internal object AndroidDeviceMcpServer {
             description = "Delete a persistent scheduled Agent task.",
             properties = mapOf("taskId" to schema("string", "Stable task id.")),
             required = listOf("taskId"),
+        ),
+        DeviceTool(
+            name = "timer_create",
+            operation = "timer_create",
+            description = "Dispatch a system clock timer intent. This does not verify the timer was created or started.",
+            properties = mapOf(
+                "durationSeconds" to JsonObject(mapOf("type" to JsonPrimitive("integer"), "minimum" to JsonPrimitive(1), "maximum" to JsonPrimitive(Int.MAX_VALUE))),
+                "title" to schema("string", "Optional timer label."),
+                "skipUi" to schema("boolean", "Request skipping clock UI; defaults to true."),
+            ),
+            required = listOf("durationSeconds"),
         ),
         DeviceTool(
             name = "alarm_reminder_create",
@@ -425,6 +437,11 @@ internal object AndroidDeviceMcpServer {
             "deleted" to WorkspaceScheduledTaskScheduler(context).deleteTask(
                 arguments["taskId"]?.toString().orEmpty()
             ),
+        )
+        "timer_create" -> AgentAlarmToolService(context).createSystemTimer(
+            durationSeconds = parseTimerDuration(arguments["durationSeconds"]),
+            title = arguments["title"] as? String,
+            skipUi = arguments["skipUi"] as? Boolean ?: true,
         )
         "alarm_reminder_create" -> AgentAlarmToolService(context).createReminder(
             AgentAlarmCreateRequest(

@@ -1,6 +1,6 @@
 # Android 全场景适配清单
 
-本清单覆盖 **280** 个来源场景：phone-real-use 79 个，MobileWorld 201 个。BA19/BA20 已标记为可安排测试（ready），首轮 Android 实测失败；修复后原题经正常聊天入口通过，变体经 GUI 组件通过，详见 android-scan-results-2026-10-29.md；其余条目仍需按清单状态逐项核实。ready 是执行资格，不是通过证明；候选 App、依赖、验收和恢复仍需在目标环境验证。iPhone 的历史成功不代表 Android 成功。机器可读条目见 [android-scenario-inventory.json](android-scenario-inventory.json)。
+本清单覆盖 **280** 个来源场景：phone-real-use 79 个，MobileWorld 201 个。BA02/BA19/BA20/LI22 已标记为可安排测试（ready）；各项创建、独立读回与恢复结果分开记录，详见 android-scan-results-2026-10-29.md；其余条目仍需按清单状态逐项核实。ready 是执行资格，不是通过证明；候选 App、依赖、验收和恢复仍需在目标环境验证。iPhone 的历史成功不代表 Android 成功。机器可读条目见 [android-scenario-inventory.json](android-scenario-inventory.json)。
 
 来源版本：phone-real-use `3203afb2ef41695f56d60d6678218e89a4c48d97`；MobileWorld `aa2ea47052dd15729bfca1f27fa6aca4630607a9`。各条目保留来源 ID、路径、提交、文件哈希和验收。来源路径为仓库相对路径；MobileWorld 的包名仅为其基准环境映射，不代表目标设备已安装。
 
@@ -77,3 +77,12 @@ MobileWorld 目录的低影响候选仅为静态筛选，不能证明设备可�
 ## 最新真机记录
 
 详见 [2026-10-29 扫描记录](android-scan-results-2026-10-29.md)。BA19 原题正常聊天入口和 GUI 变体通过；BA20 创建/读回/清理在 GUI 组件层通过，正常聊天入口未验收；BA02 电池页只读子场景通过，不计为原始整项通过。清单仍保留全部 280 个来源条目和受阻项。
+
+
+## 本轮扩展执行
+
+- LI04 便签子流程：中文多行创建、保存、按标题搜索和重开通过，独立截图核对正文，已仅清理测试便签；仍不算完整备餐任务。
+- BA02 原目标：勿扰开启及25分钟运行状态组件验收通过；恢复时20步失败，需要辅助关闭勿扰。ready表示具备执行条件，不表示独立全程成功。计时器原生工具已补充并另行验证。
+- LI22 本地日历：正常聊天创建、时间和提醒核验、条件删除及空结果复查通过；新修复的列表接口返回reminderMinutes。
+- 当前来源清单分布为ready 4、blocked_policy 11、blocked_dependency 166、unverified 99；没有把子场景通过计为父任务或增加来源覆盖数量。
+- 同名设置导航仍低效；补充歧义候选反馈后的复测最终通过，但长描述未命中导致多次回退，尚未验证效率改善。聊天行内代码在无障碍描述中缺值也已记录为未修复。

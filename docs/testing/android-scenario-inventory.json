@@ -49,18 +49,30 @@
           "Android 界面观察与操作"
         ]
       },
-      "android_user_prompt": null,
-      "preparation": "确认候选能力、测试数据、账号授权与来源前置条件；拟定本轮对象和恢复办法。",
+      "android_user_prompt": "打开勿扰模式并启动25分钟计时器，保留所有例外规则。",
+      "preparation": "记录勿扰开关和规则、空闲计时选择值及常用计时器基线；确认无用户运行中计时器。",
       "acceptance": "勿扰已开启，25 分钟计时器正在运行，两项状态都能读回。",
-      "recovery": "记录执行前基线；仅恢复本轮授权变更和测试对象，具体方式待适配并验证。",
-      "status": "unverified",
-      "next_action": "设备与候选能力核实后设计适配和独立判分",
+      "recovery": "取消本轮计时器、恢复计时选择值和勿扰基线，不改例外规则及常用计时器。",
+      "status": "ready",
+      "next_action": "创建目标已组件验证，清理20步失败后辅助恢复；验证同名入口反馈与原生计时器改进。",
       "runtime_subscenarios": [
         {
           "id": "BA02.settings_battery_readonly",
           "outcome": "gui_component_passed",
           "run_id": "debug-vlm-02030e3b-494b-482b-91ca-577113ad5187",
           "finding": "3 actions opened system battery page via Settings search; screenshot verified, no switch action. Does not establish parent scenario success."
+        },
+        {
+          "id": "BA02.focus_timer",
+          "outcome": "creation_passed_cleanup_assisted",
+          "run_id": "debug-vlm-8e0eff05-2c8c-4c66-ab37-8bd975b1592e",
+          "finding": "19 actions / 93.723s; independent zen_mode=1 and live 25-minute countdown. Cleanup run debug-vlm-d696de46-0bb5-44bb-b0f3-fc325247522b failed at 20 actions /104.339s; timer stopped and picker restored, DND restored by operator and verified zen_mode=0."
+        },
+        {
+          "id": "BA02.native_timer",
+          "outcome": "normal_chat_creation_verified",
+          "run_id": "gui-957acd87-33cd-447f-96e7-aabedba82cbb",
+          "finding": "New timer_create used for 25-minute test timer. Follow-up GUI verification succeeded with one unnecessary non-interactive title click /21.471s; independent clock observation verified labeled live countdown. Operator cancelled only test timer; picker restoration recorded separately. Not a full DND+timer end-to-end pass."
         }
       ]
     },
@@ -1188,7 +1200,15 @@
       "acceptance": "三餐安排笔记存在；早、午、晚各有备餐步骤；用到的食材都在库存里或列入缺货清单；库存笔记没有被改。",
       "recovery": "记录执行前基线；仅恢复本轮授权变更和测试对象，具体方式待适配并验证。",
       "status": "unverified",
-      "next_action": "设备与候选能力核实后设计适配和独立判分"
+      "next_action": "设备与候选能力核实后设计适配和独立判分",
+      "runtime_subscenarios": [
+        {
+          "id": "LI04.notes_multiline_search",
+          "outcome": "gui_component_passed",
+          "run_id": "debug-vlm-5be90b99-d180-4098-a424-c4b38477844d",
+          "finding": "13 actions created, saved, searched and reopened a unique two-line Chinese note; fresh screenshot verified body because accessibility XML omits it. Cleanup run debug-vlm-c807a6b0-bb2b-4119-9f7b-36d575454ea4 deleted only the test note. Does not establish meal-planning parent success."
+        }
+      ]
     },
     {
       "source": "phone-real-use scenario",
@@ -1641,8 +1661,15 @@
       "preparation": "确认日历和目标时区、测试日历可用；记录基线并确认测试对象清理授权。",
       "acceptance": "重新读回事件，日期为下周三、本地时间 15:00，提醒提前一小时；其他事件不变。",
       "recovery": "仅删除本轮创建的测试事件并读回。",
-      "status": "unverified",
-      "next_action": "核实设备与候选能力后执行受控验证"
+      "status": "ready",
+      "next_action": "正常聊天原生创建、提醒读回与条件删除已通过；后续验证跨天/无提醒/重名变体。",
+      "runtime_subscenarios": [
+        {
+          "id": "LI22.local_calendar_appointment",
+          "outcome": "normal_chat_passed",
+          "finding": "Unique local-calendar event for 2026-11-04 15:00–15:30 Asia/Shanghai with 60-minute reminder verified independently through Calendar provider. After listEvents reminder fix, normal chat read reminderMinutes=[60], deleted only the confirmed test event, and re-queried empty. Independent provider verified event and reminder removal."
+        }
+      ]
     },
     {
       "source": "phone-real-use scenario",

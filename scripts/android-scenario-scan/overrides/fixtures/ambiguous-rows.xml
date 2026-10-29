@@ -1,0 +1,1 @@
+<hierarchy><node clickable="true" bounds="[0,0][100,100]"><node text="Focus"/><node text="Sound"/></node><node clickable="true" bounds="[0,100][100,200]"><node text="Focus"/><node text="Status icons"/></node><node clickable="true" bounds="[0,200][100,300]"><node text="Focus"/><node text="Notifications"/></node></hierarchy>

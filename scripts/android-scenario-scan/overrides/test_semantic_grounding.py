@@ -66,3 +66,15 @@ class GroundingTests(unittest.TestCase):
         self.assertEqual(resolve(xml, 'press the 1 button').detail['status'], 'fallback')
 
 if __name__ == '__main__': unittest.main()
+
+class AmbiguousRowTests(unittest.TestCase):
+    def test_ambiguity_includes_only_each_actionable_row_labels_and_bounds(self):
+        xml = pathlib.Path(__file__).with_name('fixtures').joinpath('ambiguous-rows.xml').read_text()
+        result = resolve(xml, 'Focus')
+        self.assertEqual(result.detail['reason'], 'target_ambiguous')
+        self.assertEqual(result.action.args['x'], 10)
+        self.assertEqual(result.detail['bounds_coordinate_space'], 'screen_pixels')
+        self.assertEqual([candidate['labels'] for candidate in result.detail['candidates']],
+                         [['Focus', 'Sound'], ['Focus', 'Status icons'], ['Focus', 'Notifications']])
+        self.assertEqual([candidate['bounds'] for candidate in result.detail['candidates']],
+                         [[0.0, 0.0, 100.0, 100.0], [0.0, 100.0, 100.0, 200.0], [0.0, 200.0, 100.0, 300.0]])

@@ -80,12 +80,19 @@ def resolve_semantic_action(
 
     if len(matches) != 1:
         reason = "target_missing" if not matches else "target_ambiguous"
-        return _unresolved(
+        result = _unresolved(
             action,
             target,
             reason,
             candidate_count=len(matches),
         )
+        if len(matches) > 1:
+            result.detail["candidates"] = [
+                {"labels": _element_labels(element)[:6], "bounds": list(bounds)}
+                for bounds, element in list(matches.items())[:20]
+            ]
+            result.detail["bounds_coordinate_space"] = "screen_pixels"
+        return result
 
     bounds, element = next(iter(matches.items()))
     center_x = (bounds[0] + bounds[2]) / 2.0

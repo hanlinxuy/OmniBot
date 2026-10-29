@@ -53,6 +53,19 @@ class PersonalContextAndroidTest {
         assertEquals("permission_required", service.execute("calendar_event_list", json("{}"))["code"])
     }
 
+    @Test fun `calendar list batches reminders and keeps them attached to their events`() = runBlocking {
+        context.permissions += Manifest.permission.READ_CALENDAR
+        val provider = CalendarProvider()
+        ShadowContentResolver.registerProviderInternal("com.android.calendar", provider)
+        val result = PersonalContextService(context).execute("calendar_event_list", json("""{"startAt":"2026-10-13T00:00:00Z","endAt":"2026-10-14T00:00:00Z","limit":2}"""))
+        val items = result["items"] as List<*>
+        assertEquals(listOf(60), (items[0] as Map<*, *>)["reminderMinutes"])
+        assertEquals(emptyList<Int>(), (items[1] as Map<*, *>)["reminderMinutes"])
+        assertEquals(1, provider.reminderQueries)
+        assertEquals(listOf("1", "2"), provider.reminderArgs)
+        assertEquals(0, provider.writes)
+    }
+
     @Test fun `calendar null cursor is unavailable not an empty calendar`() = runBlocking {
         context.permissions += Manifest.permission.READ_CALENDAR
         val provider = CalendarProvider().apply { returnNull = true }
@@ -210,11 +223,18 @@ class PersonalContextAndroidTest {
         var writes = 0
         var inserted: ContentValues? = null
         var returnNull = false
+        var reminderQueries = 0
+        var reminderArgs = emptyList<String>()
         override fun onCreate() = true
         override fun getType(uri: Uri) = "vnd.android.cursor.dir/event"
         override fun query(uri: Uri, projection: Array<out String>?, selection: String?, selectionArgs: Array<out String>?, sortOrder: String?): Cursor? {
             if (returnNull) return null
             val columns = projection ?: arrayOf("_id")
+            if (uri.path.orEmpty().contains("reminders") && columns.contains(CalendarContract.Reminders.EVENT_ID)) {
+                reminderQueries++
+                reminderArgs = selectionArgs?.toList().orEmpty()
+                return MatrixCursor(columns).apply { addRow(arrayOf(1L, 60)) }
+            }
             return MatrixCursor(columns).apply {
                 if (uri.path.orEmpty().contains("instances")) for (id in 1..3) addRow(arrayOf<Any?>(id.toLong(), 1L, "Event $id", 1791849600000L, 1791853200000L, "Place", 0, "UTC"))
                 else if (columns.contains(CalendarContract.Calendars.CALENDAR_ACCESS_LEVEL)) addRow(columns.map { column -> when (column) {
