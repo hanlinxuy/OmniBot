@@ -109,6 +109,12 @@
           "outcome": "gui_component_failed",
           "run_id": "debug-vlm-a060e4e0-3185-4d4f-a4da-a57e04ff6131",
           "finding": "Agent created the uniquely marked note but repeatedly attempted the attachment entry and did not establish a drawing; failed after 12 actions. Host exited edit mode, removed only the marked note and verified absence. Drawing capability and full original scenario remain unverified."
+        },
+        {
+          "id": "BA03.graffiti_entry_diagnostic",
+          "outcome": "gui_component_failed",
+          "run_id": "debug-vlm-9627595a-e16b-4405-8763-4f92485558f6",
+          "finding": "With explicit body-focus and attachment guidance the agent entered vivo graffiti and drew an open roughly circular outline but reached the 20-action limit before saving. Host saved for recovery, reopened the unique note, then deleted it and verified absence. This verifies an entry and drawable canvas, not task completion or full BA03."
         }
       ]
     },
