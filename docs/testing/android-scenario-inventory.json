@@ -15555,7 +15555,14 @@
         ],
         "note": "Checks original benchmark packages only; missing packages may be replaceable through a separately validated Android adaptation."
       },
-      "next_action": "Adapt to an authorized installed app or prepare benchmark fixtures; do not install or transact automatically."
+      "next_action": "Adapt to an authorized installed app or prepare benchmark fixtures; do not install or transact automatically.",
+      "runtime_subscenarios": [
+        {
+          "id": "SumFileLinesTask.isolated_two_entries",
+          "outcome": "normal_chat_passed_assisted_fixture",
+          "finding": "A unique ZIP with two random-text entries of 3 and 5 newline-terminated lines was host-prepared and hash-verified. A natural-language ACP turn read both entries via terminal, output the per-entry counts and total, and answered 8. Host verified the fixture hash and removed it and its empty directory. Earliest July ZIP selection and benchmark environment remain unverified."
+        }
+      ]
     },
     {
       "source": "MobileWorld",
