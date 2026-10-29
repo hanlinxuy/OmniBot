@@ -1,0 +1,5 @@
+# Notification permission-denial primitive, 2026-10-30
+
+The system's enabled notification listeners did not include OmniBot before this test. A normal-chat request asked only for a uniquely marked test notification and explicitly prohibited requesting permission, opening settings, modifying or browsing other notifications and writing memory. `context_notifications_query` returned `permission_required`; the response correctly said the query failed and it could not determine whether the notification existed. The captured turn contained no other tool call, and the enabled-listener setting matched its pre-run value afterward.
+
+This is a bounded denial-path check of the native notification capability, not proof of authorized notification reading, content accuracy, or completion of any shopping/order notification and messaging scenario. No test notification was created. The source-scenario coverage totals do not count this standalone primitive as a new source. Private receipts are under `.session-history/scan-20261030-notification-denial/`.
