@@ -73,8 +73,8 @@
       "execution_layer": "gui_component",
       "cleanup_actor": "gui_component_baseline",
       "latest_regression": {
-        "status": "cleanup_failed",
-        "attempt_id": "REG58ab5eac9cda",
+        "status": "passed",
+        "attempt_id": "REG9b53955f2cf5",
         "report": "docs/testing/android-regression-results-2026-10-29.md"
       }
     },
@@ -167,8 +167,8 @@
       "execution_layer": "normal_chat",
       "cleanup_actor": "human_assisted_baseline",
       "latest_regression": {
-        "status": "cleanup_failed",
-        "attempt_id": "REGa97f3522f007",
+        "status": "passed",
+        "attempt_id": "REGe977ac813f6d",
         "report": "docs/testing/android-regression-results-2026-10-29.md"
       }
     },

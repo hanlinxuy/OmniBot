@@ -183,23 +183,29 @@ class Harness:
             extrema = area.getextrema()
         return self.save(name + '-display.json', {'passed': all(low >= 240 and high-low <= 3 for low, high in extrema), 'channel_extrema': extrema})
 
-    def tap(self, package, postcondition=None, **selector):
+    def wait_for_clear_input(self, obs, point):
         from vivo_phone_use.notification_policy import window_metadata, check_input_metadata
         for wait_attempt in range(10):
-            obs = self.observe(package)
-            matches = [n for n in obs['nodes'] if all(n.get(k) == v for k, v in selector.items())]
-            if len(matches) != 1:
-                break  # let the runtime report missing/ambiguous selectors without input
-            x1, y1, x2, y2 = matches[0]['bounds']
             try:
-                check_input_metadata(window_metadata(self.backend), obs['context'], [((x1+x2)//2, (y1+y2)//2)])
-                break
+                check_input_metadata(window_metadata(self.backend), obs['context'], [point])
+                return wait_attempt > 0
             except RuntimeError as error:
                 if wait_attempt == 9 or not str(error).startswith('notification_interference:'):
                     raise
-                time.sleep(1)  # wait before the first input; never dismiss a notification or replay a tap
+                time.sleep(1)  # wait before the first input; never dismiss or replay
+
+    def tap(self, package, postcondition=None, **selector):
+        obs = self.observe(package)
+        matches = [n for n in obs['nodes'] if all(n.get(k) == v for k, v in selector.items())]
+        if len(matches) == 1:
+            x1, y1, x2, y2 = matches[0]['bounds']
+            if self.wait_for_clear_input(obs, ((x1+x2)//2, (y1+y2)//2)):
+                obs = self.observe(package)
         value = self.runtime.call('tap', {'selector': selector, 'observation_id': obs['observation_id']}, recover=False)
         if not value.get('ok'):
+            if str(value.get('error')).startswith('notification_interference:'):
+                from vivo_phone_use.notification_policy import window_metadata
+                self.save('blocked-input-window-metadata.json', {'selector': selector, 'metadata': window_metadata(self.backend)})
             if postcondition and value.get('uncertain') and str(value.get('error')).startswith('app_access_state_unknown:'):
                 fresh = self.observe(package)
                 conditions = postcondition if isinstance(postcondition, list) else [postcondition]
@@ -209,13 +215,21 @@ class Harness:
 
     def type(self, package, text, **selector):
         obs = self.observe(package)
-        result = self.call('type_text', {'selector': selector, 'text': text, 'verify': True,
-                                        'allow_newlines': '\n' in text, 'observation_id': obs['observation_id']})
+        result = self.runtime.call('type_text', {'selector': selector, 'text': text, 'verify': True,
+                                                'allow_newlines': '\n' in text, 'observation_id': obs['observation_id']}, recover=False)
+        if not result.get('ok'):
+            if result.get('uncertain') and str(result.get('error')).startswith('UiObjectNotFoundError:'):
+                fresh = self.observe(package)
+                fields = [n for n in fresh['nodes'] if all(n.get(k) == v for k, v in selector.items())]
+                if len(fields) == 1 and fields[0]['text'] == text:
+                    return  # setText refreshed the view; verify the new field, never retype
+            raise RuntimeError('host_type_text:' + str(result.get('error')))
         if not result.get('value_verified'):
             raise RuntimeError('typed_value_not_verified')
 
     def launch(self, package):
-        self.call('launch_app', {'package': package, 'verify': True})
+        if self.read_retry(self.backend.context)['package'] != package:
+            self.call('launch_app', {'package': package, 'verify': True})
 
     def stop_u2(self):
         device = self.backend.start()
@@ -359,6 +373,8 @@ class Harness:
         self.launch(CLOCK)
         # Tab description is unique even when a text heading repeats the title.
         obs = self.observe(CLOCK)
+        if any(n['resource_id'] == CLOCK + ':id/originui_vtoolbar_normal_title_rom14_0' and n['text'] == title for n in obs['nodes']):
+            return
         tabs = [n for n in obs['nodes'] if n['description'] == title and n['bounds'][1] > obs['context']['height']*.85]
         if len(tabs) != 1:
             raise RuntimeError('clock_tab_not_unique')
@@ -407,6 +423,10 @@ class Harness:
         if len(bounds) != 4 or not any(n['text'] == title and n['bounds'] == bounds for n in obs['nodes']):
             raise RuntimeError('note_search_result_changed')
         x1, y1, x2, y2 = bounds
+        if self.wait_for_clear_input(obs, ((x1+x2)//2, (y1+y2)//2)):
+            obs = self.observe(NOTES)
+            if not any(n['text'] == title and n['bounds'] == bounds for n in obs['nodes']):
+                raise RuntimeError('note_result_moved_while_waiting')
         result = self.runtime.call('tap', {'x': (x1+x2)//2, 'y': (y1+y2)//2,
                                           'observation_id': obs['observation_id']}, recover=False)
         if not result.get('ok') and not (result.get('uncertain') and str(result.get('error')).startswith('app_access_state_unknown:')):
@@ -579,10 +599,10 @@ def run_case(harness, case):
                     # Only delete the exact marked detail page, never a list selection by position.
                     h.launch(NOTES)
                     obs = h.observe(NOTES)
-                    if not any(n['text'] == title and n['class_name'] == 'android.widget.EditText' for n in obs['nodes']):
+                    if not any(n['text'] == title and n['resource_id'] == NOTES + ':id/title_edit_text' for n in obs['nodes']):
                         h.open_note(title)
                     obs = h.observe(NOTES)
-                    if not any(n['text'] == title and n['class_name'] == 'android.widget.EditText' for n in obs['nodes']):
+                    if not any(n['text'] == title and n['resource_id'] == NOTES + ':id/title_edit_text' for n in obs['nodes']):
                         raise RuntimeError('cleanup_note_detail_not_proven')
                     h.tap(NOTES, description='更多')
                     h.tap(NOTES, text='删除')
@@ -692,9 +712,9 @@ def main():
             directory.mkdir()
             h = Harness(args, directory, backend=shared_backend)
             shared_backend = h.backend
-            h.backend.unlocked()
+            h.read_retry(h.backend.unlocked)
             if original is None:
-                original = h.backend.shell('settings', 'get', 'global', 'stay_on_while_plugged_in')
+                original = h.read_retry(h.backend.shell, 'settings', 'get', 'global', 'stay_on_while_plugged_in')
                 if not original.isdigit():
                     raise RuntimeError('keep_awake_baseline_unknown')
                 h.backend.shell('svc', 'power', 'stayon', 'usb')

@@ -180,6 +180,32 @@
           "cleanup": false,
           "steps": 13,
           "duration_ms": 73767
+        },
+        {
+          "case_id": "li04-notes",
+          "source_id": "LI04",
+          "attempt_id": "REGcb533241bcda",
+          "status": "cleanup_failed",
+          "execution_layer": "gui_component",
+          "cleanup_actor": "host_automation",
+          "execution": true,
+          "acceptance": null,
+          "cleanup": false,
+          "steps": 10,
+          "duration_ms": 53141
+        },
+        {
+          "case_id": "li04-notes",
+          "source_id": "LI04",
+          "attempt_id": "REG9b53955f2cf5",
+          "status": "passed",
+          "execution_layer": "gui_component",
+          "cleanup_actor": "host_automation",
+          "execution": true,
+          "acceptance": true,
+          "cleanup": true,
+          "steps": 12,
+          "duration_ms": 53306
         }
       ]
     },
@@ -283,6 +309,32 @@
           "execution": true,
           "acceptance": true,
           "cleanup": false,
+          "steps": null,
+          "duration_ms": null
+        },
+        {
+          "case_id": "ba02-timer",
+          "source_id": "BA02",
+          "attempt_id": "REGe0d625caca2f",
+          "status": "cleanup_failed",
+          "execution_layer": "normal_chat",
+          "cleanup_actor": "host_automation",
+          "execution": true,
+          "acceptance": true,
+          "cleanup": false,
+          "steps": null,
+          "duration_ms": null
+        },
+        {
+          "case_id": "ba02-timer",
+          "source_id": "BA02",
+          "attempt_id": "REGe977ac813f6d",
+          "status": "passed",
+          "execution_layer": "normal_chat",
+          "cleanup_actor": "host_automation_and_gui_component",
+          "execution": true,
+          "acceptance": true,
+          "cleanup": true,
           "steps": null,
           "duration_ms": null
         }

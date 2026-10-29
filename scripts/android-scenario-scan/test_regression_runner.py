@@ -75,6 +75,38 @@ class RunnerContracts(unittest.TestCase):
         self.assertEqual(1, backend.broadcasts)
         self.assertEqual('RUNfixed', saved['execute-submission.json']['request_id'])
 
+    def test_uncertain_set_text_rechecks_fresh_unique_value_without_retyping(self):
+        selector = {'resource_id': runner.NOTES + ':id/title_edit_text'}
+        expected = '[测试] 中文'
+        scenarios = [
+            ('exact', [dict(selector, text=expected)], True),
+            ('different', [dict(selector, text='不同')], False),
+            ('ambiguous', [dict(selector, text=expected), dict(selector, text=expected)], False),
+            ('missing', [], False),
+        ]
+        for label, fields, accepted in scenarios:
+            with self.subTest(label=label):
+                calls = []
+                class Runtime:
+                    def call(self, op, args, recover=False):
+                        calls.append((op, args, recover))
+                        return {'ok': False, 'uncertain': True, 'error': 'UiObjectNotFoundError: replaced view'}
+                h = runner.Harness.__new__(runner.Harness)
+                h.runtime = Runtime()
+                observations = iter([{'observation_id': 'before', 'nodes': []},
+                                     {'observation_id': 'fresh', 'nodes': fields}])
+                h.observe = lambda package: next(observations)
+                if accepted:
+                    h.type(runner.NOTES, expected, **selector)
+                else:
+                    with self.assertRaisesRegex(RuntimeError, 'host_type_text'):
+                        h.type(runner.NOTES, expected, **selector)
+                self.assertEqual(1, len(calls))
+                self.assertEqual('type_text', calls[0][0])
+                self.assertEqual(expected, calls[0][1]['text'])
+                self.assertEqual('before', calls[0][1]['observation_id'])
+                self.assertFalse(calls[0][2])
+
     def test_open_note_ignores_ai_reference_and_taps_regular_coordinates(self):
         harness, calls = self.note_harness(regular=1, detail_title='[测试] abc')
         detail = harness.open_note('[测试] abc')
@@ -110,6 +142,7 @@ class RunnerContracts(unittest.TestCase):
                 return {'ok': True}
         h = runner.Harness.__new__(runner.Harness)
         h.backend = SimpleNamespace(tree=lambda: xml)
+        h.wait_for_clear_input = lambda obs, point: False
         h.runtime = Runtime()
         h.note_search = lambda _: {'nodes': nodes, 'observation_id': 'search'}
         h.observe = lambda _: {'nodes': [{'text': detail_title, 'resource_id': prefix + 'title_edit_text'}], 'observation_id': 'detail'}
