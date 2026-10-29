@@ -20,3 +20,5 @@ The Android observation also identifies its execution host package. When that pa
 
 
 Ambiguous exact-label matches now return candidate row labels and screen-pixel bounds in the actual tool receipt. These are contextual alternatives, not a resolved target or guaranteed safe tap point. The planner, engine, and semantic_grounding candidates must be updated together through the official interface while idle (planner accepts the new optional receipt field before engine starts passing it). The vivo Settings retest still used long descriptions that returned target_missing; it did not demonstrate a reduction in search navigation loops. Do not promote this candidate feedback to a verified navigation fix.
+
+The Android host supplies the current observation's device-local date, timezone and weekday in `extra.device_time`; the planner renders that tuple in its request. The host APK and planner override are both required. It is contextual device-clock evidence, not proof that a model uses it or chooses the correct date. See `docs/testing/android-scan-todo-date-context-2026-10-30.md` for the bounded device retest and its limits.
