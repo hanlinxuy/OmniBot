@@ -102,7 +102,15 @@
       "acceptance": "笔记可以重新打开；小狗、两只耳朵、一条尾巴在截图上可见；局部修改后其余笔画不变。",
       "recovery": "记录执行前基线；仅恢复本轮授权变更和测试对象，具体方式待适配并验证。",
       "status": "unverified",
-      "next_action": "设备与候选能力核实后设计适配和独立判分"
+      "next_action": "设备与候选能力核实后设计适配和独立判分",
+      "runtime_subscenarios": [
+        {
+          "id": "BA03.circle_note_exploration",
+          "outcome": "gui_component_failed",
+          "run_id": "debug-vlm-a060e4e0-3185-4d4f-a4da-a57e04ff6131",
+          "finding": "Agent created the uniquely marked note but repeatedly attempted the attachment entry and did not establish a drawing; failed after 12 actions. Host exited edit mode, removed only the marked note and verified absence. Drawing capability and full original scenario remain unverified."
+        }
+      ]
     },
     {
       "source": "phone-real-use scenario",
