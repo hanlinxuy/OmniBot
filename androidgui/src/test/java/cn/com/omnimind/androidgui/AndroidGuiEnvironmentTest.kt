@@ -137,8 +137,6 @@ class AndroidGuiEnvironmentTest {
 
         override fun displaySize(): Pair<Int, Int> = 1080 to 2400
 
-        override fun screenshotExcludesOverlays(): Boolean = true
-
         override suspend fun observe(captureScreenshot: Boolean): AndroidGuiPlatformState {
             check(ready) { "android_gui_accessibility_not_ready" }
             observeCalls += 1

@@ -50,8 +50,6 @@ internal interface AndroidGuiPlatform {
 
     fun displaySize(): Pair<Int, Int>
 
-    fun screenshotExcludesOverlays(): Boolean
-
     suspend fun observe(captureScreenshot: Boolean): AndroidGuiPlatformState
 
     suspend fun dispatch(action: Action): AndroidGuiActionResult
@@ -116,9 +114,6 @@ internal class AccessibilityAndroidGuiPlatform(
             screenshotJpeg = screenshotDeferred?.await(),
         )
     }
-
-    override fun screenshotExcludesOverlays(): Boolean =
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE
 
     override suspend fun dispatch(action: Action): AndroidGuiActionResult {
         val service = awaitService()

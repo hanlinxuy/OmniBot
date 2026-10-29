@@ -259,6 +259,8 @@ class OmniFlowModelHostTest {
                 return ChatCompletionTurn(
                     message = ChatCompletionMessage(
                         role = "assistant",
+                        content = JsonPrimitive("original content"),
+                        reasoningContent = "  original reasoning  ",
                         toolCalls = listOf(
                             AssistantToolCall(
                                 id = "call-1",
@@ -338,8 +340,14 @@ class OmniFlowModelHostTest {
 
         assertEquals(listOf("search is visible"), reasoningUpdates)
         assertEquals(OmniVlmPlugin.MODEL_SCENE, result["requested_model"])
+        assertEquals("original content", (result["content"] as com.google.gson.JsonPrimitive).asString)
+        assertEquals("original content", com.google.gson.JsonParser.parseString(
+            com.google.gson.Gson().toJson(result),
+        ).asJsonObject["content"].asString)
+        assertEquals("  original reasoning  ", result["reasoning"])
         assertEquals("Qwen3-VL-235B-A22B-Instruct", result["resolved_model"])
         val toolCall = (result["tool_calls"] as List<*>).single() as Map<*, *>
+        assertEquals("call-1", toolCall["id"])
         val function = toolCall["function"] as Map<*, *>
         assertEquals("click", function["name"])
         assertEquals("""{"summary":"点击搜索","x":540,"y":1200}""", function["arguments"])

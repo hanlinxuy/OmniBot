@@ -53,10 +53,10 @@ class AgentToolImageContinuationPolicyResolverTest {
     }
 
     @Test
-    fun officialDeepSeekVisionModelKeepsToolImageContinuation() {
+    fun officialDeepSeekFlashKeepsToolImageContinuation() {
         val routeInfo = HttpController.ChatCompletionRouteInfo(
-            requestedModel = "deepseek-v4-flash-vision-exp",
-            resolvedModel = "deepseek-v4-flash-vision-exp",
+            requestedModel = "deepseek-flash",
+            resolvedModel = "deepseek-flash",
             apiBase = DeepSeekProvider.OFFICIAL_BASE_URL,
             providerProfileId = DeepSeekProvider.OFFICIAL_PROFILE_ID,
             providerProfileName = DeepSeekProvider.OFFICIAL_PROFILE_NAME,
@@ -68,7 +68,7 @@ class AgentToolImageContinuationPolicyResolverTest {
             providerCapabilities = DeepSeekProvider.requestCapabilities(
                 protocolType = DeepSeekProvider.PROTOCOL_TYPE,
                 apiBase = DeepSeekProvider.OFFICIAL_BASE_URL,
-                model = "deepseek-v4-flash-vision-exp",
+                model = "deepseek-flash",
             )
         )
 

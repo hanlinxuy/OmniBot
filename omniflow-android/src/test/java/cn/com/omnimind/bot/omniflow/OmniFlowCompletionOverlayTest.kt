@@ -1,7 +1,9 @@
 package cn.com.omnimind.bot.omniflow
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertThrows
 import org.junit.Test
+import kotlinx.coroutines.runBlocking
 
 class OmniFlowCompletionOverlayTest {
     @Test
@@ -45,12 +47,25 @@ class OmniFlowCompletionOverlayTest {
     }
 
     @Test
-    fun `window screenshot keeps execution controls visible`() {
-        assertEquals(false, shouldSuppressOverlayForScreenshot(true, true))
+    fun `screenshot hides controls and restores after capture failure`() = runBlocking {
+        val events = mutableListOf<String>()
+        assertThrows(IllegalStateException::class.java) {
+            runBlocking {
+                withScreenshotControlsHidden(true, { events += "hide" }, { events += "show" }) {
+                    events += "capture"
+                    error("capture failed")
+                }
+            }
+        }
+        assertEquals(listOf("hide", "capture", "show"), events)
     }
 
     @Test
-    fun `display screenshot hides execution controls on legacy Android`() {
-        assertEquals(true, shouldSuppressOverlayForScreenshot(true, false))
+    fun `observation without screenshot leaves controls untouched`() = runBlocking {
+        val events = mutableListOf<String>()
+        withScreenshotControlsHidden(false, { events += "hide" }, { events += "show" }) {
+            events += "observe"
+        }
+        assertEquals(listOf("observe"), events)
     }
 }

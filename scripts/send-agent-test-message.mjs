@@ -11,10 +11,10 @@ const [serial, marker, expectedHarness] = process.argv.slice(2);
 const localCommand = ['/compact', '/pause', '/resume'].includes(marker);
 const scenarioFile = process.env.OOB_USER_SCENARIO_FILE;
 const scenario = scenarioFile ? JSON.parse(readFileSync(scenarioFile, 'utf8')) : null;
+assert(!scenario || (typeof scenario.prompt === 'string' && scenario.prompt.length < 3000), 'Invalid bounded user scenario');
 const userText = scenario ? `${scenario.prompt.replaceAll('{{MARKER}}', marker)} End your final reply with ${marker}_DONE.`
   : localCommand ? marker : `Reply ${marker}`;
 assert(!localCommand || !scenario, 'Command checks cannot use a scenario');
-assert(!scenario || (typeof scenario.prompt === 'string' && scenario.prompt.length < 3000), 'Invalid bounded user scenario');
 assert((/^emulator-\d+$/.test(serial || '') ||
   (process.env.OOB_ALLOW_PHYSICAL_DEVICE === '1' && /^[A-Za-z0-9._:-]+$/.test(serial || ''))) &&
   (/^[A-Z][A-Z0-9_]+$/.test(marker || '') || localCommand),

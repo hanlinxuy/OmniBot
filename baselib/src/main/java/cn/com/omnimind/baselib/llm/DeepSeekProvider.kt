@@ -61,9 +61,8 @@ object DeepSeekProvider {
     }
 
     /**
-     * DeepSeek documents V4-Flash as text-only and exposes image input through
-     * the separate `deepseek-v4-flash-vision-exp` model. Only make this
-     * decision for the official host; a proxy may expose a different contract.
+     * DeepSeek documents image input for `deepseek-flash` and the legacy
+     * `deepseek-v4-flash-vision-exp` alias. A proxy may expose a different contract.
      */
     private fun visionInputSupport(
         protocolType: String?,
@@ -78,7 +77,7 @@ object DeepSeekProvider {
             ?.lowercase()
             ?.substringAfterLast('/')
             .orEmpty()
-        return normalizedModel == "deepseek-v4-flash-vision-exp"
+        return normalizedModel in setOf("deepseek-flash", "deepseek-v4-flash-vision-exp")
     }
 
     /**

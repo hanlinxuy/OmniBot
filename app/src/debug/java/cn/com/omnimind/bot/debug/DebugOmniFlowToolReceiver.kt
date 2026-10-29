@@ -8,7 +8,9 @@ import android.util.Log
 import cn.com.omnimind.bot.agent.HttpAgentLlmClient
 import cn.com.omnimind.bot.omniflow.OmniFlow
 import cn.com.omnimind.bot.omniflow.OmniFlowPluginRuntime
+import cn.com.omnimind.bot.omniflow.OmniFlowPythonRuntime
 import cn.com.omnimind.bot.omniflow.asOmniFlowModelClient
+import cn.com.omnimind.bot.plugin.official.OmniFlowManagementTools
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import java.io.File
@@ -32,16 +34,44 @@ class DebugOmniFlowToolReceiver : BroadcastReceiver() {
                     val arguments = argumentsJson?.let {
                         gson.fromJson<Map<String, Any?>>(it, mapType)
                     }.orEmpty()
-                    OmniFlow.callTool(
-                        context = appContext,
-                        toolCall = OmniFlow.ToolCall(name, arguments),
-                        modelClient = if (OmniFlowPluginRuntime.isEnabled()) {
-                            HttpAgentLlmClient(CoroutineScope(currentCoroutineContext()))
-                                .asOmniFlowModelClient()
-                        } else {
-                            null
-                        },
-                    ).payload
+                    when (name) {
+                        OmniFlowManagementTools.GET_PYTHON_OVERRIDE -> {
+                            val path = arguments["path"]?.toString()?.trim().orEmpty()
+                            if (path.isEmpty()) {
+                                val status = OmniFlowPythonRuntime.developerOverrideStatus(appContext)
+                                mapOf(
+                                    "success" to true,
+                                    "override_enabled" to status.enabled,
+                                    "android_install_directory" to status.androidRoot,
+                                    "shell_install_directory" to status.shellRoot,
+                                    "runtime_version" to status.runtimeVersion,
+                                    "modified_files" to status.modifiedFiles,
+                                    "editable_glob" to "omniflow/**/*.py",
+                                )
+                            } else {
+                                OmniFlowPythonRuntime.readDeveloperOverride(appContext, path) +
+                                    ("success" to true)
+                            }
+                        }
+                        OmniFlowManagementTools.APPLY_PYTHON_OVERRIDE ->
+                            OmniFlowPythonRuntime.applyDeveloperOverride(
+                                appContext,
+                                arguments["path"]?.toString().orEmpty(),
+                                arguments["content"]?.toString().orEmpty(),
+                            )
+                        OmniFlowManagementTools.RELOAD_PYTHON_OVERRIDE ->
+                            OmniFlowPythonRuntime.reloadDeveloperOverride(appContext)
+                        else -> OmniFlow.callTool(
+                            context = appContext,
+                            toolCall = OmniFlow.ToolCall(name, arguments),
+                            modelClient = if (OmniFlowPluginRuntime.isEnabled()) {
+                                HttpAgentLlmClient(CoroutineScope(currentCoroutineContext()))
+                                    .asOmniFlowModelClient()
+                            } else {
+                                null
+                            },
+                        ).payload
+                    }
                 }.getOrElse { error ->
                     linkedMapOf(
                         "success" to false,

@@ -81,11 +81,14 @@ internal class OmniFlowDeveloperOverrideStore(
     private fun ensureBase(basePythonRoot: File, runtimeVersion: String) {
         val sourcePackage = File(basePythonRoot, "omniflow")
         val sourceSchemas = File(basePythonRoot, "schemas")
+        val sourceConfig = File(basePythonRoot, "config")
         require(sourcePackage.isDirectory) { "omniflow_override_base_missing" }
         if (
             packageRoot.isDirectory &&
             versionFile.takeIf(File::isFile)?.readText()?.trim() == runtimeVersion &&
-            (!sourceSchemas.isDirectory || File(pythonRoot, "schemas").isDirectory)
+            (!sourceSchemas.isDirectory || File(pythonRoot, "schemas").isDirectory) &&
+            (!File(sourceConfig, "paper_androidworld.json").isFile ||
+                File(pythonRoot, "config/paper_androidworld.json").isFile)
         ) {
             return
         }
@@ -105,6 +108,11 @@ internal class OmniFlowDeveloperOverrideStore(
                     overwrite = true,
                 ),
             ) { "omniflow_override_schema_copy_failed" }
+        }
+        if (sourceConfig.isDirectory) {
+            require(sourceConfig.copyRecursively(File(temporary, "python/config"), overwrite = true)) {
+                "omniflow_override_config_copy_failed"
+            }
         }
         preserved.forEach { (path, bytes) ->
             bytes ?: return@forEach

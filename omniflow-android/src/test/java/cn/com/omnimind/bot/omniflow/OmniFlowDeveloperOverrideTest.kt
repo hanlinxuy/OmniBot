@@ -36,6 +36,10 @@ class OmniFlowDeveloperOverrideTest {
             parentFile.mkdirs()
             writeText("{\"tools\":[]}")
         }
+        base.resolve("config/paper_androidworld.json").apply {
+            parentFile.mkdirs()
+            writeText("{\"source\":\"pinned\"}")
+        }
         val store = OmniFlowDeveloperOverrideStore(temporary.resolve("override"))
 
         store.apply(base, "runtime-v1", "vlm/planner.py", "VALUE = 'edited'\n")
@@ -48,6 +52,21 @@ class OmniFlowDeveloperOverrideTest {
                 .readText(),
         )
         assertEquals(listOf("omniflow/vlm/planner.py"), store.status("runtime-v1").modifiedFiles)
+        assertEquals(
+            "{\"source\":\"pinned\"}",
+            temporary.resolve("override/python/config/paper_androidworld.json").readText(),
+        )
+        assertThrows(IllegalArgumentException::class.java) {
+            store.apply(base, "runtime-v1", "../config/paper_androidworld.json", "{}")
+        }
+        // Repair an override created by a prior version while keeping the edit.
+        temporary.resolve("override/python/config").deleteRecursively()
+        store.rebaseIfPresent(base, "runtime-v1")
+        assertEquals("VALUE = 'edited'\n", store.read("vlm/planner.py"))
+        assertEquals(
+            "{\"source\":\"pinned\"}",
+            temporary.resolve("override/python/config/paper_androidworld.json").readText(),
+        )
         assertTrue(store.clear())
         assertFalse(store.status("runtime-v1").enabled)
     }

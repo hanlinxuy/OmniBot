@@ -8,6 +8,7 @@ import cn.com.omnimind.baselib.llm.ChatCompletionTool
 import cn.com.omnimind.baselib.llm.ChatCompletionTurn
 import cn.com.omnimind.baselib.llm.contentText
 import cn.com.omnimind.baselib.util.ImageCompressor
+import com.google.gson.JsonParser
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
@@ -97,7 +98,8 @@ class OmniFlowModelHost(
                     ),
                 )
             },
-            "reasoning" to turn.reasoning.trim().takeIf(String::isNotEmpty),
+            "content" to turn.message.content?.let { JsonParser.parseString(it.toString()) },
+            "reasoning" to (turn.message.reasoningContent ?: turn.reasoning),
             "finish_reason" to turn.finishReason,
             "usage" to aggregateUsage(turns),
             "rejected_stalled_actions" to rejectedAttempts.takeIf { it > 0 },

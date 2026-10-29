@@ -98,8 +98,6 @@ class AndroidGuiEnvironment internal constructor(
 
     fun displaySize(): Pair<Int, Int> = platform.displaySize()
 
-    fun screenshotExcludesOverlays(): Boolean = platform.screenshotExcludesOverlays()
-
     suspend fun observe(
         captureScreenshot: Boolean = true,
         waitToStabilize: Boolean = false,

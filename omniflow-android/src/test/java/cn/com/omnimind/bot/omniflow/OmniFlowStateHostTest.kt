@@ -27,6 +27,8 @@ class OmniFlowStateHostTest {
             state.asHostMap(includeImage = true)["image_base64"],
         )
         assertFalse(state.asHostMap(includeImage = false).containsKey("image_base64"))
+        val observation = state.asHostMap(includeImage = false, executionHostPackage = "test.host")
+        assertEquals("test.host", (observation["extra"] as Map<*, *>)["execution_host_package"])
         screenshot.delete()
     }
 

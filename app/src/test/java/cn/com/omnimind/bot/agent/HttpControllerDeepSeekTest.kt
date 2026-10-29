@@ -140,10 +140,23 @@ class HttpControllerDeepSeekTest {
         )
         assertTrue(vision.supportsVisionInput == true)
 
+        val flash = DeepSeekProvider.requestCapabilities(
+            protocolType = "deepseek",
+            apiBase = "https://api.deepseek.com",
+            model = "deepseek-flash",
+        )
+        assertEquals(true, flash.supportsVisionInput)
+        val pro = DeepSeekProvider.requestCapabilities(
+            protocolType = "deepseek",
+            apiBase = "https://api.deepseek.com",
+            model = "deepseek-pro",
+        )
+        assertEquals(false, pro.supportsVisionInput)
+
         val proxied = DeepSeekProvider.requestCapabilities(
             protocolType = "deepseek",
             apiBase = "https://proxy.example.com/v1",
-            model = "deepseek-v4-flash",
+            model = "deepseek-flash",
         )
         assertEquals(null, proxied.supportsVisionInput)
 

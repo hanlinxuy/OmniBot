@@ -460,21 +460,14 @@ class OmniFlowDeviceDispatcher internal constructor(
         beforeOperation()
         val captureScreenshot = payload["screenshot"] != false
         val waitToStabilize = payload["wait_to_stabilize"] == true
-        val suppressOverlay = shouldSuppressOverlayForScreenshot(
-            captureScreenshot = captureScreenshot,
-            screenshotExcludesOverlays = environment.screenshotExcludesOverlays(),
-        )
-        if (suppressOverlay) beforeScreenshot()
-        return try {
+        return withScreenshotControlsHidden(captureScreenshot, beforeScreenshot, afterScreenshot) {
             environment.observeWithDiagnostics(
                 captureScreenshot = captureScreenshot,
                 waitToStabilize = waitToStabilize,
             ).also {
                 currentStateId = it.state.stateId
                 currentState = it.state
-            }.state.asHostMap(includeImage = captureScreenshot)
-        } finally {
-            if (suppressOverlay) afterScreenshot()
+            }.state.asHostMap(includeImage = captureScreenshot, executionHostPackage = appContext.packageName)
         }
     }
 
@@ -807,17 +800,23 @@ internal fun manualCompletionResult(
     "done_reason" to "manual_finished",
 )
 
-internal fun State.asHostMap(includeImage: Boolean): Map<String, Any?> {
-    if (!includeImage) return asMap()
+internal fun State.asHostMap(
+    includeImage: Boolean,
+    executionHostPackage: String? = null,
+): Map<String, Any?> {
     val screenshot = screenshotPath
+        ?.takeIf { includeImage }
         ?.takeIf(String::isNotBlank)
         ?.let(::File)
         ?.takeIf(File::isFile)
-        ?: return asMap()
-    val visualRgb = screenshot.visualRgbPayload()
+    val visualRgb = screenshot?.visualRgbPayload()
     return asMap() + buildMap {
-        put("image_base64", Base64.getEncoder().encodeToString(screenshot.readBytes()))
-        visualRgb?.let { put("extra", mapOf("visual_rgb" to it)) }
+        screenshot?.let { put("image_base64", Base64.getEncoder().encodeToString(it.readBytes())) }
+        val extra = buildMap {
+            visualRgb?.let { put("visual_rgb", it) }
+            executionHostPackage?.let { put("execution_host_package", it) }
+        }
+        if (extra.isNotEmpty()) put("extra", extra)
     }
 }
 
@@ -889,10 +888,19 @@ internal fun completionOverlayVisibleMs(
     else -> 900L
 }
 
-internal fun shouldSuppressOverlayForScreenshot(
+internal suspend fun <T> withScreenshotControlsHidden(
     captureScreenshot: Boolean,
-    screenshotExcludesOverlays: Boolean,
-): Boolean = captureScreenshot && !screenshotExcludesOverlays
+    hide: suspend () -> Unit,
+    show: suspend () -> Unit,
+    capture: suspend () -> T,
+): T {
+    if (captureScreenshot) hide()
+    return try {
+        capture()
+    } finally {
+        if (captureScreenshot) show()
+    }
+}
 
 internal class ModelRunLogMetrics {
     private data class Call(
