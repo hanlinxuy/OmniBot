@@ -342,7 +342,7 @@ class Harness:
             gate = None
             for read_attempt in range(4):
                 try:
-                    gate = self.chat_snapshot(token)
+                    gate = self.read_retry(self.chat_snapshot, token)
                     break
                 except json.JSONDecodeError:
                     break  # a streamed tool payload can be incomplete; poll the same request again

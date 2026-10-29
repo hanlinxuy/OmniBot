@@ -23,7 +23,7 @@ class RunnerContracts(unittest.TestCase):
         h.backend = SimpleNamespace(unlocked=lambda: None, start=lambda: SimpleNamespace(start_uiautomator=lambda: None))
         h.launch = h.tap = h.type = h.stop_u2 = h.save = lambda *args, **kwargs: None
         h.observe = lambda *args: {'nodes': [{'description': '', 'class_name': 'android.widget.EditText', 'text': ''}], 'observation_id': 'obs'}
-        h.read_retry = lambda operation: operation()
+        h.read_retry = lambda operation, *args: operation(*args)
         h.call = Mock()
         h.chat_snapshot = Mock(side_effect=[json.JSONDecodeError('partial', '{', 1), {'terminal': True, 'passed': True}])
         with patch.object(runner.time, 'sleep'):
@@ -31,6 +31,14 @@ class RunnerContracts(unittest.TestCase):
         self.assertTrue(result['passed'])
         self.assertEqual(2, h.chat_snapshot.call_count)
         self.assertEqual(1, h.call.call_count)
+
+    def test_transient_unknown_access_retries_read_without_bypassing_guard(self):
+        from unittest.mock import Mock
+        h = runner.Harness.__new__(runner.Harness)
+        read = Mock(side_effect=[RuntimeError('app_access_state_unknown: refusing access'), 'snapshot'])
+        with patch.object(runner.time, 'sleep'):
+            self.assertEqual('snapshot', h.read_retry(read, 'request-id'))
+        self.assertEqual(2, read.call_count)
 
     def test_nonterminal_entry_cannot_forge_prompt_completion(self):
         entry = {'type': 'user_message', 'status': 'completed', 'payload': {
