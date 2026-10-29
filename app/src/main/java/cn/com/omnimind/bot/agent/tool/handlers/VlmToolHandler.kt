@@ -156,7 +156,7 @@ class VlmToolHandler(context: Context) : ToolHandler {
                     finalStateId = finalStateId,
                     finalState = finalStatePayload(finalStateId),
                     stepCount = runStepCount(resultRunId),
-                    extras = mapOf("error" to message),
+                    extras = mapOf("error" to message) + permissionActionContext(resultRunId),
                 )
                 val encoded = helper.encodeLocalizedPayload(payload)
                 return ToolExecutionResult.Interrupted(
@@ -191,7 +191,7 @@ class VlmToolHandler(context: Context) : ToolHandler {
                 finalStateId = finalStateId,
                 finalState = finalStatePayload(finalStateId),
                 stepCount = stepCount,
-                extras = result.filterKeys {
+                extras = permissionActionContext(resultRunId) + result.filterKeys {
                     it in setOf(
                         "source",
                         "function_id",
@@ -279,7 +279,7 @@ class VlmToolHandler(context: Context) : ToolHandler {
             finalStateId = finalStateId,
             finalState = finalStatePayload(finalStateId),
             stepCount = runStepCount(runId),
-            extras = mapOf("error" to localizedMessage),
+            extras = mapOf("error" to localizedMessage) + permissionActionContext(runId),
         )
         val encoded = helper.encodeLocalizedPayload(payload)
         return ToolExecutionResult.ContextResult(
@@ -293,6 +293,9 @@ class VlmToolHandler(context: Context) : ToolHandler {
 
     private fun runStepCount(runId: String): Int? =
         InternalRunLogStore.getRun(helper.context, runId)?.steps?.size
+
+    private fun permissionActionContext(runId: String): Map<String, Any?> =
+        permissionActionContext(InternalRunLogStore.getRun(helper.context, runId)?.steps.orEmpty())
 
     private fun finalStatePayload(stateId: String?): Map<String, Any?>? = stateId
         ?.takeIf(String::isNotBlank)
@@ -321,6 +324,22 @@ class VlmToolHandler(context: Context) : ToolHandler {
 
         return "小万官方内置模型暂不可用，请稍后重试或在模型场景中选择其他 Provider。"
     }
+}
+
+internal fun permissionActionContext(steps: List<Map<String, Any?>>): Map<String, Any?> {
+    val dispatched = steps.any { step ->
+        val action = mapArg(step["action"])
+        val args = mapArg(action["args"])
+        val result = mapArg(step["result"])
+        action["tool"] == "click" && result["success"] == true &&
+            args["node_resource_id"] == "com.android.permissioncontroller:id/permission_deny_and_dont_ask_again_button"
+    }
+    return if (dispatched) mapOf(
+        "permission_action_notice" to
+            "The GUI dispatched a click on the system permission dialog's deny and don't ask again button. " +
+            "This is a permission decision; do not claim no settings were changed. " +
+            "The dispatch alone does not establish the previous or resulting permission state.",
+    ) else emptyMap()
 }
 
 /** Stable context envelope returned to the outer Agent after a VLM task. */

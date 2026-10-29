@@ -6,6 +6,28 @@ import org.junit.Test
 
 class VlmTaskContextPayloadTest {
     @Test
+    fun `dispatched permanent permission denial is surfaced for failed and successful runs`() {
+        val step = mapOf<String, Any?>(
+            "action" to mapOf("tool" to "click", "args" to mapOf(
+                "node_resource_id" to "com.android.permissioncontroller:id/permission_deny_and_dont_ask_again_button",
+            )),
+            "result" to mapOf("success" to true),
+        )
+        val notice = permissionActionContext(listOf(step))
+        assertTrue(notice["permission_action_notice"].toString().contains("does not establish"))
+        for (success in listOf(false, true)) {
+            val payload = buildVlmTaskContextPayload(
+                requestedRunId = "r", goal = "read album", resultRunId = "r",
+                success = success, doneReason = if (success) "finished" else "failed",
+                content = "", finalStateId = null, extras = notice,
+            )
+            assertEquals(notice["permission_action_notice"], payload["permission_action_notice"])
+        }
+        assertTrue(permissionActionContext(listOf(step + ("result" to mapOf("success" to false)))).isEmpty())
+        assertTrue(permissionActionContext(listOf(mapOf("action" to mapOf("tool" to "click"), "result" to mapOf("success" to true)))).isEmpty())
+    }
+
+    @Test
     fun `vlm result keeps goal run log and final state context`() {
         val payload = buildVlmTaskContextPayload(
             requestedRunId = "gui-request",
