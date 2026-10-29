@@ -2536,7 +2536,14 @@
         ],
         "missing_upstream_packages": [],
         "note": "Checks original benchmark packages only; missing packages may be replaceable through a separately validated Android adaptation."
-      }
+      },
+      "runtime_subscenarios": [
+        {
+          "id": "AdjustFontIconMaximumTask.one_font_step",
+          "outcome": "normal_chat_verified_assisted_restore_with_extra_memory",
+          "finding": "A natural one-step font-size request ended with scale 1.12 from 1.0 and unchanged display density; retained GUI screenshots showed standard to large and standard font weight. Three VLM runs failed with finish_reason=length; the Agent also hit maximum then reset defaults before the final step and wrote a daily memory. Host restored font scale and removed that exact memory entry; the original max font and icons benchmark remains unverified."
+        }
+      ]
     },
     {
       "source": "MobileWorld",
