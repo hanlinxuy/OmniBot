@@ -1,0 +1,384 @@
+{
+  "cases": [
+    {
+      "case_id": "ba19-calculator",
+      "source_id": "BA19",
+      "status": "attempted",
+      "attempts": [
+        {
+          "case_id": "ba19-calculator",
+          "source_id": "BA19",
+          "attempt_id": "REGa5e511f84895",
+          "status": "blocked",
+          "execution_layer": "gui_component",
+          "cleanup_actor": "host_automation",
+          "execution": null,
+          "acceptance": null,
+          "cleanup": true,
+          "steps": null,
+          "duration_ms": null
+        },
+        {
+          "case_id": "ba19-calculator",
+          "source_id": "BA19",
+          "attempt_id": "REG6d33d61d16b9",
+          "status": "blocked",
+          "execution_layer": "gui_component",
+          "cleanup_actor": "host_automation",
+          "execution": null,
+          "acceptance": null,
+          "cleanup": true,
+          "steps": null,
+          "duration_ms": null
+        },
+        {
+          "case_id": "ba19-calculator",
+          "source_id": "BA19",
+          "attempt_id": "REG28dffeab65de",
+          "status": "blocked",
+          "execution_layer": "gui_component",
+          "cleanup_actor": "host_automation",
+          "execution": null,
+          "acceptance": null,
+          "cleanup": true,
+          "steps": null,
+          "duration_ms": null
+        },
+        {
+          "case_id": "ba19-calculator",
+          "source_id": "BA19",
+          "attempt_id": "REG61d5f4523f78",
+          "status": "cleanup_failed",
+          "execution_layer": "gui_component",
+          "cleanup_actor": "host_automation",
+          "execution": true,
+          "acceptance": null,
+          "cleanup": false,
+          "steps": 6,
+          "duration_ms": 28415
+        },
+        {
+          "case_id": "ba19-calculator",
+          "source_id": "BA19",
+          "attempt_id": "REG9554f4ef954a",
+          "status": "passed",
+          "execution_layer": "gui_component",
+          "cleanup_actor": "host_automation",
+          "execution": true,
+          "acceptance": true,
+          "cleanup": true,
+          "steps": 6,
+          "duration_ms": 23966
+        }
+      ]
+    },
+    {
+      "case_id": "li04-notes",
+      "source_id": "LI04",
+      "status": "attempted",
+      "attempts": [
+        {
+          "case_id": "li04-notes",
+          "source_id": "LI04",
+          "attempt_id": "REG7c1f5f6db35f",
+          "status": "blocked",
+          "execution_layer": "gui_component",
+          "cleanup_actor": "host_automation",
+          "execution": null,
+          "acceptance": null,
+          "cleanup": true,
+          "steps": null,
+          "duration_ms": null
+        },
+        {
+          "case_id": "li04-notes",
+          "source_id": "LI04",
+          "attempt_id": "REGd22465175639",
+          "status": "blocked",
+          "execution_layer": "gui_component",
+          "cleanup_actor": "host_automation",
+          "execution": null,
+          "acceptance": null,
+          "cleanup": true,
+          "steps": null,
+          "duration_ms": null
+        },
+        {
+          "case_id": "li04-notes",
+          "source_id": "LI04",
+          "attempt_id": "REGd28a68bbb572",
+          "status": "blocked",
+          "execution_layer": "gui_component",
+          "cleanup_actor": "host_automation",
+          "execution": null,
+          "acceptance": null,
+          "cleanup": true,
+          "steps": null,
+          "duration_ms": null
+        },
+        {
+          "case_id": "li04-notes",
+          "source_id": "LI04",
+          "attempt_id": "REG6f5560af97d1",
+          "status": "cleanup_failed",
+          "execution_layer": "gui_component",
+          "cleanup_actor": "host_automation",
+          "execution": null,
+          "acceptance": null,
+          "cleanup": false,
+          "steps": null,
+          "duration_ms": null
+        },
+        {
+          "case_id": "li04-notes",
+          "source_id": "LI04",
+          "attempt_id": "REG8ede71139d1a",
+          "status": "cleanup_failed",
+          "execution_layer": "gui_component",
+          "cleanup_actor": "host_automation",
+          "execution": false,
+          "acceptance": null,
+          "cleanup": false,
+          "steps": 0,
+          "duration_ms": 30073
+        },
+        {
+          "case_id": "li04-notes",
+          "source_id": "LI04",
+          "attempt_id": "REG77d20bd3c667",
+          "status": "cleanup_failed",
+          "execution_layer": "gui_component",
+          "cleanup_actor": "host_automation",
+          "execution": true,
+          "acceptance": null,
+          "cleanup": false,
+          "steps": 10,
+          "duration_ms": 44064
+        },
+        {
+          "case_id": "li04-notes",
+          "source_id": "LI04",
+          "attempt_id": "REG570a930de535",
+          "status": "blocked",
+          "execution_layer": "gui_component",
+          "cleanup_actor": "host_automation",
+          "execution": null,
+          "acceptance": null,
+          "cleanup": true,
+          "steps": null,
+          "duration_ms": null
+        },
+        {
+          "case_id": "li04-notes",
+          "source_id": "LI04",
+          "attempt_id": "REG58ab5eac9cda",
+          "status": "cleanup_failed",
+          "execution_layer": "gui_component",
+          "cleanup_actor": "host_automation",
+          "execution": true,
+          "acceptance": true,
+          "cleanup": false,
+          "steps": 13,
+          "duration_ms": 73767
+        }
+      ]
+    },
+    {
+      "case_id": "ba20-alarm",
+      "source_id": "BA20",
+      "status": "attempted",
+      "attempts": [
+        {
+          "case_id": "ba20-alarm",
+          "source_id": "BA20",
+          "attempt_id": "REGf49d0c646b38",
+          "status": "blocked",
+          "execution_layer": "normal_chat",
+          "cleanup_actor": "host_automation",
+          "execution": null,
+          "acceptance": null,
+          "cleanup": false,
+          "steps": null,
+          "duration_ms": null
+        },
+        {
+          "case_id": "ba20-alarm",
+          "source_id": "BA20",
+          "attempt_id": "REGd06149283e9d",
+          "status": "blocked",
+          "execution_layer": "normal_chat",
+          "cleanup_actor": "host_automation",
+          "execution": null,
+          "acceptance": null,
+          "cleanup": true,
+          "steps": null,
+          "duration_ms": null
+        },
+        {
+          "case_id": "ba20-alarm",
+          "source_id": "BA20",
+          "attempt_id": "REG8ae93e3672f8",
+          "status": "cleanup_failed",
+          "execution_layer": "normal_chat",
+          "cleanup_actor": "host_automation",
+          "execution": null,
+          "acceptance": null,
+          "cleanup": false,
+          "steps": null,
+          "duration_ms": null
+        },
+        {
+          "case_id": "ba20-alarm",
+          "source_id": "BA20",
+          "attempt_id": "REG30625ff1afb4",
+          "status": "passed",
+          "execution_layer": "normal_chat",
+          "cleanup_actor": "host_automation",
+          "execution": true,
+          "acceptance": true,
+          "cleanup": true,
+          "steps": null,
+          "duration_ms": null
+        }
+      ]
+    },
+    {
+      "case_id": "ba02-timer",
+      "source_id": "BA02",
+      "status": "attempted",
+      "attempts": [
+        {
+          "case_id": "ba02-timer",
+          "source_id": "BA02",
+          "attempt_id": "REG4cde8edac2a3",
+          "status": "blocked",
+          "execution_layer": "normal_chat",
+          "cleanup_actor": "host_automation",
+          "execution": null,
+          "acceptance": null,
+          "cleanup": true,
+          "steps": null,
+          "duration_ms": null
+        },
+        {
+          "case_id": "ba02-timer",
+          "source_id": "BA02",
+          "attempt_id": "REG2ceda2548ef4",
+          "status": "cleanup_failed",
+          "execution_layer": "normal_chat",
+          "cleanup_actor": "host_automation",
+          "execution": true,
+          "acceptance": true,
+          "cleanup": false,
+          "steps": null,
+          "duration_ms": null
+        },
+        {
+          "case_id": "ba02-timer",
+          "source_id": "BA02",
+          "attempt_id": "REGa97f3522f007",
+          "status": "cleanup_failed",
+          "execution_layer": "normal_chat",
+          "cleanup_actor": "host_automation",
+          "execution": true,
+          "acceptance": true,
+          "cleanup": false,
+          "steps": null,
+          "duration_ms": null
+        }
+      ]
+    },
+    {
+      "case_id": "li22-calendar",
+      "source_id": "LI22",
+      "status": "attempted",
+      "attempts": [
+        {
+          "case_id": "li22-calendar",
+          "source_id": "LI22",
+          "attempt_id": "REG7455ff54ccef",
+          "status": "blocked",
+          "execution_layer": "normal_chat",
+          "cleanup_actor": "host_automation",
+          "execution": null,
+          "acceptance": null,
+          "cleanup": true,
+          "steps": null,
+          "duration_ms": null
+        },
+        {
+          "case_id": "li22-calendar",
+          "source_id": "LI22",
+          "attempt_id": "REG43f73e3bc152",
+          "status": "failed",
+          "execution_layer": "normal_chat",
+          "cleanup_actor": "normal_chat",
+          "execution": true,
+          "acceptance": false,
+          "cleanup": true,
+          "steps": null,
+          "duration_ms": null
+        },
+        {
+          "case_id": "li22-calendar",
+          "source_id": "LI22",
+          "attempt_id": "REGb9871cb4459f",
+          "status": "passed",
+          "execution_layer": "normal_chat",
+          "cleanup_actor": "normal_chat",
+          "execution": true,
+          "acceptance": true,
+          "cleanup": true,
+          "steps": null,
+          "duration_ms": null
+        }
+      ]
+    },
+    {
+      "case_id": "clock-stopwatch",
+      "source_id": "BA02",
+      "status": "attempted",
+      "attempts": [
+        {
+          "case_id": "clock-stopwatch",
+          "source_id": "BA02",
+          "attempt_id": "REG8e6f3cbd3ab6",
+          "status": "blocked",
+          "execution_layer": "gui_component",
+          "cleanup_actor": "host_automation",
+          "execution": null,
+          "acceptance": null,
+          "cleanup": true,
+          "steps": null,
+          "duration_ms": null
+        },
+        {
+          "case_id": "clock-stopwatch",
+          "source_id": "BA02",
+          "attempt_id": "REG85ae3618e360",
+          "status": "blocked",
+          "execution_layer": "gui_component",
+          "cleanup_actor": "host_automation",
+          "execution": null,
+          "acceptance": null,
+          "cleanup": true,
+          "steps": null,
+          "duration_ms": null
+        },
+        {
+          "case_id": "clock-stopwatch",
+          "source_id": "BA02",
+          "attempt_id": "REGee8952b018b3",
+          "status": "passed",
+          "execution_layer": "gui_component",
+          "cleanup_actor": "host_automation",
+          "execution": true,
+          "acceptance": true,
+          "cleanup": true,
+          "steps": 0,
+          "duration_ms": 3155
+        }
+      ]
+    }
+  ]
+}

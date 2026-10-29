@@ -1,0 +1,257 @@
+{
+  "schema_version": "1.0",
+  "cases": [
+    {
+      "id": "ba19-calculator",
+      "source_id": "BA19",
+      "layer": "gui_component",
+      "adapter": "calculator",
+      "prompt_template": "[测试] {marker}：在计算器里计算 12 × 34。",
+      "preconditions": [
+        "设备已解锁，允许的计算器可用；无需账户"
+      ],
+      "acceptance": [
+        "全程仅一次提交；截图独立核验 408，结束时计算器位于前台；模型及运行结果也需成功"
+      ],
+      "cleanup": [
+        "仅清空本次显示，不改变其他数据"
+      ],
+      "api_args": {},
+      "baseline_evidence_refs": [
+        {
+          "path": "docs/testing/android-scan-results-2026-10-29.md",
+          "scope": "历史正常聊天 12×34；当前用例采用GUI组件入口",
+          "outcome": "independent_success"
+        }
+      ],
+      "variant_evidence_refs": [
+        {
+          "path": "docs/testing/android-scan-results-2026-10-29.md",
+          "scope": "GUI 组件 27×16=432",
+          "outcome": "component_passed"
+        }
+      ],
+      "skill": "omnibot-calculator",
+      "status": "baseline_passed",
+      "execution_layer": "gui_component",
+      "cleanup_actor": "not_yet_verified",
+      "latest_regression": {
+        "status": "passed",
+        "attempt_id": "REG9554f4ef954a",
+        "report": "docs/testing/android-regression-results-2026-10-29.md"
+      }
+    },
+    {
+      "id": "li04-notes",
+      "source_id": "LI04",
+      "layer": "gui_component",
+      "adapter": "notes",
+      "prompt_template": "在便签新建标题“[测试] {marker}”，写入两行“番茄”和“鸡蛋”，保存后搜索标题并重新打开。",
+      "preconditions": [
+        "确认便签可用，唯一测试标题不存在，能隔离并清理本轮对象"
+      ],
+      "acceptance": [
+        "重新打开目标标题，独立截图确认两行中文及换行；搜索命中本轮唯一标题"
+      ],
+      "cleanup": [
+        "仅删除本轮唯一标记笔记并核验消失，不清空回收站"
+      ],
+      "api_args": {
+        "title": "[测试] {marker}",
+        "text": "番茄\n鸡蛋"
+      },
+      "baseline_evidence_refs": [
+        {
+          "path": "docs/testing/android-scan-results-2026-10-29.md",
+          "scope": "GUI组件创建、搜索、重开与独立截图",
+          "outcome": "component_passed"
+        }
+      ],
+      "variant_evidence_refs": [],
+      "skill": "omnibot-vivo-notes",
+      "status": "component_passed",
+      "execution_layer": "gui_component",
+      "cleanup_actor": "gui_component_baseline",
+      "latest_regression": {
+        "status": "cleanup_failed",
+        "attempt_id": "REG58ab5eac9cda",
+        "report": "docs/testing/android-regression-results-2026-10-29.md"
+      }
+    },
+    {
+      "id": "ba20-alarm",
+      "source_id": "BA20",
+      "layer": "normal_chat",
+      "adapter": "alarm",
+      "prompt_template": "设置每天早上7点的闹钟，标签“[测试] {marker}”。",
+      "preconditions": [
+        "时钟可用，记录既有闹钟基线，本轮标签不存在"
+      ],
+      "acceptance": [
+        "独立读回唯一测试闹钟为07:00、每天重复并开启；既有闹钟不变；派发回执不是验收"
+      ],
+      "cleanup": [
+        "仅删除本轮标记闹钟并确认消失、既有闹钟状态不变"
+      ],
+      "api_args": {
+        "tool": "alarm_reminder_create",
+        "mode": "clock_app",
+        "title": "[测试] {marker}",
+        "triggerAt": "{alarm_at}",
+        "repeatDays": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "skipUi": true
+      },
+      "baseline_evidence_refs": [
+        {
+          "path": "docs/testing/android-scan-results-2026-10-29.md",
+          "scope": "GUI组件创建与清理；正常聊天原生创建及读回",
+          "outcome": "partial_passed"
+        }
+      ],
+      "variant_evidence_refs": [
+        {
+          "path": "docs/testing/android-scan-results-2026-10-29.md",
+          "scope": "并发调试观察导致 ANR，不能算聊天端到端通过",
+          "outcome": "failed"
+        }
+      ],
+      "skill": "omnibot-native-clock-calendar",
+      "status": "partial_passed",
+      "execution_layer": "normal_chat",
+      "cleanup_actor": "gui_component_baseline",
+      "latest_regression": {
+        "status": "passed",
+        "attempt_id": "REG30625ff1afb4",
+        "report": "docs/testing/android-regression-results-2026-10-29.md"
+      }
+    },
+    {
+      "id": "ba02-timer",
+      "source_id": "BA02",
+      "layer": "normal_chat",
+      "adapter": "timer",
+      "prompt_template": "启动一个25分钟的测试计时器，名称“[测试] {marker}”。",
+      "preconditions": [
+        "时钟可用；无冲突的运行中计时器；记录选择器及可见常用预设基线"
+      ],
+      "acceptance": [
+        "独立读回唯一标签、倒计时正在运行；工具回执仅证明派发"
+      ],
+      "cleanup": [
+        "仅取消本轮计时器并验证停止，恢复选择器，核对可见常用预设未变；预设变化则判失败并保留证据，不擅自重建"
+      ],
+      "api_args": {
+        "tool": "timer_create",
+        "durationSeconds": 1500,
+        "title": "[测试] {marker}",
+        "skipUi": true
+      },
+      "baseline_evidence_refs": [
+        {
+          "path": "docs/testing/android-scan-results-2026-10-29.md",
+          "scope": "正常聊天创建、独立读回，操作者取消；选择器经组件恢复",
+          "outcome": "assisted_cleanup"
+        }
+      ],
+      "variant_evidence_refs": [],
+      "skill": "omnibot-native-clock-calendar",
+      "status": "assisted_cleanup",
+      "execution_layer": "normal_chat",
+      "cleanup_actor": "human_assisted_baseline",
+      "latest_regression": {
+        "status": "cleanup_failed",
+        "attempt_id": "REGa97f3522f007",
+        "report": "docs/testing/android-regression-results-2026-10-29.md"
+      }
+    },
+    {
+      "id": "li22-calendar",
+      "source_id": "LI22",
+      "layer": "normal_chat",
+      "adapter": "calendar",
+      "prompt_template": "在测试日历创建“[测试] {marker}”，从 {start_at} 到 {end_at}，提前60分钟提醒。",
+      "preconditions": [
+        "确认测试日历和读写权限；唯一标题不存在；开始与结束时间含时区"
+      ],
+      "acceptance": [
+        "重新查询本轮事件，核对唯一标题、起止时间、时区、reminderMinutes=[60]；读取与创建为独立步骤"
+      ],
+      "cleanup": [
+        "确认事件 ID 和标题属于本轮，删除该事件；重新查询事件与提醒为空"
+      ],
+      "api_args": {
+        "create": {
+          "tool": "calendar_event_create",
+          "title": "[测试] {marker}",
+          "startAt": "{start_at}",
+          "endAt": "{end_at}",
+          "reminderMinutes": [
+            60
+          ]
+        },
+        "read": {
+          "tool": "calendar_event_list",
+          "query": "[测试] {marker}"
+        },
+        "delete": {
+          "tool": "calendar_event_delete",
+          "eventId": "{event_id}"
+        }
+      },
+      "baseline_evidence_refs": [
+        {
+          "path": "docs/testing/android-scan-results-2026-10-29.md",
+          "scope": "正常聊天创建、原生查询提醒和条件删除",
+          "outcome": "independent_success"
+        }
+      ],
+      "variant_evidence_refs": [],
+      "skill": "omnibot-native-clock-calendar",
+      "status": "baseline_passed",
+      "execution_layer": "normal_chat",
+      "cleanup_actor": "agent_baseline",
+      "latest_regression": {
+        "status": "passed",
+        "attempt_id": "REGb9871cb4459f",
+        "report": "docs/testing/android-regression-results-2026-10-29.md"
+      }
+    },
+    {
+      "id": "clock-stopwatch",
+      "source_id": "BA02",
+      "layer": "gui_component",
+      "adapter": "stopwatch",
+      "prompt_template": "[测试] {marker}：打开时钟秒表页面，只读取当前状态，不启动、不暂停、不重置。",
+      "preconditions": [
+        "确认时钟及秒表可见且允许只读访问；记录原有状态"
+      ],
+      "acceptance": [
+        "独立观察确认页面及已有秒表状态，前后状态一致；无任何秒表控制动作"
+      ],
+      "cleanup": [
+        "无需变更或清理；如发现状态改变，停止并报告"
+      ],
+      "api_args": {},
+      "baseline_evidence_refs": [],
+      "variant_evidence_refs": [],
+      "skill": "omnibot-android-regression",
+      "status": "unverified",
+      "execution_layer": "gui_component",
+      "cleanup_actor": "not_yet_verified",
+      "variant_type": "exploratory_variant",
+      "latest_regression": {
+        "status": "passed",
+        "attempt_id": "REGee8952b018b3",
+        "report": "docs/testing/android-regression-results-2026-10-29.md"
+      }
+    }
+  ]
+}

@@ -1,20 +1,39 @@
-# Android scenario scan planning
+# Android scenario regressions
 
-`scan.mjs` is an offline planning and result aggregation entry point; it does not connect to a device or verify evidence. `live-smoke.py` is a separate, experimental BA19 UI runner. It defaults to a plan and connects only when explicitly invoked with `--live`, a serial, the guarded runtime root, and a private output path. Its device execution and cancellation behavior must be verified independently.
+The unified entry point is `regression.py`, using [`docs/testing/android-regression-cases.json`](../../docs/testing/android-regression-cases.json). It defaults to a plan and performs no device actions unless `--live` is explicit:
 
 ```sh
-node scripts/android-scenario-scan/scan.mjs --inventory inventory.json --plan
-node scripts/android-scenario-scan/scan.mjs --inventory inventory.json --plan --results results.json
+python3 scripts/android-scenario-scan/regression.py --case ba19-calculator
+python3 scripts/android-scenario-scan/regression.py --suite stable
+python3 scripts/android-scenario-scan/regression.py --case li22-calendar --live --serial SERIAL --adb /path/to/adb --device-runtime-root /path/to/phone-real-use --output /private/new-output-directory
+```
+
+Repeat `--case` to run an explicit ordered subset. Calculator/notes acceptance requires macOS Vision (`swift`) and the guarded runtime Python environment (including Pillow).
+
+`stable` selects historical candidates, not a guarantee of readiness or a passing result. `--suite all` includes unverified exploratory cases. Recheck each case's prerequisites and authorization before a live run. A passing attempt requires all three gates: execution, independent acceptance, and cleanup. Reports distinguish `normal_chat` from `gui_component` and identify the cleanup actor; host verification or assisted cleanup does not establish full OmniBot autonomy. The manifest preserves historical evidence separately from the current attempt. Mock tests verify code paths only and never count as live evidence.
+
+The runner and selected tools operate on the foreground device. The caller must ensure only one agent or process uses it throughout an attempt, including independent verification and cleanup; per-operation locks do not replace this coordination. Do not run debug observation concurrently with active chat or GUI execution. Do not replay an uncertain submission. If stopping or cleanup cannot be verified, report the unresolved state and stop the suite.
+
+Use a fresh private output directory for each live run. Evidence can include screenshots, UI text, run logs and calendar data. Outputs under the repository must be Git-ignored; never commit raw device evidence. Verify the target app, permissions, test-object ownership and baseline before changes, and preserve unrelated objects. The repository's access exclusions remain in force.
+
+The create/search/reopen note path is recorded in [`omnibot-vivo-notes`](../../.agents/skills/omnibot-vivo-notes/SKILL.md). The successful calculator path is recorded in [`omnibot-calculator`](../../.agents/skills/omnibot-calculator/SKILL.md). The repository skills [`omnibot-android-regression`](../../.agents/skills/omnibot-android-regression/SKILL.md) and [`omnibot-native-clock-calendar`](../../.agents/skills/omnibot-native-clock-calendar/SKILL.md) provide guidance to agents that read them. Their presence in this repository does not mean the Android app has installed or automatically loaded either skill.
+
+`scan.mjs` remains an offline inventory planner and attempt aggregator for `docs/testing/android-scenario-inventory.json`; its `ready` status is execution eligibility, not a result. `live-smoke.py` is a legacy experimental BA19 path whose current device behavior and cancellation are not independently validated as this unified runner; do not treat it as the regression entry point.
+
+Offline checks:
+
+```sh
+python3 -m unittest discover -s scripts/android-scenario-scan -p 'test_*.py'
 node --test scripts/android-scenario-scan/scan.test.mjs
 ```
 
-Inventory uses `docs/testing/android-scenario-inventory.json`: an object with an `items` array, each with a unique `source_id`, `goal`, and adaptation `status`. All fields and status values are preserved. Only the exact status `ready` is eligible for a future execution; every other adaptation status remains visible and is not eligible. The plan preserves inventory order for serial execution and reports blocked if no scenario is ready. Inventory readiness does not establish device readiness.
-
-Results are a JSON array of attempts with `scenario_id`, unique per-scenario `attempt_id`, `status` (`independent_success`, `assisted`, `failed`, `blocked`, or `incomplete`), and `evidence` (an array of evidence path strings). Exact duplicate attempts collapse; conflicting duplicates fail. Categories remain claims supplied by the operator: this tool does not inspect or validate evidence. Aggregation stays incomplete even when attempts claim success, because independent verification and execution coverage are not implemented. Treat all reports as local evidence, and protect potentially private screenshots and logs.
+Summarize one or more private runner reports without publishing raw evidence or error text:
 
 ```sh
-python3 scripts/android-scenario-scan/live-smoke.py --scenario BA19
-python3 scripts/android-scenario-scan/live-smoke.py --live --serial SERIAL --scenario BA19 --device-runtime-root /path/to/phone-real-use --output /private/path/attempt.json
+python3 scripts/android-scenario-scan/summarize.py --report /private/run-a/report.json --report /private/run-b/report.json --format markdown
+python3 scripts/android-scenario-scan/test_summarize.py
 ```
 
-The caller must ensure exclusive device coordination for the full attempt; Runtime locks individual operations. A failure or timeout attempts to stop only the verified test conversation. If cancellation cannot be verified, intervene and confirm the device is idle. Protect attempt outputs and run logs as private evidence. The runner emits one attempt object with the aggregation status and evidence fields; wrap it in a JSON array before passing it to `scan.mjs`. A zero-step `android_gui_accessibility_not_ready` run is classified as environment-blocked, retaining the original run status and error.
+The default output is JSON on stdout; `--format markdown` prints a table. Every attempt is retained, including earlier failures. Cases absent from all reports are `not_run`; a passed subcase never implies its source scenario passed. Invalid or conflicting inputs are rejected rather than silently omitted.
+
+Current device evidence and retained failures: [2026-10-29 results](../../docs/testing/android-regression-results-2026-10-29.md). The inventory links to each scoped regression; it does not promote a source scenario based on a subcase.

@@ -74,6 +74,10 @@
           "run_id": "gui-957acd87-33cd-447f-96e7-aabedba82cbb",
           "finding": "New timer_create used for 25-minute test timer. Follow-up GUI verification succeeded with one unnecessary non-interactive title click /21.471s; independent clock observation verified labeled live countdown. Operator cancelled only test timer; picker restoration recorded separately. Not a full DND+timer end-to-end pass."
         }
+      ],
+      "regression_cases": [
+        "ba02-timer",
+        "clock-stopwatch"
       ]
     },
     {
@@ -509,7 +513,10 @@
         "finding": "Original task succeeded via normal chat in 8 actions with one clear, screenshot 408 and calculator retained; variant 27x16 component succeeded in 8 actions with one clear and screenshot 432. Earlier failures retained in scan report.",
         "run_id": "gui-639e17cd-5f9d-4d52-a30b-7134510f4f67",
         "variant_run_id": "debug-vlm-1be2b574-2bf3-4f07-89a4-91af463ee4e1"
-      }
+      },
+      "regression_cases": [
+        "ba19-calculator"
+      ]
     },
     {
       "source": "phone-real-use scenario",
@@ -541,7 +548,10 @@
         "creation_run_id": "debug-vlm-2aaedf6a-688d-41ec-9607-82e041246511",
         "cleanup_run_id": "debug-vlm-e42958bb-b7fc-46c0-8971-d51cfb5abd2f",
         "finding": "15 actions created one uniquely labeled enabled daily 07:00 alarm, independently read back; 9 actions removed it. Five originally visible alarm descriptors unchanged; two extra rows became visible after viewport change. Full chat entry not tested."
-      }
+      },
+      "regression_cases": [
+        "ba20-alarm"
+      ]
     },
     {
       "source": "phone-real-use scenario",
@@ -1208,6 +1218,9 @@
           "run_id": "debug-vlm-5be90b99-d180-4098-a424-c4b38477844d",
           "finding": "13 actions created, saved, searched and reopened a unique two-line Chinese note; fresh screenshot verified body because accessibility XML omits it. Cleanup run debug-vlm-c807a6b0-bb2b-4119-9f7b-36d575454ea4 deleted only the test note. Does not establish meal-planning parent success."
         }
+      ],
+      "regression_cases": [
+        "li04-notes"
       ]
     },
     {
@@ -1669,6 +1682,9 @@
           "outcome": "normal_chat_passed",
           "finding": "Unique local-calendar event for 2026-11-04 15:00–15:30 Asia/Shanghai with 60-minute reminder verified independently through Calendar provider. After listEvents reminder fix, normal chat read reminderMinutes=[60], deleted only the confirmed test event, and re-queried empty. Independent provider verified event and reminder removal."
         }
+      ],
+      "regression_cases": [
+        "li22-calendar"
       ]
     },
     {
@@ -15838,5 +15854,6 @@
       "微信读书是独立应用，不能仅凭名称推断属于微信；具体授权及包名待核实。",
       "huawei.lock 与 com.huawei.works 未发现明确匹配的来源条目，后续匹配必须阻断。"
     ]
-  }
+  },
+  "regression_manifest": "docs/testing/android-regression-cases.json"
 }
