@@ -22,6 +22,49 @@ import org.junit.Test
 
 class OmniFlowModelHostTest {
     @Test
+    fun `length terminated tool call is not returned for execution`() = runBlocking {
+        var calls = 0
+        val host = OmniFlowModelHost(
+            modelClient = object : OmniFlowModelClient {
+                override suspend fun streamTurn(
+                    request: ChatCompletionRequest,
+                    onReasoningUpdate: (suspend (String) -> Unit)?,
+                ): ChatCompletionTurn {
+                    calls++
+                    return ChatCompletionTurn(
+                        message = ChatCompletionMessage(
+                            role = "assistant",
+                            toolCalls = listOf(
+                                AssistantToolCall(
+                                    id = "truncated",
+                                    function = AssistantToolCallFunction(
+                                        name = "click",
+                                        arguments = """{"x":100,"y":200}""",
+                                    ),
+                                ),
+                            ),
+                        ),
+                        finishReason = "length",
+                    )
+                }
+            },
+        )
+        val error = runCatching {
+            host.modelTurn(
+                mapOf(
+                    "model" to OmniVlmPlugin.MODEL_SCENE,
+                    "request" to mapOf(
+                        "model" to OmniVlmPlugin.MODEL_SCENE,
+                        "messages" to listOf(mapOf("role" to "user", "content" to "inspect")),
+                    ),
+                ),
+            )
+        }.exceptionOrNull()
+        assertEquals("model_turn_output_truncated", error?.message)
+        assertEquals(1, calls)
+    }
+
+    @Test
     fun `json completion accepts object content when provider omits tool call`() = runBlocking {
         val host = OmniFlowModelHost(
             modelClient = object : OmniFlowModelClient {

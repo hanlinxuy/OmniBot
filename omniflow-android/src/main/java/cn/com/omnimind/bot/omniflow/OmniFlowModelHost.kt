@@ -66,6 +66,9 @@ class OmniFlowModelHost(
                 },
             )
             turns += candidate
+            check(candidate.finishReason?.trim()?.lowercase() !in setOf("length", "max_tokens", "max_output_tokens")) {
+                "model_turn_output_truncated"
+            }
             if (rejectedAction == null || !repeatsRejectedAction(candidate, rejectedAction)) {
                 turn = candidate
                 break
