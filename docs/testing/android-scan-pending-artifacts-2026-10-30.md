@@ -7,4 +7,6 @@ These paths are retained because their pre-run state or ownership was not establ
 
 - Amap route UI state: the transit read-only subcase replaced an existing start-field value and selected “metro preferred”; persistence and the complete prior route state are unverified. No restoration or clearing is claimed.
 
+- NetEase Cloud Music notification permission: the agent selected deny and do not ask again. Post-run inspection shows denied with user-set/fixed flags for a reported user entry; pre-run state is unknown. User disposition requested; no reset or grant has been performed.
+
 For subsequent file-producing scenarios, specify a unique test workspace as the output boundary without prescribing the solution; record whether the agent follows it. Record any newly discovered unmarked side effects here before deciding disposition.
