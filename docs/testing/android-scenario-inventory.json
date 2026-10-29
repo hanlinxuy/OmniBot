@@ -2736,7 +2736,14 @@
         ],
         "note": "Checks original benchmark packages only; missing packages may be replaceable through a separately validated Android adaptation."
       },
-      "next_action": "Adapt to an authorized installed app or prepare benchmark fixtures; do not install or transact automatically."
+      "next_action": "Adapt to an authorized installed app or prepare benchmark fixtures; do not install or transact automatically.",
+      "runtime_subscenarios": [
+        {
+          "id": "BidFileRenameTask.isolated_mtime_two_files",
+          "outcome": "normal_chat_passed_assisted_fixture",
+          "finding": "Two uniquely isolated test files with distinct modification times were renamed by a natural-language ACP turn to bid_1.txt and bid_2.txt. Host independently matched each resulting SHA-256 to its corresponding original and removed only the verified test files and directory. Original creation-date ordering and full Downloads benchmark were not exercised."
+        }
+      ]
     },
     {
       "source": "MobileWorld",
