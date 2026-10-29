@@ -125,3 +125,10 @@ def verify_runlog(run, marker, seen_run_ids=()):
     model_success = run.get('status') == 'succeeded' and run.get('success') is True
     return {'marker_present': marker_present, 'unique_id': unique_id, 'terminal': terminal,
             'model_success': model_success, 'passed': marker_present and unique_id and terminal and model_success}
+
+
+def verify_todo(rows, title):
+    matches = [description for text, description in rows if text == title]
+    return {'passed': len(matches) == 1 and matches[0] == '未完成,' + title,
+            'exact_title_unique': len(matches) == 1,
+            'incomplete': len(matches) == 1 and matches[0] == '未完成,' + title}

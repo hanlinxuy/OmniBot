@@ -278,7 +278,7 @@
       "variant_type": "exploratory_variant",
       "latest_regression": {
         "status": "passed",
-        "attempt_id": "REG2e9de28207da",
+        "attempt_id": "REGc55c996777ce",
         "report": "docs/testing/android-scan-batch-2026-10-29-todo.md"
       }
     }

@@ -19,7 +19,7 @@ import uuid
 import xml.etree.ElementTree as ET
 from zoneinfo import ZoneInfo
 
-from regression_evidence import verify_alarm, verify_calendar, verify_clock_timer, verify_ocr_lines, verify_runlog, verify_note_lines
+from regression_evidence import verify_alarm, verify_calendar, verify_clock_timer, verify_ocr_lines, verify_runlog, verify_note_lines, verify_todo
 
 ROOT = Path(__file__).resolve().parents[2]
 MANIFEST = ROOT / 'docs/testing/android-regression-cases.json'
@@ -533,9 +533,9 @@ def run_case(harness, case):
         if adapter == 'todo':
             obs = h.observe(NOTES)
             rows = [(n['text'], n['description']) for n in obs['nodes'] if n['resource_id'] == NOTES + ':id/content_tv']
-            report['acceptance'] = {'passed': rows.count((title, '未完成,' + title)) == 1 and not (Counter(map(tuple, baseline['todo_rows'][:-1])) - Counter(rows)),
-                                    'unique_incomplete': rows.count((title, '未完成,' + title)) == 1,
-                                    'visible_baseline_prefix_preserved': not bool(Counter(map(tuple, baseline['todo_rows'][:-1])) - Counter(rows))}
+            report['acceptance'] = verify_todo(rows, title)
+            report['acceptance']['visible_baseline_prefix_preserved'] = not bool(Counter(map(tuple, baseline['todo_rows'][:-1])) - Counter(rows))
+            report['acceptance']['passed'] &= report['acceptance']['visible_baseline_prefix_preserved']
         elif adapter in ('calculator', 'notes'):
             if adapter == 'notes':
                 h.open_note(title)
@@ -615,7 +615,7 @@ def run_case(harness, case):
                 elif adapter == 'todo':
                     obs = h.observe(NOTES)
                     targets = [n for n in obs['nodes'] if n['resource_id'] == NOTES + ':id/content_tv' and n['text'] == title and n['description'] == '未完成,' + title]
-                    if len(targets) != 1:
+                    if len(targets) != 1 or sum(n['text'] == title and n['resource_id'] == NOTES + ':id/content_tv' for n in obs['nodes']) != 1:
                         raise RuntimeError('cleanup_todo_not_unique_incomplete')
                     target = targets[0]
                     x1, y1, x2, y2 = target['bounds']
@@ -626,9 +626,10 @@ def run_case(harness, case):
                     targets = [n for n in obs['nodes'] if n['resource_id'] == NOTES + ':id/content_tv' and n['text'] == title]
                     if len(targets) != 1 or targets[0]['bounds'][0] >= x1:
                         raise RuntimeError('cleanup_todo_swipe_not_verified')
+                    foregrounds = [n for n in obs['nodes'] if n['resource_id'] == NOTES + ':id/item_content_fg' and n['bounds'][1] <= y1 and n['bounds'][3] >= y2]
                     buttons = [n for n in obs['nodes'] if n['resource_id'] == NOTES + ':id/bt_todo_item_delete' and n['bounds'][1] <= y1 and n['bounds'][3] >= y2]
-                    if len(buttons) != 1:
-                        raise RuntimeError('cleanup_todo_delete_not_unique_on_row')
+                    if len(buttons) != 1 or len(foregrounds) != 1 or foregrounds[0]['bounds'][2] > buttons[0]['bounds'][0]:
+                        raise RuntimeError('cleanup_todo_delete_not_exposed_on_owned_row')
                     x1, y1, x2, y2 = buttons[0]['bounds']
                     point = ((x1 + x2)//2, (y1 + y2)//2)
                     if h.wait_for_clear_input(obs, point):

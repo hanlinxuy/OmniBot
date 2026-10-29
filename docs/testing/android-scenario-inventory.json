@@ -1686,6 +1686,12 @@
           "outcome": "gui_component_passed",
           "run_id": "debug-vlm-775bef53-72f3-40f1-b9cc-e17d467306e8",
           "finding": "One uniquely marked incomplete todo was created, independently observed, and deleted by host automation; visible baseline was restored. Does not cover three items or reminder times."
+        },
+        {
+          "id": "LI21.single_reminder_exploration",
+          "outcome": "gui_component_failed",
+          "run_id": "debug-vlm-6d515228-3334-4d84-a889-2c72329a1dcd",
+          "finding": "A future reminder attempt exhausted 20 actions after repeated date-picker swipes. It did not complete a reminder. The marked draft was subsequently saved without the cancelled reminder, deleted by the host, and the visible baseline restored. Three-item reminder scenario remains unverified."
         }
       ],
       "regression_cases": [

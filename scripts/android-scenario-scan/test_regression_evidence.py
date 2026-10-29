@@ -1,7 +1,12 @@
 import unittest
-from regression_evidence import parse_screen, verify_clock_timer, verify_alarm, verify_calendar, verify_ocr_lines, verify_note_lines, verify_runlog
+from regression_evidence import parse_screen, verify_clock_timer, verify_alarm, verify_calendar, verify_ocr_lines, verify_note_lines, verify_runlog, verify_todo
 
 class EvidenceTests(unittest.TestCase):
+    def test_todo_rejects_same_title_in_another_state(self):
+        self.assertTrue(verify_todo([('MARK', '未完成,MARK')], 'MARK')['passed'])
+        self.assertFalse(verify_todo([('MARK', '未完成,MARK'), ('MARK', '已完成,MARK')], 'MARK')['passed'])
+        self.assertFalse(verify_todo([('MARK', '已完成,MARK')], 'MARK')['passed'])
+
     def test_screen_package_exact(self):
         xml = '<hierarchy><node package="a" text="one"/><node package="ab" text="two"/></hierarchy>'
         self.assertEqual([n['text'] for n in parse_screen(xml, 'a')], ['one'])
