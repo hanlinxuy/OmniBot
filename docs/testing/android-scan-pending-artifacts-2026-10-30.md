@@ -17,4 +17,6 @@ These paths are retained because their pre-run state or ownership was not establ
 
 - Existing media session: a later system snapshot reported `PLAYING`; audible output and pre-scan state are unknown. No stop, resume or audio-focus test was performed on this basis.
 
+- Gallery recognition guidance: two one-time feature guidance dialogs were acknowledged during the synthetic QR test. Prior state and persistence are unknown; no reset has been attempted. The run also listed unrelated Pictures filenames and navigated the gallery collection; those private receipts remain in session history.
+
 For subsequent file-producing scenarios, specify a unique test workspace as the output boundary without prescribing the solution; record whether the agent follows it. Record any newly discovered unmarked side effects here before deciding disposition.
