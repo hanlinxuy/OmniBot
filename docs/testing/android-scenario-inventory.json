@@ -5618,10 +5618,16 @@
           "id": "CountFileLinesTask.isolated_oldest_zip",
           "outcome": "normal_chat_passed_assisted_fixture",
           "finding": "In a unique test directory with two July-dated ZIPs, a persisted ACP turn inspected timestamps, read the earlier named ZIP, and answered four, matching the host fixture. The host verified both hashes, deleted only those two ZIPs and removed the directory. Original benchmark snapshot and entire Downloads selection were not exercised."
+        },
+        {
+          "id": "CountFileLinesTask.isolated_natural_language",
+          "outcome": "runner_failed_manual_evidence_read_and_answer_verified",
+          "finding": "The runner rejected REG664ce732c144 because it only recognizes one shell command. Independent review found the persisted ACP turn used Python zipfile to read the exact owned entry and reported seven newline bytes, matched the final answer, and the host verified cleanup. The original runner failure remains; a general safe verifier for alternative commands is unimplemented."
         }
       ],
       "regression_cases": [
-        "count-file-lines-zip"
+        "count-file-lines-zip",
+        "count-file-lines-zip-natural"
       ]
     },
     {

@@ -29,7 +29,7 @@ OMNI = 'cn.com.omnimind.bot'
 CLOCK = 'com.android.BBKClock'
 NOTES = 'com.android.notes'
 CALC = 'com.android.bbkcalculator'
-PACKAGES = {'calculator': CALC, 'notes': NOTES, 'timer': CLOCK, 'alarm': CLOCK, 'calendar': OMNI, 'stopwatch': CLOCK, 'todo': NOTES, 'weather_notes': NOTES, 'zip_lines': OMNI}
+PACKAGES = {'calculator': CALC, 'notes': NOTES, 'timer': CLOCK, 'alarm': CLOCK, 'calendar': OMNI, 'stopwatch': CLOCK, 'todo': NOTES, 'weather_notes': NOTES, 'zip_lines': OMNI, 'zip_natural': OMNI}
 
 
 def read_cases(path=MANIFEST):
@@ -483,10 +483,11 @@ def run_case(harness, case):
             baseline['todo_rows'] = [(n['text'], n['description']) for n in obs['nodes'] if n['resource_id'] == NOTES + ':id/content_tv']
             if any(title in text for text, _ in baseline['todo_rows']):
                 raise RuntimeError('test_todo_already_exists')
-        elif adapter == 'zip_lines':
+        elif adapter in ('zip_lines', 'zip_natural'):
             fixture = h.output / 'fixture.zip'
             with zipfile.ZipFile(fixture, 'w') as archive:
-                archive.writestr('file_1.txt', 'one\ntwo\nthree\nfour\nfive\nsix\n')
+                contents = 'one\ntwo\nthree\nfour\nfive\nsix\n' if adapter == 'zip_lines' else ''.join(uuid.uuid4().hex + '\n' for _ in range(7))
+                archive.writestr('file_1.txt', contents)
             baseline['zip_hash'] = hashlib.sha256(fixture.read_bytes()).hexdigest()
             baseline['zip_dir'] = '/sdcard/Download/OBZIP' + marker
             h.backend.shell('mkdir', baseline['zip_dir'])
@@ -545,6 +546,8 @@ def run_case(harness, case):
         prepared = True
         h.save('baseline-checks.json', baseline)
         prompt = case['prompt_template'].format(**values)
+        if adapter == 'zip_natural':
+            prompt += f" ZIP路径为{baseline['zip_dir']}/fixture.zip，只读取其中file_1.txt，不访问网络或其他路径，不解压到存储，不修改文件。"
         if adapter == 'zip_lines':
             prompt += f" 使用terminal_execute执行只读命令 `unzip -p {baseline['zip_dir']}/fixture.zip file_1.txt | wc -l`，依据结果回答；不访问网络或其他路径，不解压到存储，不修改文件。"
         if adapter == 'weather_notes':
@@ -553,21 +556,23 @@ def run_case(harness, case):
             prompt += f' 只使用本地calendarId={baseline["calendar_id"]}，时区Asia/Shanghai，不邀请他人。使用calendar_event_create，随后calendar_event_list核对本次读取的提醒字段。'
         if adapter in ('alarm', 'timer'):
             prompt += ' 使用已有原生系统工具，不通过滚轮设置。'
-        prompt += ' 不修改其他对象，不重复创建，核对完成后直接结束，不运行终端命令或自行修改环境。'
+        prompt += ' 不修改其他对象，不重复创建，核对完成后直接结束。'
+        if adapter not in ('zip_lines', 'zip_natural'):
+            prompt += ' 不运行终端命令或自行修改环境。'
         dispatched_at = time.monotonic()
         report['execution'] = h.chat(prompt, 'execute') if case['layer'] == 'normal_chat' else h.gui(prompt, 'execute')
         if not report['execution'].get('passed'):
             raise RuntimeError('execution_failed')
-        if case['layer'] == 'normal_chat' and adapter != 'zip_lines':
+        if case['layer'] == 'normal_chat' and adapter not in ('zip_lines', 'zip_natural'):
             expected_tool = {'alarm': 'alarm_reminder_create', 'timer': 'timer_create', 'calendar': 'calendar_event_create'}[adapter]
             creates = [tool for tool in report['execution']['tools'] if tool['tool'] == expected_tool]
             report['execution']['creation_calls'] = len(creates)
             if len(creates) != 1 or creates[0]['success'] is not True or (creates[0]['args'] or {}).get('title') != title:
                 report['execution']['passed'] = False
                 raise RuntimeError('single_owned_native_creation_not_proven')
-        if adapter == 'zip_lines':
+        if adapter in ('zip_lines', 'zip_natural'):
             final = report['execution'].pop('final_texts', [])
-            report['acceptance'] = verify_zip_turn(report['execution']['tools'], final, baseline['zip_dir'] + '/fixture.zip', 6)
+            report['acceptance'] = verify_zip_turn(report['execution']['tools'], final, baseline['zip_dir'] + '/fixture.zip', 6 if adapter == 'zip_lines' else 7)
         elif adapter == 'todo':
             obs = h.observe(NOTES)
             rows = [(n['text'], n['description']) for n in obs['nodes'] if n['resource_id'] == NOTES + ':id/content_tv']
@@ -635,7 +640,7 @@ def run_case(harness, case):
                 if h.running:
                     # Never launch another task over a possibly live action. Operator recovery is explicit.
                     raise RuntimeError('execution_terminal_unconfirmed_cleanup_blocked')
-                if adapter == 'zip_lines':
+                if adapter in ('zip_lines', 'zip_natural'):
                     names = h.backend.shell('ls', '-A', baseline['zip_dir']).splitlines()
                     if names != ['fixture.zip'] or h.backend.shell('sha256sum', baseline['zip_dir'] + '/fixture.zip').split()[0] != baseline['zip_hash']:
                         raise RuntimeError('fixture_cleanup_ownership_or_content_mismatch')

@@ -339,6 +339,35 @@
         "attempt_id": "REGf6307550da4b",
         "report": "docs/testing/android-scan-batch-2026-10-30-zip.md"
       }
+    },
+    {
+      "id": "count-file-lines-zip-natural",
+      "source_id": "CountFileLinesTask",
+      "layer": "normal_chat",
+      "adapter": "zip_natural",
+      "prompt_template": "[测试] {marker}：数测试 ZIP 中的 file_1.txt 有多少个换行符（每行均以换行符结束），只回答一个整数。",
+      "preconditions": [
+        "宿主创建唯一测试目录及 ZIP 并核对哈希"
+      ],
+      "acceptance": [
+        "持久 ACP end_turn；成功读取指定 ZIP 条目的工具证据及正确整数"
+      ],
+      "cleanup": [
+        "确认目录仅含本轮 ZIP 且哈希未变，删除 ZIP 和空目录并核对消失"
+      ],
+      "api_args": {},
+      "baseline_evidence_refs": [],
+      "variant_evidence_refs": [],
+      "skill": "omnibot-android-regression",
+      "status": "unverified",
+      "execution_layer": "normal_chat",
+      "cleanup_actor": "host_automation",
+      "variant_type": "exploratory_variant",
+      "latest_regression": {
+        "status": "failed",
+        "attempt_id": "REG664ce732c144",
+        "report": "docs/testing/android-scan-batch-2026-10-30-zip.md"
+      }
     }
   ]
 }
