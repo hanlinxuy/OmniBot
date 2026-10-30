@@ -29,7 +29,7 @@ class HistoryTests(unittest.TestCase):
         tree = ast.parse((HERE / 'planner.py').read_text())
         node = next(n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == 'build_model_turn_request')
         ns = {'Any': object, 'Function': object, '_turn_text': turn_text(), '_state_image_data_uri': lambda state: None,
-              'function_tools': lambda functions: [], 'vlm_action_tools': lambda: [],
+              'function_tools': lambda functions: [], 'vlm_action_tools': lambda: [], 'CONTROL_TOOLS': [], 'deepcopy': __import__('copy').deepcopy,
               'constrain_open_app_tool': lambda tools, apps: tools, 'SYSTEM_PROMPT': 'system'}
         future = ast.ImportFrom(module='__future__', names=[ast.alias(name='annotations')], level=0)
         exec(compile(ast.fix_missing_locations(ast.Module(body=[future, node], type_ignores=[])), 'planner.py', 'exec'), ns)

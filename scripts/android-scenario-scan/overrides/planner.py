@@ -12,6 +12,7 @@ from typing import Any
 from omniflow.core.config import DEFAULT_PLANNER_SYSTEM_PROMPT
 from omniflow.core.model import Function, Observation, ToolCall
 from omniflow.core.schemas import canonicalize_action, vlm_action_tools
+from omniflow.runtime.controls import CONTROL_TOOLS, CONTROL_NAMES, validate_control
 from omniflow.functions.assets import validate_arguments
 from omniflow.vlm.context import analyze_page_context
 from omniflow.vlm.model_config import resolve_openai_compatible_config
@@ -63,6 +64,7 @@ def build_model_turn_request(
     content.append({"type": "text", "text": text})
     tools = function_tools(functions)
     tools.extend(vlm_action_tools())
+    tools.extend(deepcopy(CONTROL_TOOLS))
     tools = constrain_open_app_tool(
         tools,
         installed_apps or {},
@@ -117,6 +119,7 @@ def parse_model_turn_response(
     }
     function_catalog = {function.id: function for function in functions}
     model_visible_tools.update(function_catalog)
+    model_visible_tools.update(CONTROL_NAMES)
     if tool not in model_visible_tools:
         raise ModelToolCallError(f"model_turn_tool_not_visible:{tool}")
     raw_arguments = function.get("arguments")
@@ -144,7 +147,9 @@ def parse_model_turn_response(
     resolved_model = str(value.get("resolved_model") or requested_model).strip()
     adapter_metadata = None
     try:
-        if tool in function_catalog:
+        if tool in CONTROL_NAMES:
+            validate_control(tool, arguments)
+        elif tool in function_catalog:
             validate_arguments(function_catalog[tool].input_schema, arguments)
         else:
             arguments, adapter_metadata = adapt_tool_arguments(
@@ -461,7 +466,7 @@ class VLMPlanner:
             self._metadata_sink(dict(metadata))
         return tool_call
 
-    def record_action_result(self, success: bool, error: str | None, ambiguity: dict[str, Any] | None = None) -> None:
+    def record_action_result(self, success: bool, error: str | None, ambiguity: dict[str, Any] | None = None, control_receipt: dict[str, Any] | None = None) -> None:
         if self._pending_assistant is None:
             return
         call_id = self._pending_assistant["tool_calls"][0]["id"]
@@ -469,6 +474,7 @@ class VLMPlanner:
             self._pending_assistant,
             {"role": "tool", "tool_call_id": call_id, "content": json.dumps({
                 "action_success": success,
+                **({"control_receipt": control_receipt} if control_receipt is not None else {}),
                 "error": error,
                 "note": "Action dispatch does not establish task completion; inspect current state.",
                 **({"semantic_ambiguity": ambiguity, "ambiguity_note":

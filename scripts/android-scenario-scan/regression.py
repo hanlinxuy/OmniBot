@@ -470,6 +470,8 @@ def run_case(harness, case):
         h.backend.ensure_primary_display()
         if adapter == 'calculator':
             h.launch(CALC)
+            if any(n['description'] == '关闭历史记录' for n in h.observe(CALC)['nodes']):
+                h.tap(CALC, description='关闭历史记录')
             h.tap(CALC, text='AC')
             h.screen('baseline', CALC)
             if not h.calculator_blank('baseline')['passed']:
@@ -485,6 +487,12 @@ def run_case(harness, case):
             baseline['todo_rows'] = [(n['text'], n['description']) for n in obs['nodes'] if n['resource_id'] == NOTES + ':id/content_tv']
             if any(title in text for text, _ in baseline['todo_rows']):
                 raise RuntimeError('test_todo_already_exists')
+            if 'reminder_days_ahead' in case['api_args']:
+                device_date = datetime.strptime(h.backend.shell('date', '+%Y-%m-%d'), '%Y-%m-%d').date()
+                reminder_date = device_date + timedelta(days=case['api_args']['reminder_days_ahead'])
+                values['reminder_date'] = reminder_date.isoformat()
+                baseline['reminder_date'] = reminder_date.isoformat()
+
         elif adapter in ('zip_lines', 'zip_natural'):
             fixture = h.output / 'fixture.zip'
             with zipfile.ZipFile(fixture, 'w') as archive:
@@ -581,6 +589,28 @@ def run_case(harness, case):
             report['acceptance'] = verify_todo(rows, title)
             report['acceptance']['visible_baseline_prefix_preserved'] = not bool(Counter(map(tuple, baseline['todo_rows'][:-1])) - Counter(rows))
             report['acceptance']['passed'] &= report['acceptance']['visible_baseline_prefix_preserved']
+            if 'reminder_date' in baseline:
+                row_passed = report['acceptance']['passed']
+                report['acceptance']['passed'] = False
+                h.tap(NOTES, resource_id=NOTES + ':id/content_tv', text=title, postcondition={'resource_id': NOTES + ':id/content_et', 'text': title})
+                detail = h.observe(NOTES)
+                if not any(n['resource_id'] == NOTES + ':id/content_et' and n['text'] == title for n in detail['nodes']):
+                    raise RuntimeError('reminder_test_editor_not_verified')
+                h.tap(NOTES, resource_id=NOTES + ':id/iv_remind', postcondition={'text': '已设置提醒时间'})
+                h.tap(NOTES, description='重新设置', postcondition={'resource_id': NOTES + ':id/bbk_date'})
+                picker = h.observe(NOTES)
+                h.save('reminder-readback.json', picker)
+                fields = {key: [n['text'] for n in picker['nodes'] if n['resource_id'] == NOTES + ':id/' + key]
+                          for key in ('bbk_date', 'bbk_hour', 'bbk_minute', 'summary')}
+                target = datetime.strptime(baseline['reminder_date'], '%Y-%m-%d').date()
+                expected = {'bbk_date': [f'{target.month}月{target.day}日周' + '一二三四五六日'[target.weekday()]],
+                            'bbk_hour': ['17'], 'bbk_minute': ['00'], 'summary': ['仅一次']}
+                report['acceptance']['reminder_readback'] = fields == expected
+                report['acceptance']['year_scope'] = 'device_date_and_trajectory_inferred_not_persisted_year'
+                report['acceptance']['passed'] = row_passed and fields == expected
+                h.tap(NOTES, text='取消', postcondition={'resource_id': NOTES + ':id/content_et', 'text': title})
+                h.tap(NOTES, description='完成', postcondition={'resource_id': NOTES + ':id/content_tv', 'text': title})
+
         elif adapter in ('calculator', 'notes', 'weather_notes'):
             if adapter in ('notes', 'weather_notes'):
                 h.open_note(title)
@@ -665,6 +695,8 @@ def run_case(harness, case):
                     report['cleanup_actor'] = 'normal_chat'
                 elif adapter == 'calculator':
                     h.launch(CALC)
+                    if any(n['description'] == '关闭历史记录' for n in h.observe(CALC)['nodes']):
+                        h.tap(CALC, description='关闭历史记录')
                     h.tap(CALC, text='AC')
                     h.screen('cleanup', CALC)
                     report['cleanup'] = h.calculator_blank('cleanup')

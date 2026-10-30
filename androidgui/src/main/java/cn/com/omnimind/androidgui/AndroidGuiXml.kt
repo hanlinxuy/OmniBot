@@ -41,6 +41,12 @@ internal object AndroidGuiXml {
             attribute("focusable", node.isFocusable)
             attribute("focused", node.isFocused)
             attribute("scrollable", node.isScrollable)
+            attribute("actions", node.actionList.joinToString(",") { it.id.toString() })
+            node.rangeInfo?.let { range ->
+                attribute("range-min", range.min)
+                attribute("range-max", range.max)
+                attribute("range-current", range.current)
+            }
             attribute("editable", node.isEditable)
             attribute("selected", node.isSelected)
             attribute("enabled", node.isEnabled)

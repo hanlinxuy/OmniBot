@@ -368,6 +368,44 @@
         "attempt_id": "REG17fc337e518d",
         "report": "docs/testing/android-scan-batch-2026-10-30-zip.md"
       }
+    },
+    {
+      "id": "li21-todo-reminder",
+      "source_id": "LI21",
+      "layer": "gui_component",
+      "adapter": "todo",
+      "prompt_template": "在 vivo 便签的待办中新建一条内容为“[测试] {marker}”的待办，提醒设为{reminder_date}17点00分、仅一次，不勾选完成，保存后停在待办列表。",
+      "preconditions": [
+        "记录设备日期和可见待办基线；唯一测试标记不存在；官方本地控件 override 已应用"
+      ],
+      "acceptance": [
+        "模型终态成功；从列表独立重开唯一标记待办及提醒选择器，读回目标月日、17:00、仅一次；年份仅由设备日期和连续轨迹支持，界面未暴露持久年份"
+      ],
+      "cleanup": [
+        "只删除唯一标记待办，确认标记消失、可见基线保留；不删除其他历史对象"
+      ],
+      "api_args": {
+        "reminder_days_ahead": 6
+      },
+      "baseline_evidence_refs": [
+        {
+          "path": "docs/testing/android-scan-todo-date-context-2026-10-30.md",
+          "scope": "未来一次性待办提醒",
+          "outcome": "action_budget_exhausted_before_save"
+        }
+      ],
+      "variant_evidence_refs": [],
+      "skill": "omnibot-android-regression",
+      "status": "unverified",
+      "execution_layer": "gui_component",
+      "cleanup_actor": "host_automation",
+      "latest_regression": {
+        "status": "product_passed_verification_cleanup_recovered",
+        "attempt_id": "REG770da41a2e34",
+        "report": "docs/testing/android-mika-controls-2026-10-31.md",
+        "automatic_runner_status": "cleanup_failed",
+        "year_verification": "device_date_and_trajectory_inferred"
+      }
     }
   ]
 }

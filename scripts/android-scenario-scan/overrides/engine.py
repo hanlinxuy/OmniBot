@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from omniflow.runtime.controls import CONTROL_NAMES, execute_control
+
 import asyncio
 from dataclasses import dataclass, field
 import inspect
@@ -27,6 +29,7 @@ from omniflow.runtime.execution import (
     record_execution,
 )
 from omniflow.vlm.usage import merge_usage, token_usage_status
+from omniflow.vlm.planner import ModelToolCallError
 
 
 class InputRequired(RuntimeError):
@@ -338,6 +341,7 @@ class OmniFlow:
         previous_action: Action | None = None
         pending_user_input: str | None = None
         planner_diagnostics: dict[str, Any] = {}
+        provider_contract_corrected = False
         while planner_steps < self.config.runtime.max_steps:
             max_fallback_steps = self.config.runtime.max_fallback_steps
             fallback_this_turn = function_session.failed
@@ -448,6 +452,22 @@ class OmniFlow:
                 planner_usage = _take_llm_usage(self.planner)
                 merge_usage(llm_usage, planner_usage, component="planner")
                 model_calls += _usage_model_calls(planner_usage, fallback=1)
+                if (
+                    isinstance(error, ModelToolCallError)
+                    and error.code.startswith("provider_tool_call_contract_violation:expected_one_native_tool_call:")
+                    and not provider_contract_corrected
+                ):
+                    # No action was dispatched: use this existing planner loop's
+                    # remaining budget for one explicit protocol correction.
+                    provider_contract_corrected = True
+                    planner_diagnostics["provider_contract_corrections"] = 1
+                    previous_action_error = (
+                        "No tool from the rejected multi-call response was executed. "
+                        "Return exactly ONE tool call. For multiple known same-app actions, "
+                        "use ONE ui_steps call, or choose one next action."
+                    )
+                    previous_action = None
+                    continue
                 return finish(
                     False,
                     profile=profile,
@@ -582,6 +602,31 @@ class OmniFlow:
                         planner_diagnostics=planner_diagnostics,
                         terminal_detail={"done_reason": "step_completed"},
                     )
+                continue
+            if planned_call.name in CONTROL_NAMES:
+                async def dispatch_control(action, current):
+                    nonlocal actions_executed
+                    step = await execute_robust_action(
+                        action, observation=current, host=self.host, plugins=self.plugins,
+                        installed_packages=self.installed_packages,
+                    )
+                    trace.extend(await record_execution(
+                        self.host, step, trace_start_index=len(trace),
+                        metadata={**planner_metadata, "control_tool": planned_call.name},
+                    ))
+                    actions_executed += step.actions_executed
+                    return step
+
+                success, observation, receipt = await execute_control(
+                    planned_call.name, planned_call.arguments, observation=observation,
+                    observe=lambda: self._observe(screenshot=False), dispatch=dispatch_control,
+                )
+                planner_diagnostics.setdefault("control_receipts", []).append({"tool": planned_call.name, **receipt})
+                previous_action_error = receipt.get("error")
+                self.planner.record_action_result(success, previous_action_error, control_receipt=receipt)
+                # One current image is needed for the next model turn (local waits use XML only).
+                observation = await self._observe(screenshot=True)
+                previous_action = None
                 continue
             try:
                 planned = _action_from_tool_call(planned_call)

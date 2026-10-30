@@ -118,7 +118,7 @@ internal class AccessibilityAndroidGuiPlatform(
     override suspend fun dispatch(action: Action): AndroidGuiActionResult {
         val service = awaitService()
         return when (action.tool) {
-            OobActionSchema.TOOL_CLICK -> gesture(
+            OobActionSchema.TOOL_CLICK -> accessibilityAction(action) ?: gesture(
                 service = service,
                 x1 = number(action, OobActionSchema.ARG_X),
                 y1 = number(action, OobActionSchema.ARG_Y),
@@ -132,7 +132,7 @@ internal class AccessibilityAndroidGuiPlatform(
                 durationMs = long(action, OobActionSchema.ARG_DURATION_MS, 800L),
             )
 
-            OobActionSchema.TOOL_SWIPE -> gesture(
+            OobActionSchema.TOOL_SWIPE -> accessibilityAction(action) ?: gesture(
                 service = service,
                 x1 = number(action, OobActionSchema.ARG_X1),
                 y1 = number(action, OobActionSchema.ARG_Y1),
@@ -147,6 +147,33 @@ internal class AccessibilityAndroidGuiPlatform(
             OobActionSchema.TOOL_WAIT -> wait(action)
             else -> AndroidGuiActionResult(false, "unsupported_android_gui_action:${action.tool}")
         }
+    }
+
+    // Use advertised native actions only for a uniquely identified live control.
+    // A native rejection is returned as failure; never dispatch a second gesture after it.
+    private suspend fun accessibilityAction(action: Action): AndroidGuiActionResult? = withNodes { nodes ->
+        val click = action.tool == OobActionSchema.TOOL_CLICK
+        val resourceId = action.args[OobActionSchema.ARG_NODE_RESOURCE_ID]?.toString().orEmpty()
+        if (click && resourceId.isBlank()) return@withNodes null
+        val x = number(action, if (click) OobActionSchema.ARG_X else OobActionSchema.ARG_X1)
+        val y = number(action, if (click) OobActionSchema.ARG_Y else OobActionSchema.ARG_Y1)
+        val endX = if (click) x else number(action, OobActionSchema.ARG_X2)
+        val endY = if (click) y else number(action, OobActionSchema.ARG_Y2)
+        val nativeAction = if (click) AccessibilityNodeInfo.ACTION_CLICK
+            else if (endY < y) AccessibilityNodeInfo.ACTION_SCROLL_FORWARD
+            else AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD
+        val candidates = nodes.filter { node ->
+            val box = Rect().also(node::getBoundsInScreen)
+            node.isVisibleToUser && node.isEnabled &&
+                box.contains(x.toInt(), y.toInt()) && box.contains(endX.toInt(), endY.toInt()) &&
+                (if (click) node.viewIdResourceName == resourceId else
+                    node.className?.toString() in setOf("android.widget.NumberPicker", "android.widget.SeekBar") &&
+                    kotlin.math.abs(endX - x) < 1f && kotlin.math.abs(endY - y) <= box.height() * .5f) &&
+                node.actionList.any { it.id == nativeAction }
+        }
+        if (candidates.size != 1) return@withNodes null
+        val success = candidates.single().performAction(nativeAction)
+        AndroidGuiActionResult(success, if (success) "accessibility_action_dispatched" else "accessibility_action_rejected")
     }
 
     override suspend fun inputTarget(x: Float?, y: Float?): AndroidGuiInputTarget? =
@@ -225,6 +252,9 @@ internal class AccessibilityAndroidGuiPlatform(
                     )
                 }
                 val success = node.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, arguments)
+                if (success && node.parent?.className?.toString() == "android.widget.NumberPicker") {
+                    node.performAction(AccessibilityNodeInfo.ACTION_CLEAR_FOCUS)
+                }
                 AndroidGuiActionResult(
                     success,
                     if (success) "input_text_dispatched" else "input_text_failed",
