@@ -4,6 +4,7 @@ from regression_evidence import calendar_read_scope_matches, parse_screen, verif
 class EvidenceTests(unittest.TestCase):
     def test_calendar_query_scope_rejects_missing_or_wrong_calendar(self):
         read = {'tool': 'calendar_event_list', 'args': {'calendarId': '1', 'query': 'marker'}}
+        self.assertTrue(calendar_read_scope_matches([], 1))  # no out-of-scope read; not proof of a read
         self.assertTrue(calendar_read_scope_matches([read], 1))
         self.assertFalse(calendar_read_scope_matches([{**read, 'args': {'query': 'marker'}}], 1))
         self.assertFalse(calendar_read_scope_matches([read, {**read, 'args': {'calendarId': '2'}}], 1))

@@ -464,13 +464,14 @@
       "baseline_evidence_refs": [],
       "variant_evidence_refs": [],
       "skill": "omnibot-native-clock-calendar",
-      "status": "partial",
+      "status": "bounded_passed",
       "execution_layer": "normal_chat",
       "cleanup_actor": "host_automation",
       "latest_regression": {
-        "status": "partial_query_scope",
-        "attempt_id": "REGd761c98697e2",
-        "report": "docs/testing/android-mika-terra-batch-2026-10-31.md"
+        "status": "passed",
+        "attempt_id": "REG27a2d0c5275e",
+        "report": "docs/testing/android-mika-terra-batch-2026-10-31.md",
+        "prior_attempt": "partial_query_scope"
       }
     }
   ]

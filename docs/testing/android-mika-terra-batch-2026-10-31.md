@@ -28,3 +28,11 @@
 - **BA05 虚构邀请转本地日历：部分。** 正常聊天调用原生日历工具，独立 provider 核对唯一事件的起止、地点、`Asia/Shanghai` 和提前60分钟提醒，按唯一 ID 删除后事件和提醒均为空；没有邮件、路况或出行提醒。两次 `calendar_event_list` 使用随机关键词，但未传用户要求的本地 calendarId，因此查询范围可能扩及其他日历；返回分别为0和1条。原 attempt 标 `passed`，不能据此认定满足读取范围，应判部分。现有验收器已增加该参数的检查，原记录不改写；无需把正确事件字段当成整项通过。
 
 本批 `overrides` Python 测试 28 项、`test_regression*.py` 30 项、Node 扫描/分析器 7 项及 `:androidgui:testDebugUnitTest` 9 项通过，范围均为相应定向套件。设备安装计时版 APK SHA-256 `fab381c582b2cfce8386ec499b869714c33704b8db01164c679955de21b3529d`；官方 Python override 在更改前与先前已提交源码核对，应用后逐字读回，固定 ZIP 不变。运行时和设备证据不等于发布构建默认包含 override。
+
+### BA05 日历范围说明与单次复验
+
+针对首轮未传 calendarId，核对实现后只修改已有 `calendar_event_list` 参数说明：省略 ID 会查询所有可访问日历，用户指定日历时应传该 ID；中英文说明均有定向测试。这是向模型提供真实工具语义的指导，不是访问控制或强制过滤。
+
+在新 APK 上只做一次同一自然任务复验：普通聊天两次事件查询均传本地 calendarId 和唯一测试关键词，事件创建也使用该日历；独立 provider 核对起止、地点、时区和60分钟提醒。清理聊天在同一本地日历按标题查询、删除唯一 eventId 并查空，provider 再确认事件和提醒消失。复验通过这个有界子场景；不能推断描述修改是唯一原因，也不保证将来模型遵守范围。首轮部分结果和原始错误 `passed` 报告保留。验收器的范围检查在没有 list 调用时只表示没有该类越界读取，不证明发生过查询；此次实际发生两次查询。
+
+中英文工具定义定向 JVM 测试 `PersonalContextQueryTest` 8 项通过；`:app:assembleDevelopStandardDebug` 通过。最终安装 APK SHA-256 `a5589d8c97a0932ffb95d8acd6d79c1d5b5e5483b5444cc3135ed61b09880c9c`，设备读回一致。`core`、`controls`、`planner`、`engine` 四份官方 Python override 安装后逐字核对与仓库一致；并未改固定 ZIP。最终已确认聊天无在途任务，UIAutomator 停止，USB 常亮恢复原值 `0` 并读回，ADB reverse 列表为空；这不是设备或云端全部数据的完整审计。

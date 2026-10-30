@@ -382,6 +382,8 @@ object AgentToolDefinitions {
             "Reminder minute offsets, for example [10, 30].",
         "按时间范围、关键字、calendarId 查询日历事件。" to
             "Query calendar events by time range, keyword, and calendarId.",
+        "可选日历 ID；未传时查询所有可访问的日历。用户指定日历时应传该日历 ID。" to
+            "Optional calendar ID; omission queries all accessible calendars. When the user specifies a calendar, pass its ID.",
         "查看结果后再决定是否更新或删除。" to
             "Review the result first, then decide whether to update or delete.",
         "可选，查询起始时间，ISO-8601。" to "Optional query start time in ISO-8601 format.",
@@ -1903,7 +1905,10 @@ object AgentToolDefinitions {
             putJsonObject("parameters") {
                 put("type", "object")
                 putJsonObject("properties") {
-                    putJsonObject("calendarId") { put("type", "string") }
+                    putJsonObject("calendarId") {
+                        put("type", "string")
+                        put("description", "可选日历 ID；未传时查询所有可访问的日历。用户指定日历时应传该日历 ID。")
+                    }
                     putJsonObject("startAt") {
                         put("type", "string")
                         put("description", "可选，查询起始时间，ISO-8601。")

@@ -65,4 +65,18 @@ class PersonalContextQueryTest {
         val parameters = list.getValue("function").jsonObject.getValue("parameters").jsonObject
         assertTrue(parameters.getValue("properties").jsonObject.containsKey("offset"))
     }
+
+    @Test fun `calendar list describes unscoped reads in both locales`() {
+        for ((locale, expected) in listOf(
+            PromptLocale.ZH_CN to "未传时查询所有可访问的日历",
+            PromptLocale.EN_US to "omission queries all accessible calendars",
+        )) {
+            val list = AgentToolDefinitions.staticTools(locale).first {
+                it.getValue("function").jsonObject.getValue("name").jsonPrimitive.content == "calendar_event_list"
+            }
+            val description = list.getValue("function").jsonObject.getValue("parameters").jsonObject
+                .getValue("properties").jsonObject.getValue("calendarId").jsonObject.getValue("description").jsonPrimitive.content
+            assertTrue(description.contains(expected))
+        }
+    }
 }

@@ -78,6 +78,7 @@ def verify_alarm(xml, marker, hour=7, minute=0):
 
 
 def calendar_read_scope_matches(tools, calendar_id):
+    """No out-of-scope list call; an empty list does not prove a query occurred."""
     return all(str((tool.get('args') or {}).get('calendarId', '')) == str(calendar_id)
                for tool in tools if tool['tool'] == 'calendar_event_list')
 
