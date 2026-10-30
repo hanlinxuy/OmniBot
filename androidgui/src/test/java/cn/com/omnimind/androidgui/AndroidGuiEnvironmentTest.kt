@@ -86,6 +86,9 @@ class AndroidGuiEnvironmentTest {
         assertEquals(3, platform.observeCalls)
         assertEquals("host_completed", result.diagnostics["state_stabilization"])
         assertEquals("stable", result.diagnostics["state_stabilization_result"])
+        for (key in listOf("before_observation_ms", "dispatch_ms", "stabilization_ms")) {
+            assertTrue(result.diagnostics.getValue(key).toLong() >= 0)
+        }
     }
 
     @Test

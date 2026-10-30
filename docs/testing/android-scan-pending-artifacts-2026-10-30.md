@@ -26,3 +26,5 @@ These paths are retained because their pre-run state or ownership was not establ
 For subsequent file-producing scenarios, specify a unique test workspace as the output boundary without prescribing the solution; record whether the agent follows it. Record any newly discovered unmarked side effects here before deciding disposition.
 
 - 失败运行日志复验自动外存 `/workspace/.omnibot/offloads/conversation_63/offload_1793303417742_c4bc30be.txt`，内容是该次虚构表单运行的详细记录；本次未删除，保留以供复盘。外存由工具流程生成，未核查相关目录的完整基线。
+
+- 2026-10-31 BA12 测试：普通聊天自动将该测试 GUI 状态外存到 `/workspace/.omnibot/offloads/conversation_76/offload_1793382881878_6a9a9aa7.txt`，供本轮读取；目录先前完整基线未审计，保留。测试便签自身已按唯一标题删除并搜索确认，回收站与搜索历史未清理。

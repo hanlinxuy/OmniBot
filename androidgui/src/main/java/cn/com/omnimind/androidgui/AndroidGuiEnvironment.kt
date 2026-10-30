@@ -197,6 +197,7 @@ class AndroidGuiEnvironment internal constructor(
             )
         }
         return try {
+            val beforeStarted = System.nanoTime()
             val stateBeforeAction = if (
                 awaitStabilization && action.tool != OobActionSchema.TOOL_WAIT
             ) {
@@ -204,6 +205,7 @@ class AndroidGuiEnvironment internal constructor(
             } else {
                 null
             }
+            val dispatchStarted = System.nanoTime()
             val result = platform.dispatch(canonicalForDisplay(action))
             if (!result.success) return result
             if (!awaitStabilization) {
@@ -212,6 +214,7 @@ class AndroidGuiEnvironment internal constructor(
             if (action.tool == OobActionSchema.TOOL_WAIT) {
                 return result.withStabilization("completed_by_action")
             }
+            val stabilizationStarted = System.nanoTime()
             val stable = withTimeoutOrNull(stateStabilizationTimeoutMs(action.tool)) {
                 var previous = stateBeforeAction
                 var stateChanged = false
@@ -240,6 +243,9 @@ class AndroidGuiEnvironment internal constructor(
                         "runtime_delegated"
                     },
                     "state_stabilization_result" to if (stable) "stable" else "timeout",
+                    "before_observation_ms" to ((dispatchStarted - beforeStarted) / 1_000_000).toString(),
+                    "dispatch_ms" to ((stabilizationStarted - dispatchStarted) / 1_000_000).toString(),
+                    "stabilization_ms" to ((System.nanoTime() - stabilizationStarted) / 1_000_000).toString(),
                 ),
             )
         } catch (error: CancellationException) {

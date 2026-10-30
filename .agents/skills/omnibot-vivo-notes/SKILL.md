@@ -12,3 +12,5 @@ The note body may be absent from accessibility text even when it is visible. Aft
 For an isolated regression, first verify the exact unique test title on the detail page, open More, delete, confirm deletion, and search again to verify absence. If a click reports an uncertain result during a page transition, read the resulting state before deciding what remains; never repeat deletion blindly. Do not clear the recycle bin or remove unrelated notes. For ordinary user notes, leave them saved unless deletion was requested.
 
 See `../omnibot-android-regression/SKILL.md` for the executable case and separate execution, acceptance, and cleanup results. This skill is repository guidance and is not automatically loaded by the phone app.
+
+For the bounded BA12 local-draft case, ordinary chat created a fictional two-line note; independent body-region OCR and exact-title cleanup passed. Its GUI run used native accessibility clicks as well as other action paths. This does not verify pricing, marketplace drafts, or publication; any app-managed run-log offload and search history have separate ownership and retention rules.

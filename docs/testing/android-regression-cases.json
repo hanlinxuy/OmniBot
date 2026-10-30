@@ -406,6 +406,72 @@
         "automatic_runner_status": "cleanup_failed",
         "year_verification": "device_date_and_trajectory_inferred"
       }
+    },
+    {
+      "id": "ba12-local-draft",
+      "source_id": "BA12",
+      "layer": "normal_chat",
+      "adapter": "notes",
+      "natural": true,
+      "prompt_template": "我有一个虚构闲置商品，想先整理成便签草稿：蓝色水杯，价格35元。请在手机便签新建标题“[测试] {marker}”，正文分两行写“蓝色水杯”和“价格35元”，保存即可。不要发布、联网、发消息或写记忆。",
+      "preconditions": [
+        "唯一测试标题不存在，允许本地便签并可单项清理"
+      ],
+      "acceptance": [
+        "独立重开唯一标题，正文截图 OCR 逐行核对；记录普通聊天和内部 GUI 工具"
+      ],
+      "cleanup": [
+        "只删除唯一测试便签并核对搜索结果，保留回收站和其他数据"
+      ],
+      "api_args": {
+        "expected_lines": [
+          "蓝色水杯",
+          "价格35元"
+        ]
+      },
+      "baseline_evidence_refs": [],
+      "variant_evidence_refs": [],
+      "skill": "omnibot-vivo-notes",
+      "status": "bounded_passed",
+      "execution_layer": "normal_chat",
+      "cleanup_actor": "host_automation",
+      "latest_regression": {
+        "status": "passed",
+        "attempt_id": "REG5c1a40510529",
+        "report": "docs/testing/android-mika-terra-batch-2026-10-31.md"
+      }
+    },
+    {
+      "id": "ba05-local-invitation",
+      "source_id": "BA05",
+      "layer": "normal_chat",
+      "adapter": "calendar",
+      "natural": true,
+      "prompt_template": "这是虚构邀请：活动叫“[测试] {marker}”，开始 {start_at}，结束 {end_at}，地点是“测试会议室A”。请帮我放进本地日历，提前60分钟提醒。不要邀请他人、联网、发消息或写记忆。",
+      "preconditions": [
+        "唯一可写本地日历可用，随机测试标题不存在"
+      ],
+      "acceptance": [
+        "独立读取事件起止、地点、时区和60分钟提醒",
+        "所有日历查询限定请求中的本地 calendarId"
+      ],
+      "cleanup": [
+        "只删除唯一测试事件和其提醒并读回"
+      ],
+      "api_args": {
+        "location": "测试会议室A"
+      },
+      "baseline_evidence_refs": [],
+      "variant_evidence_refs": [],
+      "skill": "omnibot-native-clock-calendar",
+      "status": "partial",
+      "execution_layer": "normal_chat",
+      "cleanup_actor": "host_automation",
+      "latest_regression": {
+        "status": "partial_query_scope",
+        "attempt_id": "REGd761c98697e2",
+        "report": "docs/testing/android-mika-terra-batch-2026-10-31.md"
+      }
     }
   ]
 }

@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import asyncio
 import inspect
+import time
 from typing import Any
 
 from omniflow.core.config import PluginSet
@@ -51,16 +52,23 @@ async def execute_action(
             function_id=function_id,
             detail=decision.detail,
         )
+    started = time.monotonic()
     action_result = ActionResult.from_value(await _await(host.act(decision.action)))
+    after_act = time.monotonic()
     stabilization = action_result.extra.get("diagnostics", {})
     # Android already waits for a changed, stable tree. Avoid a second fixed
     # delay only when that existing owner explicitly confirms completion.
     settled = stabilization.get("state_stabilization") == "host_completed" and stabilization.get("state_stabilization_result") in {"stable", "completed_by_action"}
     if not settled and _ACTION_SETTLE_SECONDS > 0.0:
         await asyncio.sleep(_ACTION_SETTLE_SECONDS)
+    after_wait = time.monotonic()
     after = Observation.from_value(
         await _await(host.observe(xml=True, screenshot=True, app_info=True))
     )
+    timing = {"host_act_ms": round((after_act - started) * 1000),
+              "fallback_wait_ms": round((after_wait - after_act) * 1000),
+              "after_observation_ms": round((time.monotonic() - after_wait) * 1000)}
+    action_result.extra["timing_ms"] = timing
     if not action_result.success:
         return StepResult(
             False,

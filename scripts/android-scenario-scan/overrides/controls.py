@@ -150,17 +150,30 @@ async def execute_control(name, args, *, observation, observe, dispatch):
     current = observation
     receipts = []
     started = time.monotonic()
+    refresh_seconds = 0.0
+    refresh_count = 0
+    dispatch_seconds = 0.0
+    local_wait_seconds = 0.0
+    needs_refresh = True
     package = args["package_name"]
     steps = args["steps"] if name == "ui_steps" else [dict(args, operation=name)]
 
     async def refresh():
+        nonlocal refresh_seconds, refresh_count
+        before = time.monotonic()
         value = observe()
-        return Observation.from_value(await value if inspect.isawaitable(value) else value)
+        result = Observation.from_value(await value if inspect.isawaitable(value) else value)
+        refresh_seconds += time.monotonic() - before
+        refresh_count += 1
+        return result
 
     async def act(action):
-        nonlocal current
+        nonlocal current, dispatch_seconds, needs_refresh
+        before = time.monotonic()
         result = await dispatch(action, current)
+        dispatch_seconds += time.monotonic() - before
         current = result.after or current
+        needs_refresh = result.after is None
         if not result.success:
             raise ValueError(result.error or "control_dispatch_failed")
         visible_nodes(current, package)
@@ -169,8 +182,10 @@ async def execute_control(name, args, *, observation, observe, dispatch):
         for index, step in enumerate(steps):
             if time.monotonic() - started > 45:
                 raise ValueError("control_time_budget")
-            # Native state_id and selectors belong to the fresh observation, never the initial batch.
-            current = await refresh()
+            # The previous guarded action already returned a fresh post-action observation.
+            if needs_refresh:
+                current = await refresh()
+                needs_refresh = False
             nodes = visible_nodes(current, package)
             op = step["operation"]
             selector = step.get("selector", {})
@@ -191,7 +206,9 @@ async def execute_control(name, args, *, observation, observe, dispatch):
                         break
                     if now >= deadline:
                         raise ValueError("control_wait_timeout")
+                    before = time.monotonic()
                     await asyncio.sleep(min(.2, deadline - now))
+                    local_wait_seconds += time.monotonic() - before
                     current = await refresh()
                 receipts.append({"index": index, "operation": op, "condition_met": True})
                 continue
@@ -237,7 +254,9 @@ async def execute_control(name, args, *, observation, observe, dispatch):
                 reading, rows = wheel_read(target, local_date)
                 value, _, selected = reading
                 if value == wanted:
+                    before = time.monotonic()
                     await asyncio.sleep(.35)
+                    local_wait_seconds += time.monotonic() - before
                     current = await refresh()
                     again = matches(visible_nodes(current, package), selector)
                     if len(again) == 1 and wheel_read(again[0], local_date)[0][0] == wanted:
@@ -277,6 +296,10 @@ async def execute_control(name, args, *, observation, observe, dispatch):
                     "y2": (mid - direction * length / 2) * 1000 / height, "duration_ms": 500}))
             else:
                 raise ValueError("control_wheel_limit")
-        return True, current, {"completed": len(receipts), "total": len(steps), "steps": receipts}
+        return True, current, {"completed": len(receipts), "total": len(steps), "steps": receipts,
+                               "timing_ms": {"refresh": round(refresh_seconds * 1000), "refresh_count": refresh_count,
+                                             "dispatch": round(dispatch_seconds * 1000), "local_wait": round(local_wait_seconds * 1000)}}
     except ValueError as error:
-        return False, current, {"completed": len(receipts), "total": len(steps), "steps": receipts, "error": str(error), "stopped_index": len(receipts)}
+        return False, current, {"completed": len(receipts), "total": len(steps), "steps": receipts, "error": str(error), "stopped_index": len(receipts),
+                                "timing_ms": {"refresh": round(refresh_seconds * 1000), "refresh_count": refresh_count,
+                                              "dispatch": round(dispatch_seconds * 1000), "local_wait": round(local_wait_seconds * 1000)}}

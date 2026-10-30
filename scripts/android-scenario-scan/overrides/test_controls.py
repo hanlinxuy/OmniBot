@@ -51,11 +51,29 @@ class ControlsTests(unittest.IsolatedAsyncioTestCase):
         return result, actions
 
     async def test_batch_resolves_each_target_in_new_tree(self):
-        result, actions = await self.run_control('ui_steps', {'package_name': 'example.app', 'steps': [
-            {'operation': 'click', 'selector': {'text': '1'}}, {'operation': 'click', 'selector': {'text': '2'}}]},
-            [screen(node('1')), screen(node('2', 400))])
+        args = {'package_name': 'example.app', 'steps': [
+            {'operation': 'click', 'selector': {'text': '1'}}, {'operation': 'click', 'selector': {'text': '2'}}]}
+        actions = []
+        observations = []
+        async def observe():
+            observations.append(1)
+            return screen(node('1'))
+        async def dispatch(action, before):
+            actions.append(action)
+            return types.SimpleNamespace(success=True, error=None, after=screen(node('2', 400)))
+        result = await controls.execute_control('ui_steps', args, observation=screen(node('1')), observe=observe, dispatch=dispatch)
         self.assertTrue(result[0]); self.assertEqual(result[2]['completed'], 2)
         self.assertEqual([a.args['x'] for a in actions], [50, 450])
+        self.assertEqual(len(observations), 1)
+
+    async def test_batch_refreshes_when_dispatch_has_no_post_action_observation(self):
+        args = {'package_name': 'example.app', 'steps': [
+            {'operation': 'click', 'selector': {'text': '1'}}, {'operation': 'click', 'selector': {'text': '2'}}]}
+        frames = iter([screen(node('1')), screen(node('2', 400))])
+        async def observe(): return next(frames)
+        async def dispatch(action, before): return types.SimpleNamespace(success=True, error=None, after=None)
+        result = await controls.execute_control('ui_steps', args, observation=screen(node('1')), observe=observe, dispatch=dispatch)
+        self.assertTrue(result[0]); self.assertEqual(result[2]['timing_ms']['refresh_count'], 2)
 
     async def test_batch_stops_on_dispatch_rejection_without_replay(self):
         result, actions = await self.run_control('ui_steps', {'package_name': 'example.app', 'steps': [
@@ -106,7 +124,7 @@ class SettleTests(unittest.IsolatedAsyncioTestCase):
             async def prepare(action, **kwargs): return types.SimpleNamespace(kind='ready', action=action, detail={})
             async def await_value(value): return value
             namespace = {'prepare_action': prepare, '_await': await_value, '_ACTION_SETTLE_SECONDS': 1,
-                'asyncio': types.SimpleNamespace(sleep=sleep), 'Observation': model.Observation,
+                'asyncio': types.SimpleNamespace(sleep=sleep), 'time': __import__('time'), 'Observation': model.Observation,
                 'ActionResult': types.SimpleNamespace(from_value=lambda x: x),
                 'StepResult': lambda success, **kw: types.SimpleNamespace(success=success, **kw)}
             exec(compile(ast.fix_missing_locations(ast.Module(body=[future, fn], type_ignores=[])), 'core.py', 'exec'), namespace)

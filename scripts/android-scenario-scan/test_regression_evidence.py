@@ -1,7 +1,13 @@
 import unittest
-from regression_evidence import parse_screen, verify_clock_timer, verify_alarm, verify_calendar, verify_ocr_lines, verify_note_lines, verify_runlog, verify_todo, verify_weather_note, verify_zip_turn
+from regression_evidence import calendar_read_scope_matches, parse_screen, verify_clock_timer, verify_alarm, verify_calendar, verify_ocr_lines, verify_note_lines, verify_runlog, verify_todo, verify_weather_note, verify_zip_turn
 
 class EvidenceTests(unittest.TestCase):
+    def test_calendar_query_scope_rejects_missing_or_wrong_calendar(self):
+        read = {'tool': 'calendar_event_list', 'args': {'calendarId': '1', 'query': 'marker'}}
+        self.assertTrue(calendar_read_scope_matches([read], 1))
+        self.assertFalse(calendar_read_scope_matches([{**read, 'args': {'query': 'marker'}}], 1))
+        self.assertFalse(calendar_read_scope_matches([read, {**read, 'args': {'calendarId': '2'}}], 1))
+
     def test_zip_requires_exact_owned_read_and_final_answer(self):
         call = {'tool': 'terminal_execute', 'success': True, 'args': {'command': 'unzip -p /test/fixture.zip file_1.txt | wc -l'}, 'result': {'stdout': '6', 'success': True, 'resultCode': 0}}
         self.assertTrue(verify_zip_turn([call], ['6'], '/test/fixture.zip', 6)['passed'])
@@ -116,6 +122,8 @@ print('len:', len(data))"""
         self.assertFalse(verify_note_lines([first, second], (0, .2, 1, .35))['passed'])
         self.assertFalse(verify_note_lines([first, second])['passed'])
         self.assertFalse(verify_note_lines([first, second, {**second, 'y': .5}], rect)['passed'])
+        self.assertTrue(verify_note_lines([first, second], rect, ['番茄', '鸡蛋'])['passed'])
+        self.assertFalse(verify_note_lines([first, second], rect, ['鸡蛋', '番茄'])['passed'])
 
     def test_runlog_identity_and_terminal_success_are_only_subgate(self):
         run = {'goal': 'MARK calculate', 'run_id': 'r1', 'status': 'succeeded', 'success': True}

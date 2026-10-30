@@ -21,7 +21,7 @@ import uuid
 import xml.etree.ElementTree as ET
 from zoneinfo import ZoneInfo
 
-from regression_evidence import verify_alarm, verify_calendar, verify_clock_timer, verify_ocr_lines, verify_runlog, verify_note_lines, verify_todo, verify_weather_note, verify_zip_turn
+from regression_evidence import calendar_read_scope_matches, verify_alarm, verify_calendar, verify_clock_timer, verify_ocr_lines, verify_runlog, verify_note_lines, verify_todo, verify_weather_note, verify_zip_turn
 
 ROOT = Path(__file__).resolve().parents[2]
 MANIFEST = ROOT / 'docs/testing/android-regression-cases.json'
@@ -366,12 +366,12 @@ class Harness:
         return provider_rows(self.backend.shell(*command))
 
     def calendar(self, title, calendar_id):
-        events = self.query('events', ['_id', 'calendar_id', 'title', 'dtstart', 'dtend', 'eventTimezone'],
+        events = self.query('events', ['_id', 'calendar_id', 'title', 'dtstart', 'dtend', 'eventTimezone', 'eventLocation'],
                             f"calendar_id={calendar_id} AND title='{title}'")
         normalized, reminders = [], []
         for event in events:
             normalized.append({'id': int(event['_id']), 'calendar_id': int(event['calendar_id']),
-                               'title': event['title'], 'timezone': event['eventTimezone'], 'start_ms': int(event['dtstart']), 'end_ms': int(event['dtend'])})
+                               'title': event['title'], 'timezone': event['eventTimezone'], 'location': event.get('eventLocation'), 'start_ms': int(event['dtstart']), 'end_ms': int(event['dtend'])})
             reminders.extend({'event_id': int(r['event_id']), 'minutes': int(r['minutes'])}
                              for r in self.query('reminders', ['event_id', 'minutes'], 'event_id=' + event['_id']))
         return normalized, reminders
@@ -589,7 +589,9 @@ def run_case(harness, case):
         if adapter == 'weather_notes':
             prompt += f" 读取{baseline['weather'][0][0]}和{baseline['weather'][1][0]}两条，各写一行，格式为“时:分 温度°C 天气”，不要补充其他正文。"
         if adapter == 'calendar':
-            prompt += f' 只使用本地calendarId={baseline["calendar_id"]}，时区Asia/Shanghai，不邀请他人。使用calendar_event_create，随后calendar_event_list核对本次读取的提醒字段。'
+            prompt += f' 只使用本地calendarId={baseline["calendar_id"]}，时区Asia/Shanghai，不邀请他人。'
+            if not case.get('natural'):
+                prompt += ' 使用calendar_event_create，随后calendar_event_list核对本次读取的提醒字段。'
         if adapter in ('alarm', 'timer'):
             prompt += ' 使用已有原生系统工具，不通过滚轮设置。'
         prompt += ' 不修改其他对象，不重复创建，核对完成后直接结束。'
@@ -599,7 +601,7 @@ def run_case(harness, case):
         report['execution'] = h.chat(prompt, 'execute') if case['layer'] == 'normal_chat' else h.gui(prompt, 'execute')
         if not report['execution'].get('passed'):
             raise RuntimeError('execution_failed')
-        if case['layer'] == 'normal_chat' and adapter not in ('zip_lines', 'zip_natural'):
+        if case['layer'] == 'normal_chat' and adapter in ('alarm', 'timer', 'calendar'):
             expected_tool = {'alarm': 'alarm_reminder_create', 'timer': 'timer_create', 'calendar': 'calendar_event_create'}[adapter]
             creates = [tool for tool in report['execution']['tools'] if tool['tool'] == expected_tool]
             report['execution']['creation_calls'] = len(creates)
@@ -660,7 +662,7 @@ def run_case(harness, case):
                 if adapter == 'weather_notes':
                     report['acceptance'] = verify_weather_note(rows, rectangle, baseline['weather'])
                 else:
-                    report['acceptance'] = verify_note_lines(rows, rectangle)
+                    report['acceptance'] = verify_note_lines(rows, rectangle, case.get('api_args', {}).get('expected_lines', ['番茄', '鸡蛋']))
                 report['acceptance']['title_matches'] = any(n['text'] == title for n in obs['nodes'])
                 report['acceptance']['passed'] &= report['acceptance']['title_matches']
         elif adapter in ('alarm', 'timer'):
@@ -681,6 +683,12 @@ def run_case(harness, case):
             h.save('provider-acceptance.json', {'events': events, 'reminders': reminders})
             report['acceptance'] = verify_calendar(events, reminders, title, int(start.timestamp()*1000),
                                                    int(end.timestamp()*1000), baseline['calendar_id'], expected_timezone='Asia/Shanghai')
+            if 'location' in case.get('api_args', {}):
+                report['acceptance']['location_matches'] = len(events) == 1 and events[0]['location'] == case['api_args']['location']
+                report['acceptance']['passed'] &= report['acceptance']['location_matches']
+            if case.get('natural'):
+                report['acceptance']['calendar_query_scope_matches'] = calendar_read_scope_matches(report['execution']['tools'], baseline['calendar_id'])
+                report['acceptance']['passed'] &= report['acceptance']['calendar_query_scope_matches']
             if len(events) == 1:
                 event_id = events[0]['id']
         else:

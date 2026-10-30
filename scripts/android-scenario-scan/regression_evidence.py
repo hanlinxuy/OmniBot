@@ -77,6 +77,11 @@ def verify_alarm(xml, marker, hour=7, minute=0):
             'passed': len(matches) == 1 and enabled and daily}
 
 
+def calendar_read_scope_matches(tools, calendar_id):
+    return all(str((tool.get('args') or {}).get('calendarId', '')) == str(calendar_id)
+               for tool in tools if tool['tool'] == 'calendar_event_list')
+
+
 def verify_calendar(events, reminders, marker, start_ms, end_ms, calendar_id, expected_timezone=None):
     if not marker.strip():
         raise ValueError('marker required')
@@ -94,7 +99,7 @@ def verify_calendar(events, reminders, marker, start_ms, end_ms, calendar_id, ex
     return result
 
 
-def verify_note_lines(ocrrows, body_rect=None):
+def verify_note_lines(ocrrows, body_rect=None, expected_lines=('番茄', '鸡蛋')):
     """Require a caller-verified normalized body rectangle (left, top, right, bottom)."""
     if body_rect is None:
         return {'passed': False, 'reason': 'body_region_unverified'}
@@ -105,7 +110,8 @@ def verify_note_lines(ocrrows, body_rect=None):
             row['x'] + row['width'] <= right and row['y'] + row['height'] <= bottom]
     rows.sort(key=lambda row: (row['y'], row['x']))
     lines = [''.join(unicodedata.normalize('NFKC', row['text']).split()) for row in rows]
-    return {'passed': lines == ['番茄', '鸡蛋'], 'body_line_count': len(lines)}
+    expected = [''.join(unicodedata.normalize('NFKC', line).split()) for line in expected_lines]
+    return {'passed': bool(expected) and lines == expected, 'body_line_count': len(lines)}
 
 
 def verify_ocr_lines(text, required_lines):
