@@ -102,10 +102,10 @@ def acp_terminal(entries):
             'owners': [list(x) for x in owners], 'stop_reasons': sorted(reasons), 'tools': tools, 'final_texts': final_texts[-1:]}
 
 
-def status_for(execution, acceptance, cleanup, submitted):
+def status_for(execution, acceptance, cleanup, submitted, error=None):
     if cleanup.get('passed') is not True:
         return 'cleanup_failed' if submitted else 'blocked'
-    if execution.get('passed') and acceptance.get('passed'):
+    if not error and execution.get('passed') and acceptance.get('passed'):
         return 'passed'
     return 'failed' if submitted else 'blocked'
 
@@ -400,6 +400,30 @@ class Harness:
         return [n.get('content-desc') for n in ET.fromstring(xml).iter('node')
                 if n.get('package') == CLOCK and n.get('resource-id') == CLOCK + ':id/alarm_item_content']
 
+    def find_alarm(self, marker):
+        for direction in ('down', 'up'):
+            for attempt in range(4):
+                obs = self.observe(CLOCK)
+                matches = [n for n in obs['nodes'] if n['resource_id'] == CLOCK + ':id/alarm_item_content'
+                           and marker in [field.strip() for field in re.split(r'[,，]', n['description'])]]
+                if len(matches) > 1:
+                    raise RuntimeError('alarm_marker_not_unique_visible')
+                if matches:
+                    return obs, matches[0]
+                if attempt < 3:
+                    self.call('swipe', {'direction': direction, 'observation_id': obs['observation_id']})
+        raise RuntimeError('alarm_marker_not_found_in_bounded_scan')
+
+    def alarm_top(self):
+        obs = self.observe(CLOCK)
+        for _ in range(3):
+            previous = [n['description'] for n in obs['nodes'] if n['resource_id'] == CLOCK + ':id/alarm_item_content']
+            self.call('swipe', {'direction': 'down', 'observation_id': obs['observation_id']})
+            obs = self.observe(CLOCK)
+            current = [n['description'] for n in obs['nodes'] if n['resource_id'] == CLOCK + ':id/alarm_item_content']
+            if current == previous:
+                break
+
     def note_search(self, title):
         self.launch(NOTES)
         obs = self.observe(NOTES)
@@ -525,6 +549,8 @@ def run_case(harness, case):
                 raise RuntimeError('test_note_already_exists')
         elif adapter in ('alarm', 'timer', 'stopwatch'):
             h.clock_tab({'alarm': '闹钟', 'timer': '计时器', 'stopwatch': '秒表'}[adapter])
+            if adapter == 'alarm':
+                h.alarm_top()
             obs, xml = h.screen('baseline', CLOCK)
             if adapter == 'alarm':
                 baseline['alarms'] = h.alarm_rows(xml)
@@ -608,8 +634,13 @@ def run_case(harness, case):
                 report['acceptance']['reminder_readback'] = fields == expected
                 report['acceptance']['year_scope'] = 'device_date_and_trajectory_inferred_not_persisted_year'
                 report['acceptance']['passed'] = row_passed and fields == expected
-                h.tap(NOTES, text='取消', postcondition={'resource_id': NOTES + ':id/content_et', 'text': title})
-                h.tap(NOTES, description='完成', postcondition={'resource_id': NOTES + ':id/content_tv', 'text': title})
+                h.tap(NOTES, text='取消', postcondition=[{'resource_id': NOTES + ':id/content_et', 'text': title},
+                                                       {'resource_id': NOTES + ':id/content_tv', 'text': title}])
+                after_cancel = h.observe(NOTES)
+                if any(n['resource_id'] == NOTES + ':id/content_et' and n['text'] == title for n in after_cancel['nodes']):
+                    h.tap(NOTES, description='完成', postcondition={'resource_id': NOTES + ':id/content_tv', 'text': title})
+                elif sum(n['resource_id'] == NOTES + ':id/content_tv' and n['text'] == title for n in after_cancel['nodes']) != 1:
+                    raise RuntimeError('reminder_cancel_destination_not_verified')
 
         elif adapter in ('calculator', 'notes', 'weather_notes'):
             if adapter in ('notes', 'weather_notes'):
@@ -634,6 +665,8 @@ def run_case(harness, case):
                 report['acceptance']['passed'] &= report['acceptance']['title_matches']
         elif adapter in ('alarm', 'timer'):
             h.clock_tab('闹钟' if adapter == 'alarm' else '计时器')
+            if adapter == 'alarm':
+                h.find_alarm(title)
             obs, xml = h.screen('acceptance', CLOCK)
             if adapter == 'alarm':
                 report['acceptance'] = verify_alarm(xml, title)
@@ -749,18 +782,15 @@ def run_case(harness, case):
                     report['cleanup'] = {'passed': not any(n['text'] == title and n['class_name'] != 'android.widget.EditText' for n in obs['nodes'])}
                 elif adapter == 'alarm':
                     h.clock_tab('闹钟')
-                    obs, xml = h.screen('cleanup-before', CLOCK)
-                    target = [n for n in obs['nodes'] if n['description'] in h.alarm_rows(xml) and title in n['description'].split(',')]
-                    if len(target) != 1:
-                        raise RuntimeError('cleanup_alarm_ownership_not_unique_visible')
+                    obs, target = h.find_alarm(title)
                     h.tap(CLOCK, description='更多')
                     h.tap(CLOCK, text='编辑')
                     obs = h.observe(CLOCK)
-                    row = [n for n in obs['nodes'] if n['description'] == target[0]['description']]
+                    row = [n for n in obs['nodes'] if n['description'] == target['description']]
                     moved = len(row) == 1 and sum(row[0]['bounds'][1::2])/2 > obs['context']['height']*.8
                     if moved:
                         h.call('swipe', {'direction': 'up', 'observation_id': obs['observation_id']})
-                    h.tap(CLOCK, description=target[0]['description'])
+                    h.tap(CLOCK, description=target['description'])
                     obs = h.observe(CLOCK)
                     if not any(n['description'] == '已选择1项' or n['text'] == '已选择1项' for n in obs['nodes']):
                         raise RuntimeError('cleanup_alarm_selection_not_one')
@@ -772,6 +802,7 @@ def run_case(harness, case):
                     if moved:
                         obs = h.observe(CLOCK)
                         h.call('swipe', {'direction': 'down', 'observation_id': obs['observation_id']})
+                    h.alarm_top()
                     obs, xml = h.screen('cleanup', CLOCK)
                     rows = h.alarm_rows(xml)
                     report['cleanup'] = {'passed': not any(title in r.split(',') for r in rows) and set(baseline['alarms']).issubset(rows)}
@@ -797,7 +828,7 @@ def run_case(harness, case):
             except (RuntimeError, ValueError, OSError, sqlite3.Error, subprocess.SubprocessError) as error:
                 report['cleanup']['error'] = str(error)[:240]
         report['submission_attempted'] = h.submitted
-        report['status'] = status_for(report['execution'], report['acceptance'], report['cleanup'], h.submitted)
+        report['status'] = status_for(report['execution'], report['acceptance'], report['cleanup'], h.submitted, report.get('error'))
         report['finished_at'] = datetime.now(ZoneInfo('Asia/Shanghai')).isoformat()
         report['evidence'] = h.serialized_evidence
         h.save('attempt.json', report)

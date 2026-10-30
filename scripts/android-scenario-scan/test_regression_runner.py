@@ -15,6 +15,23 @@ from regression_evidence import verify_alarm, verify_clock_timer, verify_runlog
 
 
 class RunnerContracts(unittest.TestCase):
+    def test_alarm_search_is_bounded_and_uses_fresh_observations(self):
+        h = runner.Harness.__new__(runner.Harness)
+        node = {'resource_id': runner.CLOCK + ':id/alarm_item_content', 'description': '07:00, [测试] owned,每天,开关,已开启'}
+        observations = iter([{'observation_id': '1', 'nodes': []}, {'observation_id': '2', 'nodes': [node]}])
+        h.observe = lambda package: next(observations)
+        calls = []
+        h.call = lambda op, args: calls.append((op, args))
+        _, found = h.find_alarm('[测试] owned')
+        self.assertEqual(node, found)
+        self.assertEqual([('swipe', {'direction': 'down', 'observation_id': '1'})], calls)
+
+        h.observe = lambda package: {'observation_id': 'fresh', 'nodes': []}
+        calls.clear()
+        with self.assertRaisesRegex(RuntimeError, 'alarm_marker_not_found_in_bounded_scan'):
+            h.find_alarm('[测试] absent')
+        self.assertEqual(6, len(calls))
+
     def test_partial_streamed_tool_arguments_are_polled_without_resending(self):
         import json
         from unittest.mock import Mock
@@ -92,6 +109,7 @@ class RunnerContracts(unittest.TestCase):
         self.assertNotEqual('passed', runner.status_for({'passed': True}, {'passed': True}, {'passed': False}, True))
         self.assertNotEqual('passed', runner.status_for({'passed': False}, {'passed': True}, {'passed': True}, True))
         self.assertEqual('passed', runner.status_for({'passed': True}, {'passed': True}, {'passed': True}, True))
+        self.assertEqual('failed', runner.status_for({'passed': True}, {'passed': True}, {'passed': True}, True, 'host_tap:target_not_found'))
 
     def test_gui_duplicate_matching_runs_does_not_resubmit(self):
         class Backend:
