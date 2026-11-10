@@ -81,7 +81,7 @@ def main():
                 from records import records
                 try:
                     content=records(name,values)
-                    result={'content':[{'type':'text','text':json.dumps(content,ensure_ascii=False)}]}
+                    result={'isError':isinstance(content,dict) and 'error' in content,'content':[{'type':'text','text':json.dumps(content,ensure_ascii=False)}]}
                 except (ValueError,KeyError,StopIteration,TypeError) as error:
                     result={'isError':True,'content':[{'type':'text','text':type(error).__name__+': '+str(error)}]}
             elif name not in TOOLS or set(values) != set(TOOLS[name][1]):

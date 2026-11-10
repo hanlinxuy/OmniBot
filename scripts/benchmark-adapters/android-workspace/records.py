@@ -65,8 +65,15 @@ def records(action, args):
         return {'threads':rows,'scope':'current workspace only' if path.name=='teamchat.json' else 'all conversations'}
     if action=='query_records':
         value=data
+        traversed=[]
         for part in args.get('collection','').split('.'):
-            if part: value=value[int(part)] if isinstance(value,list) else value[part]
+            if not part: continue
+            if isinstance(value,dict) and part not in value:
+                return {'error':'unknown_collection','at':'.'.join(traversed),'availableKeys':list(value)}
+            if isinstance(value,list) and (not part.isdigit() or int(part)>=len(value)):
+                return {'error':'invalid_collection_index','at':'.'.join(traversed),'length':len(value)}
+            if not isinstance(value,(dict,list)): return {'error':'not_a_collection','at':'.'.join(traversed)}
+            value=value[int(part)] if isinstance(value,list) else value[part];traversed.append(part)
         if isinstance(value,dict):
             return {'keys':{k:len(v) if isinstance(v,(dict,list)) else v for k,v in value.items()},'hint':'Select a collection with a dot path, e.g. state.activities'}
         filters=[]; pending=list(args.get('filters',{}).items())
@@ -80,6 +87,8 @@ def records(action, args):
             for key,child in item.items():
                 path_key=prefix+key;available.add(path_key)
                 if isinstance(child,dict): pending.append((path_key+'.',child))
+        invalid_fields=[key for key in args.get('fields',[]) if value and not any(key in item for item in value)]
+        if invalid_fields: return {'error':'unknown_projection_field','invalidFields':invalid_fields,'availableFields':sorted({key for item in value for key in item})}
         invalid=[key for key,_ in filters if available and key not in available]
         if invalid: return {'error':'unknown_filter_field','invalidFields':invalid,'availableFields':sorted(available)}
         found=[]

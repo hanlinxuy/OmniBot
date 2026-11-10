@@ -20,6 +20,10 @@ class RecordsTest(unittest.TestCase):
                 invalid=records.records('query_records',{'file':'flights.json','collection':'flights','filters':{'Origin':'SFO'}})
                 self.assertEqual(invalid['error'],'unknown_filter_field')
                 self.assertIn('origin.id',invalid['availableFields'])
+                missing=records.records('query_records',{'file':'flights.json','collection':'state.flights'})
+                self.assertEqual(missing['availableKeys'],['flights'])
+                bad=records.records('query_records',{'file':'flights.json','collection':'flights','fields':['fake']})
+                self.assertEqual(bad['error'],'unknown_projection_field')
 
     def test_playstation_is_not_charging_station(self):
         import re
