@@ -1,0 +1,86 @@
+--- a/mcps/clock.py
++++ b/mcps/clock.py
+@@ -483,7 +483,9 @@
+     overlay first; no need to pre-navigate.
+ 
+     Returns:
+-      ``{"alarms": [<slug>, ...], "count": int}`` — each slug is the alarm's
++      ``{"alarms": [<slug>, ...], "count": int, "rows": [...]}`` — rows
++      include rendered labels/time texts and switch values for verification.
++      Each slug is the alarm's
+       label lowercased with spaces->underscores ("Wake up"->"wake_up"), or
+       ``idxN`` for an unlabeled alarm (N = row index). Pass either the label
+       or the slug to `toggle_alarm`.
+@@ -492,7 +494,18 @@
+     _ensure_tab(sim, "clock_tab_alarm")
+     tree = sim.observe_text()
+     slugs = sorted(set(re.findall(r'clock_alarm_row_([^"\s]+)', tree)))
+-    return {"alarms": slugs, "count": len(slugs)}
++    import xml.etree.ElementTree as ET
++    rows = []
++    if tree.lstrip().startswith("<"):
++        for element in ET.fromstring(tree).iter():
++            name = element.get("name", "")
++            if name.startswith("clock_alarm_row_"):
++                rows.append({"id": name, "label": element.get("label", ""),
++                             "texts": [child.get("label", "") for child in element.iter()
++                                       if child.tag == "XCUIElementTypeStaticText"],
++                             "enabled": [child.get("value") for child in element.iter()
++                                         if child.tag == "XCUIElementTypeSwitch"]})
++    return {"alarms": slugs, "count": len(slugs), "rows": rows}
+ 
+ 
+ @mcp.tool()
+@@ -580,22 +593,30 @@
+ def _set_alarm_time_picker(sim, hour: int, minute: int, am_pm: str) -> tuple[bool, str]:
+     """Set the UIDatePicker wheels on the AddAlarm sheet to (hour, minute, am_pm).
+ 
+-    The picker is a UIDatePicker(.wheels) with three wheels: Hour, Minute,
+-    AM/PM. Uses the XCUITest `value` setter via predicate-found wheel
+-    elements. Returns (ok, message).
++    The picker has two wheels in 24-hour mode or three in 12-hour mode.
++    Set each observed wheel and verify its value before allowing Save.
++    Returns (ok, message).
+     """
+     try:
+         # Find the three picker wheels via predicate
+         wheels = sim.driver.find_elements("class name", "XCUIElementTypePickerWheel")
+-        if len(wheels) < 3:
+-            return False, f"Expected 3 picker wheels, found {len(wheels)}."
+-        h_str = str(int(hour) if hour <= 12 else hour - 12)
+-        m_str = f"{int(minute):02d}"
+-        wheels[0].send_keys(h_str)
+-        wheels[1].send_keys(m_str)
+-        wheels[2].send_keys(am_pm.upper())
++        if len(wheels) not in (2, 3):
++            return False, f"Expected 2 or 3 picker wheels, found {len(wheels)}."
++        hour24 = hour % 12 + (12 if am_pm.upper() == "PM" else 0)
++        values = [(f"{hour24:02d}" if len(wheels) == 2 else str(hour % 12 or 12)), f"{minute:02d}"]
++        if len(wheels) == 3:
++            values.append(am_pm.upper())
++        for wheel, value in zip(wheels, values):
++            wheel.send_keys(value)
+         sim.wait(0.3)
+-        return True, f"Set picker to {h_str}:{m_str} {am_pm.upper()}"
++        observed = [str(wheel.get_attribute("value") or "").strip() for wheel in wheels]
++        for index in (0, 1):
++            match = re.match(r"^(\d+)(?:\D|$)", observed[index])
++            if not match or int(match.group(1)) != int(values[index]):
++                return False, f"Picker readback mismatch: requested {values}, observed {observed}."
++        if len(wheels) == 3 and observed[2].upper() != values[2]:
++            return False, f"Picker meridiem mismatch: requested {values}, observed {observed}."
++        return True, f"Verified picker values {observed}"
+     except Exception:
+         return False, "Picker wheels are unavailable through the current automation session."
+ 
+@@ -646,8 +667,8 @@
+         return _ui_unavailable("add_alarm", "Add alarm button")
+     ok, msg = _set_alarm_time_picker(sim, h, mi, ap)
+     if not ok:
+-        # Best-effort: still let user save; they can fix time via observe + sim_tap_xy
+-        pass
++        _dismiss_overlays(sim)
++        return f"Could not add alarm: time was not set and verified. {msg} No alarm was saved."
+     if label:
+         # The label UITextField doesn't have an explicit ID; tap by class
+         try:

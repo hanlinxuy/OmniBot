@@ -135,3 +135,20 @@ For notes-001, the original request asks for a bullet about a bug fix completed 
 The skill is a general `edit-structured-note` workflow: read the full body, select the appropriate section, inspect append versus replacement semantics, preserve unrelated content, use only supplied facts, and read back the actual placement. It contains no fixture IDs, note titles or answer key. The comparison explicitly selects it through Pi's native `/skill:` expansion; autonomous skill discovery is not claimed. These are single-run observations, not a reliable success-rate estimate. The 35a3 placement failure remains open.
 
 The first host verifier incorrectly required the updated body to begin with the entire old body, so it rejected Terra's correct insertion before the final section. The raw result is preserved and a separate acceptance audit corrects it. A reusable line-diff verifier now distinguishes original-content preservation, exactly one added bullet and section placement; factual accuracy remains a separate source-based audit. Three focused tests cover middle insertion, wrong-section append, and destructive/duplicate edits. Each completed run restored and independently compared all Notes rows and folders before the next model.
+
+
+## Batch 6: iOSWorld Clock, a concrete picker defect
+
+The original clock-001 goal asks for a 6:45 AM alarm named Gym. All three baseline tools paths saved the wrong time: the original `add_alarm` assumes three wheels, but the observed 24-hour picker has two. After reporting that mismatch internally, it still saved the current picker time and returned the requested time as a success message. 35a3 claimed success, DeepSeek eventually qualified its verification but still relied on the echoed time, and Terra explicitly said the time could not be verified. Independent persisted alarm data failed all three. No wrong-time alarm was left after fixture restoration.
+
+A first host audit also overflowed while converting the original seed alarms' ancient date values. That attempt remains acceptance-incomplete; later runs preserve the raw store before interpretation and convert only the newly created target date. A correct row count alone is not an alarm-time pass.
+
+The separate iOSWorld adaptation patch now detects two/three wheels, verifies their values and cancels without saving on mismatch. A first candidate still failed because this 24-hour hour wheel silently ignores `6`; a no-save control showed that `06` works. The corrected candidate uses two-digit 24-hour values. The original XML response was also truncated before the alarm rows, so `list_alarms` now includes concise rendered row texts and switch values. These are source-tool changes in a versioned patch, **not OmniBot Android native-clock changes**.
+
+| Corrected picker condition | Model requests | Persisted time / label / enabled | Cleanup |
+| --- | --- | --- | --- |
+| 35a3 | 3 | 06:45 / Gym / true | Restored |
+| DeepSeek | 3 | 06:45 / Gym / true | Restored |
+| Terra | 3 | 06:45 / Gym / true | Restored |
+
+The failed intermediate candidate is retained, including 35a3's eventual request-budget exhaustion and attempts to change the requested time. No pass is inferred from those attempts. The corrected matrix used the same tool source. Two focused controls cover 12/24-hour conversion boundaries and ensure a silently failed wheel write cannot reach Save. The source patch, upstream license, application instructions and controls are in `scripts/benchmark-adapters/iosworld/`. Repository clock guidance also records the general lesson: inspect the actual picker and treat contradictory success/failure receipts as unverified.
