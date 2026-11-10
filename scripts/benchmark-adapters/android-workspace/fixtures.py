@@ -74,7 +74,7 @@ def verify_fixture(case, original, saved, final):
         orders=after.get('activeOrders',[])
         if len(orders)!=1:return {'exactlyOneOrderCreated':False}
         order=orders[0]; expected=dict(before,activeOrders=orders)
-        return {'oneChickenBowl':len(order['items'])==1 and order['items'][0]['item']['name']=='Chicken Bowl' and order['items'][0]['quantity']==1,'chipotleSelected':order['restaurant']['name']=='Chipotle','homeAddress':'410 Brannan St' in order['destinationAddress']['detail'],'onlyOwnedOrderAdded':after==expected,'semanticReviewRequired':True}
+        return {'oneChickenBowl':len(order['items'])==1 and order['items'][0]['item']['name']=='Chicken Bowl' and order['items'][0]['quantity']==1,'chipotleSelected':order['restaurant']['name']=='Chipotle Mexican Grill','homeAddress':'410 Brannan St' in order['destinationAddress']['detail'],'onlyOwnedOrderAdded':after==expected,'semanticReviewRequired':True}
     if case == 'cloudslides-002':
         name = '[Draft] Autonomous Agents.pptx'
         before, after = Presentation(original/name), Presentation(saved/name)
