@@ -814,3 +814,41 @@ Private evidence: `alarm-clarification-matrix-audit.json`, each run's
 `alarm-detail-readback.json`, `independent-acceptance.json`, and cleanup audit.
 Unrelated alarm details from a model answer remain private and are not reproduced
 in this report or the issue.
+
+
+## Native phone Pi file selection and explicit execution policy
+
+`InvoiceReceiptCopyTask` now has a three-model native-file control. The source
+filenames, November/October/December 2025 modification times, and its own
+text-with-PDF-header content generator are retained with a deterministic seed.
+Only isolated phone Pi `Download` and `Finance` directories are used; the source
+initializer's destructive clearing of shared Downloads is not executed. This
+checks file selection/copy, not PDF parsing or an official emulator score.
+
+| Outer model | Seconds | Provider requests | Independent result |
+| --- | ---: | ---: | --- |
+| 35a3 | 13.67 | 6 | exact destination name and bytes; all source names/content preserved |
+| DeepSeek | 18.16 | 9 | same checks pass |
+| Terra | 18.11 | 3 | same checks pass |
+
+All three use phone Pi `bash`/`read`, with zero GUI calls. The prompt discloses
+the same permitted basic commands and unsupported interpreter/loop operations;
+it does not disclose the target answer. This is a separate explicit-policy
+condition, not a retroactive success claim for the original restricted runs.
+Without that disclosure, a valid 35a3 run passed in 16.0 seconds, Terra stopped
+after a denied Python call, and DeepSeek hit the host's request budget after
+command denials. That host 429 is not a provider rate limit. A separate DeepSeek
+HTTP 500 and two earlier admission/parser failures are retained as incomplete
+infrastructure attempts. No independent pre-cleanup file readback exists for
+the budget-exhausted DeepSeek baseline, so its business outcome stays unknown.
+
+The harness now tokenizes shell punctuation while preserving quoted arguments,
+and normalizes Pi's `bash: command` title before admission. It also reads file
+state before cleanup on exceptional exits; the latter was installed after the
+35a3 policy run, whose normal acceptance already independently read file bytes.
+These are harness corrections, not OmniBot product fixes. All three completed
+controls independently verified exact destination bytes and unchanged source
+content before cleanup. Fresh ADB readback confirms their unique workspaces and
+provider reverse port are absent. Evidence: private
+`invoice-copy-policy-matrix-audit.json`, per-run acceptance and cleanup records;
+DeepSeek/Terra additionally retain `file-readback-finally.json`.
