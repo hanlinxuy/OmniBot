@@ -565,3 +565,44 @@ intermediate tool-call narration did not cause these format failures. 35a3's
 final responses themselves include explanations/tables or alternative numbers.
 The previous baseline counts therefore remain unchanged. No model rerun or
 product improvement is claimed by this evidence audit.
+
+
+### PDF format recovery: one official Pi correction turn
+
+A stronger skill paragraph alone did not fix 35a3's verbose final response. That
+candidate and failed run are retained privately; the ineffective paragraph was
+removed from the product skill. No APK change is claimed from this experiment.
+
+A new harness condition uses the original skill, a workspace-prepared parser,
+restricted read/helper/arithmetic commands and at most one corrective ACP turn.
+After an official `session/prompt` completes, a non-numeric final response receives
+one further official `session/prompt` in the same session. It states only the
+format failure, supplies no expected answer, forbids inventing a value to satisfy
+formatting, and does not extract a convenient number from the previous prose.
+The first answer and corrective response are both saved. No synthetic turn state,
+new lifecycle owner or unbounded retry is introduced.
+
+| Outer model | Total seconds | Parser setup seconds included | Extra correction requests | Final answer | Original source judge |
+| --- | ---: | ---: | ---: | --- | --- |
+| 35a3 | 21.27 | 2.10 | 1 | 1.9 | pass |
+| DeepSeek Flash | 21.19 | 4.31 | 0 | 13.8 | fail |
+| Terra | 30.26 | 2.72 | 0 | 1.9 | pass |
+
+35a3 first produced the correct value with forbidden prose, then returned only
+1.9 after one correction. DeepSeek's answer already satisfies the format and thus
+correctly receives no format retry. It computed 86.7−72.9, using Gemini 2.5 Pro
+from Table 11; the oracle uses the best score 74.8 within Qwen3-32B's Table 13.
+The question does not explicitly limit the comparison to that table. Preserve
+the source-judge failure and comparison-range ambiguity; it is not an arithmetic
+error and a format gate cannot establish factual correctness.
+
+The command gate denied one DeepSeek `cd ... && ...` command; it recovered with
+a direct helper call. Seven offline admission controls covered allowed helper
+reads/arithmetic and rejected outside paths, shell chaining and arbitrary writes.
+An earlier preparation attempt rejected harmless trailing `2>&1`, then exhausted
+the host request budget before reaching a final answer. That 429 is a harness
+limit, not provider rate limiting or a completed format-repair test. The refined
+condition prepares the parser inside each owned workspace and allows only that
+trailing stderr merge. All successful runs preserve original PDF hashes and have
+verified workspace cleanup. This is a bounded harness observation, not a product
+file sandbox, automatic skill selection or a general model-speed comparison.
