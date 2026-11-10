@@ -22,7 +22,7 @@ plans={
  'trailblaze':[('state','SeedData.makeSeededData()')],
  'caltrack':[('state','SeedData.seededState()'),('exercises','SeedData.seededExercises()')],
  'tasterank':[('restaurants','SeedData.restaurants()'),('visits','SeedData.defaultVisitLogs(restaurants: SeedData.restaurants())'),('lists','SeedData.defaultLists(restaurants: SeedData.restaurants())'),('friends','SeedData.friends()'),('profile','SeedData.userProfile()')],
- 'lockedin':[('profile','SeedDataFactory.currentUserProfile'),('connections','SeedDataFactory.connections'),('posts','SeedDataFactory.makePosts()'),('jobs','SeedDataFactory.jobs'),('conversations','SeedDataFactory.makeConversations()')],
+ 'lockedin':[('profile','SeedDataFactory.currentUserProfile'),('connections','SeedDataFactory.connections'),('posts','SeedDataFactory.makePosts()'),('jobs','SeedDataFactory.jobs'),('conversations','SeedDataFactory.makeConversations()'),('notifications','SeedDataFactory.allNotifications')],
  'scorezone':[('teams','SeedData.teams'),('headlines','SeedData.headlines'),('games','SeedData.allSeededGames'),('favoriteTeams','SeedData.defaultFavoriteTeamIDs'),('profile','SeedData.profile')],
 }
 def run(app):
