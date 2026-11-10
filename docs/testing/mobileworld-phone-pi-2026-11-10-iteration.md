@@ -1,12 +1,12 @@
 # Phone Pi iteration — 2026-11-10, eight-hour window
 
-Window: 10:32–18:32 Asia/Shanghai. This report is incremental, not a declaration that the full window or benchmark is complete.
+Authorized window: 10:32:40–18:32:40 Asia/Shanghai. This is a closed, bounded iteration report; it does not claim the entire benchmark passed. Individual sections preserve their original experimental conditions and failures. See the closeout section for final state.
 
 ## Environment and boundaries
 
 Same vivo device, Android Alpine Pi 1.4.0 / ACP adapter 0.1.0, 37 advertised tools, isolated sessions/workspaces. Models: local `qwen3.6-35b-a3b-q4_k_m`, official `deepseek-flash`, and `gpt-6.1-terra` through the local subscription model relay. Reasoning off for this matrix. A shared `run_gui` delegates to OmniFlow; these file/calendar cases did not rely on that visual route. These are source-fixture Android adaptations, not official benchmark scores.
 
-Source inventory: MobileWorld 201 tasks at `aa2ea47052dd15729bfca1f27fa6aca4630607a9`; iOSWorld 133 at `c59287b6ec9a9d0d7269613ad873f6aa9db0f42c`. See the companion research note for Mika source and implementation findings. Inventory entries do not count as runs.
+Source inventory: MobileWorld 201 tasks at `aa2ea47052dd15729bfca1f27fa6aca4630607a9`; iOSWorld 133 at `c59287b6ec9a9d0d7269613ad873f6aa9db0f42c`. See [the Mika research note](../research/mika-local-ui-controls.md) for pinned source and implementation findings. Inventory entries do not count as runs.
 
 ## Batch 1: actual results
 
@@ -971,3 +971,70 @@ passes in 18.33 seconds / 7 requests, retaining one unsupported-loop denial.
 This is a single observation, not a stable speedup estimate. Earlier matrix
 results and denials remain unchanged. The description change is a product fix;
 the file command policy is a harness improvement.
+
+
+## Closeout: scope, remaining failures and restored state
+
+The inventory contains 201 MobileWorld and 133 iOSWorld IDs. The final manifest
+records results for **30 MobileWorld IDs**, including failures and partial or
+conditional outcomes; this is not 30 passes. Another **six iOSWorld IDs** belong
+to the separate Mac simulator branch (five app tasks and one incomplete
+multi-app task). They are not vivo Android coverage. The user-requested Android
+refocus remains in effect; no iPhone simulator is booted.
+
+Of MobileWorld's remaining IDs, 166 are inventoried but unrun and five lack
+located source baseline fixtures: CheckConferenceDurationTask, CountFileLinesTask,
+SumFileLinesTask, LocalFileManagementTask and LocalFileManagementTask2. Missing
+fixture means missing in the inspected source/export, not proof the official
+emulator lacks it. iOSWorld additionally has 93 native-iOS dependency entries
+and 34 excluded bank/payment entries. All counts describe this manifest, not an
+official benchmark score or a representative model ranking.
+
+Provenance was rechecked against upstream: all 260 MobileWorld task-definition
+and asset Git blobs match the pinned upstream tree, with zero missing or
+mismatched blobs. Its local directory is an export without its own `.git`;
+running `git rev-parse` there would incorrectly report the ancestor workspace.
+iOSWorld and Mika checkout HEADs match their recorded pins. Mika's current
+wheel/batch/wait differences are recorded in the linked research note.
+
+Important unresolved outcomes remain visible:
+
+- Attachment GUI can confuse Attach with Send. Exposing abort repairs truthful
+  termination, not icon recognition or attachment reliability.
+- The original weekly-Friday alarm predicate differs from a one-time Friday
+  interpretation; the date receipt fix does not turn those runs into weekly
+  benchmark passes. Actual ringing remains untested.
+- Raw and normalized brightness values disagree on this vivo. Read-only display
+  state exposes that disagreement; it does not prove physical maximum brightness.
+- PDF response formatting, ambiguous source arithmetic/table conventions and
+  project-status classification still have failed or conditional results.
+- Model/API 500s, host request caps, hidden admission constraints and grader
+  mistakes are separated from completed task failures. Skills explicitly selected
+  by the harness do not establish autonomous skill discovery.
+- MCP recovery after reinstall required opening local-service settings and
+  rebinding the forward; the underlying lifecycle issue is still unresolved.
+
+Final cleanup evidence: all 176 known phone Pi run workspaces absent; all 355
+tracked fixture posts/DMs absent; `mw-audit-` calendar query returns zero. Alarm
+and audio cleanup remain supported by their per-run independent records, not a
+new scan of personal alarms. Mail fixtures were restored after verified GUI
+termination. USB stay-awake is read back as 0 and automatic brightness mode as 1.
+The ordinary settings write initially left stay-awake at 2; `svc power stayon
+false` succeeded and was independently read back.
+
+The two uniquely named remote Mattermost/PostgreSQL containers and their project
+network were removed. Their bind-mounted synthetic database/source directory
+is retained, stopped, for reproduction; empty archived fixture channels may
+remain in that stored database. The local subscription relay, test MCP process,
+owned SSH master/tunnels, ADB forward and test reverses were stopped/removed.
+All nine owned host ports are no longer listening. The user's remote model
+server and app Provider configurations were not shut down or replaced.
+
+The installed final APK is the verified calendar-description build recorded
+above. Product changes, reproducible adapter tests, source review and this report
+are committed on the fork's `local/device-build` branch; Issue #3 carries batch
+updates. Private raw traces, device readbacks and credential references stay
+outside the public repository. No complete-suite score or universal speedup is
+claimed. Follow-up should prioritize attachment target recognition, post-install
+MCP readiness and further dependency-ready Android tasks, while preserving the
+same native-tool-first and independent-acceptance approach.

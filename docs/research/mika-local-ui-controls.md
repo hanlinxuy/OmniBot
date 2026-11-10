@@ -32,3 +32,16 @@
 
 
 进一步核对 [`AndroidScreen.kt`](https://github.com/wangzan101/Mika/blob/d68159366abaea523c5e4e6fd4dc83aad78f9698/app/src/main/java/com/wangzan101/mika/cap/phone/a11y/AndroidScreen.kt)：`awaitChange` 等待当前 display 的无障碍事件；`withEventClock` 在执行块前订阅，`EventClock` 依据最后一次事件时间判定连续安静，并在有界期限内结束。它不是固定长 sleep，也不是让模型反复截图问“好了没有”。本次 OmniBot 沿用原宿主判稳并加 XML 条件等待，没有移植 Mika 的虚拟显示或整套事件总线。
+
+
+## 2026-11-10 固定源码复核
+
+本轮复核 [`238533f5`](https://github.com/wangzan101/Mika/tree/238533f5da6f2424bec52972b7b9248c4f3a86d0)，与上述 `d681593` 比较：
+
+- `WheelDriver.kt`、`UntilWait.kt` 无差异，原有滚轮执行与本地条件等待结论仍适用于这两个文件。
+- `WheelMath.between` 修正 12 小时滚轮的缺失中间项：相邻可见值 11 和 1（反序亦同）应推断 12，避免错误推断为 0。这是具体控件数学修正，不是整体速度证明；当前 vivo 样本未复现对应缺口，本轮未移植。
+- `BatchRunner` 将应用访问拒绝说明原样交回，停止剩余步骤并设 `retryable=false`；截图 `captureError` 也触发重新审查。它没有把换一个批次作为越过访问拒绝的方法。
+- `AndroidScreen` 变更较大，不能把旧版逐行结论直接扩展到整个新文件；本轮仅核对接口和上述有界差异，没有宣称完整移植虚拟显示、事件总线或所有图像能力。
+
+本轮实际落地的系统接口优先改进与三模型手机 Pi 证据见
+[八小时迭代记录](../testing/mobileworld-phone-pi-2026-11-10-iteration.md)。没有进行验证码、登录或支付验证绕过。
