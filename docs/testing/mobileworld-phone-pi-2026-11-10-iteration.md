@@ -893,3 +893,48 @@ empty fixture DM channels may remain until the owned test backend is removed.
 Private evidence: per-run `calendar-readback.json`, `dm-readback.json`,
 `sentEmail.json`, `gui-settlement.json` and separate cleanup records. This is a
 source-task adaptation, not an official benchmark score or iOS coverage.
+
+
+## Confirmed file cleanup through two-way phone Pi interaction
+
+`DeleteUselessFilesAskUserTask` retains the source goal and file-generation
+patterns, with deterministic seed 20261110: seven candidate files and five
+important files in an isolated phone Pi Download folder. The source's clearing
+of shared Downloads is not executed. The simulated user identifies deletion
+candidates only after filenames are listed; no expected deletion set is included
+in the initial model request. All changes use Pi native file tools, zero GUI.
+
+| Outer model | Seconds | Provider requests | Independent result |
+| --- | ---: | ---: | --- |
+| 35a3 | 27.45 | 24 | seven confirmed files absent; five retained byte-identical |
+| DeepSeek | 23.49 | 11 | same checks pass |
+| Terra | 31.85 | 7 | same checks pass, with one extra listing clarification |
+
+All runs preserve every fixture byte before the confirmation reply. The harness
+uses a strict interpretation that the user-facing reply must name every file.
+Terra had already listed all files via a tool but initially named only its seven
+proposed deletions in the reply. A simulated user reminder asks it to list kept
+files too; that extra turn is reported, not hidden. This is an interaction
+condition, not evidence that Terra could not inspect the directory.
+
+Earlier runs are retained separately: 35a3 exhausted an initial 12-request cap
+while inspecting individual files; the comparable condition uses 30 for all
+models. Terra's legitimate `rm <confirmed paths>; ls` was rejected by the first
+admission parser. The corrected parser validates each command and tracks the
+working directory, preserving confirmation and exact-file restrictions. An
+intermediate Terra run therefore left all files untouched; it is not a deletion
+failure caused by inability to select files. DeepSeek recovered from four
+command denials in the reported run (one unsupported loop, three read pipelines).
+The latter read pipelines are now admitted by a focused follow-up change;
+the reported timings still refer to the earlier denials, not that unmeasured
+speed improvement.
+
+The reusable admission implementation and observed regression cases are now in
+`scripts/benchmark-adapters/file_command_policy.py` and its unit tests. These
+are evaluation controls, not a general shell sandbox or an OmniBot product
+permission implementation. Before cleanup, independent ADB reads verify the
+remaining file set and bytes. Fresh readback confirms all three unique
+workspaces and the temporary provider reverse are absent. Evidence:
+`delete-confirm-matrix-audit.json`, per-run clarification, permission, acceptance
+and finally-readback records. This is adapted source-task coverage, not an
+official benchmark score.

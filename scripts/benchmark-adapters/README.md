@@ -61,3 +61,19 @@ files; this script does not execute tasks or establish the trust of those files.
 When cleaning threaded fixture posts, delete replies before roots: deleting a
 root can cascade to its replies. After an unexpected deletion response, read back
 the known owned IDs before deciding whether more cleanup is needed.
+
+
+### Phone Pi file-command admission
+
+`file_command_policy.py` contains the rules exercised by the invoice-copy and
+confirmed-delete phone Pi fixture runs. Quoted arguments stay intact when
+parsing command sequences. Delete admission tracks `cd` within the owned
+workspace and allows only explicitly confirmed fixture paths; a trailing
+readback command does not turn a legitimate deletion into an approval denial.
+These are narrow evaluation rules, not a general shell parser or security
+sandbox. The caller still owns fixture creation, ACP permission replies,
+terminal state, independent file-content verification and cleanup. No device
+identifier, credential or personal file belongs in this module.
+
+Run the observed regression cases with:
+`python3 -m unittest discover -s scripts/benchmark-adapters -p test_file_command_policy.py`.
