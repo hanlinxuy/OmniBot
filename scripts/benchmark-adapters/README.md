@@ -41,3 +41,23 @@ python scripts/benchmark-adapters/test_scoped_calendar.py
 ```
 
 For the separate original iOSWorld tools and picker adaptation, see [iosworld/README.md](iosworld/README.md). iOS simulator state is separate from Android device state.
+
+
+## Recorded shift-request acceptance
+
+`audit-shift-run.py` is read-only and accepts one private recorded run directory
+plus the known acting fixture user ID. It checks reply root identity, conflict
+reason, forwarded request content, unchanged calendar state and cleanup evidence.
+It reports exact reply equality separately from business acceptance, and does
+not mistake a source-channel citation for an executor instruction.
+
+```sh
+python scripts/benchmark-adapters/audit-shift-run.py "$PRIVATE_RUN_DIR" \
+  --actor-id "$FIXTURE_ACTOR_ID"
+```
+
+The caller must supply the independently collected fixture/readback/cleanup JSON
+files; this script does not execute tasks or establish the trust of those files.
+When cleaning threaded fixture posts, delete replies before roots: deleting a
+root can cascade to its replies. After an unexpected deletion response, read back
+the known owned IDs before deciding whether more cleanup is needed.

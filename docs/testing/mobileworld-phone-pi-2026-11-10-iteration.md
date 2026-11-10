@@ -507,3 +507,42 @@ four prefixed channels. It therefore is a targeted observation, not a strict
 single-variable causal experiment or proof against all future content leakage.
 The existing scoped-calendar integration check passed; actual message cleanliness
 was established by this phone readback, not by that scope-binding test.
+
+
+### MattermostShiftCoverageTask: calendar conflict and correct reply threads
+
+Both source requests and the mandatory All Hands conflict event were seeded in
+an isolated channel/calendar scope. The two requests share synthetic Harry as
+author instead of the source's Alex/Sofia; request text, dates and distinct root
+message IDs are preserved. Models must deny the conflicting date with a reason,
+forward only the conflict-free doctor-appointment request through offline Mail,
+and reply in the correct original threads. No actual HR approval is performed.
+
+| Outer model | Seconds | Business readback | Literal escalation reply | Cleanup |
+| --- | ---: | --- | --- | --- |
+| 35a3 | 41.29 | pass | extra final period | verified after cleanup recovery |
+| DeepSeek Flash | 53.77 | pass | exact | verified |
+| Terra | 64.64 | pass | exact | verified |
+
+All three used interfaces for calendar/thread work and one GUI mail send. The
+saved mail contained the correct conflict-free date and reason, not the denied
+request. Each root received exactly one appropriate reply and the seeded calendar
+remained unchanged during execution. 35a3's final explanation called the request
+“Approved”; only escalation to HR was performed, so that wording overstates the
+business effect. This remains a narrative limitation despite correct mutations.
+
+Original run receipts are preserved. A uniformly applied, read-only corrected
+auditor separates trailing punctuation from business effect and accepts ordinary
+source-channel citations. The old contamination check falsely rejected DeepSeek
+and Terra for citing the synthetic channel name; neither body contained execution
+instructions. `scripts/benchmark-adapters/audit-shift-run.py` now exposes both
+business acceptance and literal-reply equality. Local evidence-copy controls prove
+that a normal citation passes, a wrong reply root fails, and appended `Task marker:`
+text fails; those controls make no phone mutations.
+
+The first cleanup deleted root posts before replies; Mattermost cascaded deletion,
+so subsequent reply DELETEs returned 404. Recovery independently found every owned
+post ID absent, archived the owned channel and removed remaining run resources.
+Future cleanup deletes replies before roots. Mail baseline, calendar, channel,
+posts and guest workspace cleanup were verified for all runs. These are fixture/API
+adaptations, not original emulator scores or external email-delivery tests.
