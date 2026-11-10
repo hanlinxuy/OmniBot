@@ -766,3 +766,51 @@ workspace and provider reverse was removed. Original failed cleanup files remain
 `cleanup-followup.json` records successful recovery separately. This is a harness
 restoration limitation, not a fixed Android setter or another task pass.
 The actual cause of this vendor write/readback behavior remains unresolved.
+
+## Clarifying a Friday alarm and verifying its calendar date
+
+`SetAlarmTaskAskUser1` was exercised as two official ACP prompts in the same phone
+Pi session. First the model receives the original Friday wake-up request; after
+it asks for the missing time, the source initializer's `relevant_information`
+provides 1:20 PM Friday as the simulated user reply. All models use the same
+explicit reminder skill and unique test label, system Clock Intent first, shared
+GUI executor if needed. No mutation is admitted before clarification.
+
+| Outer model | Seconds | Independent date/time result | Original weekly-Friday predicate |
+| --- | ---: | --- | --- |
+| 35a3 | 45.94 | Enabled, 13:20 on Nov 13, one-time; GUI adjusted the initial tomorrow date. | fail |
+| DeepSeek | 21.67 | Enabled, 13:20 tomorrow, despite claiming Friday was verified. | fail |
+| Terra | 65.57 | Enabled, 13:20 on Nov 13, one-time. | fail |
+
+The original goal and simulated reply do not explicitly ask for weekly
+recurrence, while the source judge requires a Friday repeat mask. Therefore the
+35a3/Terra outcomes satisfy the one-time-Friday interpretation but must not be
+counted as original benchmark passes. DeepSeek fails either interpretation.
+Actual ringing is not tested. A first DeepSeek attempt requested the missing time
+using wording the harness did not recognize, so the second prompt was never
+sent; that infrastructure-incomplete attempt is excluded, not counted as a model
+failure. A denied preliminary GUI inspection is not an executed mutation.
+
+The native clock receipt now includes `calendarDateEncoded=false` and
+`requestedDate`, and explains that the Android Intent transports hour/minute and
+repeat weekdays, not a calendar date. It instructs date-specific one-time tasks
+to verify/adjust the date in Clock UI. This changes the existing receipt, not the
+ACP lifecycle or alarm implementation. Alarm contract tests and APK build passed;
+installed APK bytes matched SHA-256
+`33b23c7c918b7785d1c29927899b7adda051431c49ecd0f63a40b1993a5dd79f`.
+
+A targeted DeepSeek rerun with that corrected receipt took 65.09 seconds and
+independently verified enabled 13:20, Nov 13, one-time. Its actual tool response
+contains the new fields. This is one repaired failure observation, not broad
+reliability or a speedup. A separate post-install run that could not discover MCP
+tools is excluded; authenticated health was established before the valid rerun.
+
+All four created alarms were deleted individually after terminal verification.
+The cleanup checker initially compared different list viewports; a bounded scroll
+readback established the target absent and all previously visible other rows
+preserved. Subsequent cleanups use that scan. It is not a whole-device historical
+mutation audit. Raw failures and follow-up evidence are retained separately.
+Private evidence: `alarm-clarification-matrix-audit.json`, each run's
+`alarm-detail-readback.json`, `independent-acceptance.json`, and cleanup audit.
+Unrelated alarm details from a model answer remain private and are not reproduced
+in this report or the issue.

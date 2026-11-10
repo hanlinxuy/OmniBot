@@ -58,6 +58,8 @@ class AgentAlarmRepeatDaysTest {
         assertFalse(intent.getBooleanExtra(AlarmClock.EXTRA_VIBRATE, true))
         assertEquals("content://media/external/audio/media/42", intent.getStringExtra(AlarmClock.EXTRA_RINGTONE))
         assertFalse(result["creationVerified"] as Boolean)
+        assertFalse(result["calendarDateEncoded"] as Boolean)
+        assertEquals("2030-01-01", result["requestedDate"])
         val defaultCaptor = ArgumentCaptor.forClass(Intent::class.java)
         AgentAlarmToolService(context).createReminder(request.copy(vibrate = null, ringtoneUri = null))
         Mockito.verify(context, Mockito.times(2)).startActivity(defaultCaptor.capture())
