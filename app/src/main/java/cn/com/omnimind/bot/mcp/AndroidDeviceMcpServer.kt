@@ -58,7 +58,10 @@ internal object AndroidDeviceMcpServer {
         DeviceTool(
             name = "run_gui",
             operation = "run_gui",
-            description = "Execute a new Android GUI task with the installed OmniFlow runtime.",
+            description = "Execute a new Android GUI task with the installed OmniFlow runtime. " +
+                "Result success=false is not task completion. Per-step success only means an action " +
+                "executed, not that the app accepted it. Verify the resulting app state before claiming " +
+                "completion; do not repeat a submission whose outcome is uncertain.",
             properties = mapOf(
                 "goal" to schema("string", "GUI task to complete."),
                 "max_steps" to schema("integer", "Maximum execution steps."),

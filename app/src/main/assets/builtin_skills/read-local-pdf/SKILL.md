@@ -21,7 +21,7 @@ python3 <skill-directory>/scripts/read_pdf.py ./Download/report.pdf --find 'eval
 python3 <skill-directory>/scripts/read_pdf.py ./Download/report.pdf --pages 4-6
 ```
 
-The default reads only the first three pages. Search locates relevant pages; read those complete pages to check tables, captions and footnotes. Output reports omitted characters/pages. A truncated extract is not the whole document. For arithmetic, use the actual extracted values and a calculation tool, then follow the user's requested answer format.
+The default reads only the first three pages. Search locates relevant pages and, when a literal match is absent, tolerates PDF whitespace, apostrophes and hyphenation. `matchMode` distinguishes literal and typography matches while excerpts preserve the original text; read those complete pages to check tables, captions and footnotes. Output reports omitted characters/pages. A truncated extract is not the whole document. For arithmetic, use the actual extracted values and a calculation tool, then follow the user's requested answer format.
 
 Text extraction can lose table column alignment. Check labels and surrounding rows before attributing numbers. If the page has no extractable text, or the layout remains ambiguous, use an available PDF renderer/OCR or GUI on the original file; report the limitation if those capabilities are unavailable. Do not guess from an empty extract.
 

@@ -2,6 +2,7 @@
 """Bounded, read-only PDF extraction for a conversation workspace."""
 import argparse
 import json
+import re
 from pathlib import Path
 import sys
 
@@ -11,7 +12,7 @@ def main():
     parser.add_argument('path', type=Path)
     selection = parser.add_mutually_exclusive_group()
     selection.add_argument('--pages', help='One-based pages, e.g. 1,3-5')
-    selection.add_argument('--find', help='Case-insensitive literal phrase to locate across pages')
+    selection.add_argument('--find', help='Find a phrase; tolerates PDF whitespace, apostrophes and hyphenation when no literal match exists')
     parser.add_argument('--max-chars', type=int, default=20000, help='Total extracted-text character budget')
     args = parser.parse_args()
     if not 1 <= args.max_chars <= 100000:
@@ -44,16 +45,24 @@ def main():
     omitted = 0
     for index in (range(count) if args.find is not None else pages):
         text = reader.pages[index].extract_text() or ''
+        match_mode = None
         if args.find is not None:
-            match = text.casefold().find(args.find.casefold())
-            if match < 0:
+            match = re.search(re.escape(args.find), text, re.IGNORECASE)
+            match_mode = 'literal'
+            if match is None:
+                separators = r"[\s'’‘-]*"
+                letters = re.sub(r"[\s'’‘-]", '', args.find)
+                if letters:
+                    match = re.search(separators.join(re.escape(c) for c in letters), text, re.IGNORECASE)
+                    match_mode = 'typography'
+            if match is None:
                 continue
-            text = text[max(0, match - 250):match + len(args.find) + 500]
+            text = text[max(0, match.start() - 250):match.end() + 500]
         if budget <= 0:
             omitted += 1
             continue
         result = text[:budget]
-        results.append({'page': index + 1, 'text': result, 'truncated': len(result) < len(text), 'excerpt': args.find is not None})
+        results.append({'page': index + 1, 'text': result, 'truncated': len(result) < len(text), 'excerpt': args.find is not None, 'matchMode': match_mode})
         budget -= len(result)
     print(json.dumps({'file': args.path.name, 'pageCount': count, 'mode': 'search' if args.find is not None else 'pages', 'pages': results, 'omittedByBudget': omitted, 'defaultFirstThreePages': args.find is None and args.pages is None}, ensure_ascii=False))
 

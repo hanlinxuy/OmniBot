@@ -18,7 +18,7 @@ class ReadLocalPdfTest(unittest.TestCase):
         self.pdf = Path(self.temp.name) / 'fixture.pdf'
         writer = PdfWriter()
         font = writer._add_object(DictionaryObject({NameObject('/Type'): NameObject('/Font'), NameObject('/Subtype'): NameObject('/Type1'), NameObject('/BaseFont'): NameObject('/Helvetica')}))
-        for text in ['First page invoice', 'Interest applies monthly', 'Third page', 'Appendix fourth page']:
+        for text in ["First page invoice AIME'25 and vision-encoder", 'Interest applies monthly', 'Third page', 'Appendix fourth page']:
             page = writer.add_blank_page(width=600, height=800)
             stream = DecodedStreamObject()
             stream.set_data(f'BT /F1 12 Tf 40 700 Td ({text}) Tj ET'.encode())
@@ -47,6 +47,18 @@ class ReadLocalPdfTest(unittest.TestCase):
         page = json.loads(self.invoke('--pages', '2').stdout)['pages'][0]
         self.assertIn('Interest applies monthly', page['text'])
         self.assertFalse(page['excerpt'])
+
+    def test_search_tolerates_typography_and_preserves_excerpt(self):
+        for query in ["AIME25", "AIME’25", "vision encoder"]:
+            with self.subTest(query=query):
+                output = json.loads(self.invoke('--find', query).stdout)
+                self.assertEqual([1], [page['page'] for page in output['pages']])
+                self.assertEqual('typography', output['pages'][0]['matchMode'])
+                self.assertIn("AIME'25", output['pages'][0]['text'])
+        literal = json.loads(self.invoke('--find', "AIME'25").stdout)
+        self.assertEqual('literal', literal['pages'][0]['matchMode'])
+        missing = json.loads(self.invoke('--find', 'AIME26').stdout)
+        self.assertEqual([], missing['pages'])
 
     def test_budget_marks_truncation_and_omitted_pages(self):
         output = json.loads(self.invoke('--pages', '1-4', '--max-chars', '5').stdout)

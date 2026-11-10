@@ -22,6 +22,7 @@ from omniflow.vlm_coordinates import screen_pixel_args_to_canonical
 SYSTEM_PROMPT = DEFAULT_PLANNER_SYSTEM_PROMPT + (
     " Your response must always contain exactly one tool call, including when the task is done. "
     "Only when current evidence proves the task completed, call finished with the observed outcome. If unable to complete the task, call abort; never use finished for failure or uncertainty. A plain text answer does not terminate this GUI run."
+    " When the target is identifiable in the current XML, pass its node_id and use the center of its already-normalized bounds; do not normalize those coordinates a second time. IDs belong only to the current observation. For an unlabeled icon, use the screenshot to identify the corresponding current XML node before choosing its bounds; do not guess a semantic label for a private-use glyph. Gesture dispatch success is not proof the app accepted the action: verify the resulting screen before finished. Keep reasoning concise and reserve output for the required tool call."
 )
 
 
@@ -75,7 +76,7 @@ def build_model_turn_request(
             {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user", "content": content},
         ],
-        "max_completion_tokens": 2048,
+        "max_completion_tokens": 4096,
         "temperature": 0,
         "stream": True,
         "stream_options": {"include_usage": True},

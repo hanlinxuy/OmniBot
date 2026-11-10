@@ -35,6 +35,34 @@ For calendar, the source's 15 stored records were seeded with a unique title pre
 
 The skill improves parser selection for models that use it; it is not a universal success or speed claim. Explicit Pi skill selection and broader paper tasks remain to be tested.
 
+## Batch 2: five new PDF tasks with explicit Pi skill selection
+
+All 15 runs used the same original PDF bytes and pre-change helper. The harness invoked Pi's native `/skill:read-local-pdf` expansion; this is explicit selection, not autonomous skill discovery. Each run used a new workspace and parser install. No source answer or answer page was injected.
+
+| Original task | 35a3 | DeepSeek | Terra |
+| --- | --- | --- | --- |
+| Paper 1, AIME score difference | Correct 1.9 with forbidden extra prose; fail | 1.9; pass | 1.9; pass |
+| Paper 2, core contributor count | 60; pass | 60; pass | 60; pass |
+| Paper 3, Thinking text benchmark count | Correct 12 with forbidden extra prose; fail | Correct 12 with extra prose; also wrote temporary files outside workspace; fail | 12; pass |
+| Paper 4, vision encoder size | Explains both 540/543 instead of one number; fail | 540; pass | Source-accepted number; pass |
+| Paper 5, Austroasiatic languages | Correct language codes but extra prose; fail | Vietnamese, Khmer: user goal satisfied, strict source judge fails | Same semantic pass / source-judge failure |
+
+Strict source-judge counts on these five tasks: 35a3 1/5, DeepSeek 3/5, Terra 4/5. Independently audited user-goal counts, accepting the two correctly named languages in Paper 5 while retaining the original judge result: 1/5, 4/5, 5/5. These small selected source-fixture adaptations are not MobileWorld benchmark scores. Elapsed times were roughly 28–51 seconds; network/package installation variability prevents a clean model-speed conclusion.
+
+Paper 3's oracle was independently checked against rendered Table 5 on page 10: 12 benchmarks. The prose and Instruct table list 11, so they are not interchangeable. Paper 5 asks for languages, while its implementation only accepts `vie Latn,khm Khmr`; correct language names should not be reported as factual errors.
+
+DeepSeek Paper 3 wrote `/tmp/full.txt` and `/tmp/pages.txt`, outside its isolated workspace. Their exact bytes matched independent reconstruction from the supplied PDF; those generated files were removed and absence verified. Their prior existence was not recorded, so no claim is made about restoring any earlier contents. The scope failure remains despite cleanup. A cwd and permission prompt are not filesystem isolation.
+
+A repeatable helper issue appeared in Paper 1: literal `AIME25` misses the PDF typography `AIME’25`. A candidate fallback tolerates whitespace, apostrophes and hyphenation, labels its match mode and preserves the actual excerpt. Five helper tests pass. The installed phone skill matched both bundled source files byte-for-byte, found the formerly missed typography in the original PDF, preserved the excerpt, and removed its unique test workspace. This was a deterministic helper control, not another model-task score. This candidate was prepared only after the entire matrix finished, preserving within-batch comparability.
+
+## Mail batch in progress
+
+The original AcceptMeetingTask fixture now runs in the real ARM64 Mail clone on vivo. The outer Pi model is varied; GUI execution still uses the same configured OmniFlow planner, so this is not a comparison of three independent vision executors.
+
+The first 35a3 run failed: four gestures were dispatched, but the last tap missed Send, the saved screen remained Compose, and no `sentEmail.json` existed. The planner's next turn ended with `finish_reason=length`; the outer model nevertheless claimed success and attempted further GUI calls, which the harness denied to prevent replaying an uncertain submission. This is a task failure and false completion report, not successful mail delivery. Source readback, terminal RunLog and fixture restoration were checked separately.
+
+The first DeepSeek run produced the correct local recipient, subject and body and a terminal succeeded RunLog; its nine actions included missed taps and recovery. Fixture restoration was independently verified. Terra also passed with four actions and independently verified local send/cleanup. A focused candidate then increased the GUI completion budget to 4096, emphasized current-node IDs and already-normalized coordinates, and clarified the MCP tool description that gesture success is not business completion. The failed 35a3 path passed once under this candidate with four actions and correct local send/cleanup. This bounded retest does not establish reliability or isolate which change caused the improvement; its actions still used coordinates, so it does not prove adoption of node IDs. Mail sends are local fixture output, not external email delivery.
+
 ## Further work in progress
 
 - Bound omitted bash timeouts using Pi's existing shell execution owner; retain explicit longer timeouts and official ACP completion/cancellation. All 26 adapter tests passed. The updated adapter was installed through the app's normal Pi installer. A real-device local-provider test verified the omitted 120-second bash timeout, termination of the spawned child, continued use of the same ACP session, cancellation, restored session identity, file/MCP access and clean close. These deterministic checks validate the harness, not a model benchmark score. Adapter revision: `28ec749c37aaaef2d272`; updated APK SHA-256: `0be3a430aee9ea4110c01001037516d638aee2d5966e23e16ceb5b6411da1c6f`.
@@ -42,3 +70,5 @@ The skill improves parser selection for models that use it; it is not a universa
 - Device document-tree permission is denied at preflight. Calendar/contact permissions are available; no unrelated personal records were needed for these fixtures.
 
 Evidence is retained locally under `phone-real-use/artifacts/pi-eight-hour-20261110/`: per-run task metadata, source hashes, ACP updates, provider requests, answer/readback, explicit acceptance audits and cleanup. Secret values and private device dumps must not be committed. USB keep-awake was temporarily enabled during installation after automatic sleep; restore its recorded original value (0) at the end of the window.
+
+Repair validation: 28 existing override tests, four Android MCP-server tests, five PDF-helper tests and Android build passed. Installed APK SHA-256 `ace408542a18c666c124cef0869c3da96897cdf62f996e11eaedfb0d9618b3bf`. Managed planner readback SHA-256 `e11d5267cdddd247c69ed509ec2ed192b4f4c7ceafed2869bdab2264b978dbe0`; prior source was preserved, other overrides retained. One APK installation was aborted by the installer; the subsequent ordinary confirmation flow completed successfully.
