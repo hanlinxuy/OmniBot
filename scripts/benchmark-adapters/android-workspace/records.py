@@ -34,7 +34,9 @@ def records(action, args):
             payload['params']=dict(payload.get('params',{}))
             payload['params']['limit']=max(1,min(int(payload['params'].get('limit',5)),5))
         request=urllib.request.Request(data['relay'],data=json.dumps(payload).encode(),headers={'Content-Type':'application/json'})
-        with urllib.request.urlopen(request,timeout=35) as response: return json.load(response)
+        with urllib.request.urlopen(request,timeout=35) as response: result=json.load(response)
+        if result['status']>=400:result['error']='mastodon_api_error'
+        return result
     if action=='create_document' and path.name=='documents.json':
         title=args['title'].strip()
         if not title or '/' in title or '\\' in title or title in ('.','..'): raise ValueError('Use a nonempty document title without path separators')

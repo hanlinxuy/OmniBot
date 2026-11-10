@@ -60,4 +60,16 @@ class OwnedActionsTest(unittest.TestCase):
                 result=records.records('read_thread',{'file':p.name,'thread_id':'chat'})
                 self.assertEqual([x['isFromCurrentUser'] for x in result['messages']],[False,True]);self.assertEqual(json.loads(p.read_text()),data)
 
+    def test_mastodon_api_error_and_page_budget_remain_structured(self):
+        import io
+        with tempfile.TemporaryDirectory() as directory:
+            root=pathlib.Path(directory);(root/'work').mkdir()
+            (root/'work/mastodon.json').write_text('{"relay":"http://owned.invalid"}')
+            with patch.object(records,'__file__',str(root/'records.py')), patch('urllib.request.urlopen',return_value=io.BytesIO(b'{"status":422,"body":{"error":"invalid policy"},"paginationLink":null}')) as transport:
+                result=records.records('mastodon_request',{'file':'mastodon.json','method':'GET','path':'/api/v1/lists','params':{'limit':40,'max_id':'115359670141158913'}})
+                sent=json.loads(transport.call_args.args[0].data)
+                self.assertEqual(sent['params'],{'limit':5,'max_id':'115359670141158913'})
+                self.assertEqual(result['error'],'mastodon_api_error')
+                self.assertEqual(result['body']['error'],'invalid policy')
+
 if __name__=='__main__':unittest.main()
