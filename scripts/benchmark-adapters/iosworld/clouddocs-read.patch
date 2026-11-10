@@ -1,0 +1,31 @@
+--- a/mcps/clouddocs.py
++++ b/mcps/clouddocs.py
+@@ -1124,5 +1124,28 @@
+     return {"documents": out, "count": len(out)}
+ 
+ 
++
++@mcp.tool()
++def read_document(title_or_id: str, offset: int = 0, limit: int = 1500) -> dict:
++    """Read persisted document text by observed title/id, with bounded pagination.
++
++    Use this to review document content or verify an edit; body length and an
++    append receipt do not establish the actual saved text. Follow next_offset
++    until it is null to read the whole body. Offsets are zero-based characters.
++    """
++    if offset < 0 or not 1 <= limit <= 1500:
++        return {"ok": False, "message": "offset must be nonnegative; limit must be 1..1500."}
++    env = dl.read_envelope()
++    doc = _find_document(env, title_or_id)
++    if not doc:
++        return _doc_not_found(env, title_or_id, "read_document")
++    text = doc.get("body", "") or ""
++    if offset > len(text):
++        return {"ok": False, "message": "offset exceeds body length.", "total_chars": len(text)}
++    end = min(offset + limit, len(text))
++    return {"ok": True, "id": doc["id"], "title": doc.get("title"),
++            "text": text[offset:end], "offset": offset, "total_chars": len(text),
++            "next_offset": end if end < len(text) else None}
++
+ if __name__ == "__main__":
+     mcp.run()

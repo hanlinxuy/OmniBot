@@ -161,3 +161,17 @@ The corrected fixture-bound calendar adapter completed its same-condition matrix
 Repeated denied shell/file calls during the app-only Clock failure exposed another harness problem: those tools were still advertised to the model. The OmniBot Pi adapter now accepts `OMNIBOT_PI_TOOLS_JSON` and forwards it directly to the official SDK's existing `tools` selection option. No replacement execution or permission owner was added. The default tool surface is retained when unset; callers can select app-specific MCP tools for a bounded task. The existing integration control now verifies both default and selected surfaces and continued ACP permission ownership. All 26 adapter tests, packaging and Android build passed.
 
 The updated APK and managed Pi revision `5ebbbade2433c1e1da78` were installed through normal app flows. The first new CloudDrive run's actual model request advertised only 23 selected CloudDrive MCP tools, with no shell/file tools, and completed through phone Pi. New Cloud-suite runs record this explicit selection as a separate harness condition; no before/after model comparison is inferred from different tasks.
+
+## Batch 7: CloudDrive, CloudSheets and CloudDocs
+
+All nine app-scoped phone Pi runs completed their independent business checks and restored the owned shared workspace. This uses original iOSWorld task goals/seeds, original app tools and the new SDK tool-selection condition; it is not an official GUI benchmark score.
+
+| Original task | 35a3 | DeepSeek | Terra | Important boundary |
+| --- | --- | --- | --- | --- |
+| clouddrive-001 | 21.4 s / 7 requests | 30.2 s / 8 | 30.1 s / 5 | Latest Product Strategy document was already starred; correct no-op, not proof of a new star mutation |
+| cloudsheets-003 | 20.6 s / 7 | 21.5 s / 6 | 24.5 s / 6 | Changed one previously Confirmed volunteer to Pending; preserved other spreadsheet content/styles |
+| clouddocs-004 | 38.7 s / 9 | 40.2 s / 10 | 41.5 s / 7 | Added a generic Q2 planning note and preserved old text; model verification only checked metadata, while host read actual body |
+
+The first two spreadsheet raw verdicts were false because the host compared omitted default styles and the MCP's duplicate `value` alias literally. Source inspection established the app's default-style decoding and the setter's identical alias. Separate audits correct those verdicts; raw evidence is retained. The reusable verifier normalizes only those exact equivalents and has controls that retain real styling and conflicting values. This is a harness acceptance correction, not a product repair.
+
+The CloudDocs baseline exposes an actionable tool-design gap: write tools are available, but a compact persisted body reader is missing. Full XML truncates before the content, so none of the three models independently read back the actual addition. A separate source patch adds bounded read-only body pagination; two focused controls and a live read-only preflight pass. Targeted model retesting is in progress. Generic proposed Q2 planning actions are allowed by this task; they should not be conflated with the invented completed-bug facts in the Notes task.
