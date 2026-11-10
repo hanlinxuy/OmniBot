@@ -339,7 +339,7 @@ object AgentToolDefinitions {
         "删除完成后等待工具结果，再输出最终回复。" to
             "Wait for the tool result after deleting, then produce the final reply.",
         "创建提醒闹钟。系统闹钟尤其每日重复优先用 clock_app 原生工具，勿逐屏操作 GUI；clock_app 只派发系统时钟 Intent，不代表闹钟已创建或验证。exact_alarm 是应用内精确提醒，不支持 repeatDays。" to
-            "Create a reminder alarm. The exact_alarm mode uses AlarmManager for precise reminders, while clock_app uses the system clock app to create an alarm. If the user does not specify a mode, prefer exact_alarm. This is for reminders only and does not execute automation tasks.",
+            "Create a reminder alarm. For system alarms, especially repeating daily alarms, prefer the native clock_app tool over step-by-step GUI operation. clock_app only dispatches an Intent to the system Clock app; it does not prove an alarm was created or verified. exact_alarm is an in-app precise reminder and does not support repeatDays. This tool does not execute automation tasks.",
         "创建后等待工具结果，再决定是否继续。" to
             "Wait for the tool result after creation before deciding what to do next.",
         "闹钟模式：exact_alarm=应用内精确提醒；clock_app=系统闹钟。" to

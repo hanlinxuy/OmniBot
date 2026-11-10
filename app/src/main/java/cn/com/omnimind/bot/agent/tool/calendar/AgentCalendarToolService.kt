@@ -8,6 +8,7 @@ import android.content.pm.PackageManager
 import android.provider.CalendarContract
 import androidx.core.content.ContextCompat
 import java.time.Instant
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
 import java.time.ZoneId
@@ -589,5 +590,6 @@ internal fun parseCalendarDateTime(value: String, zone: ZoneId, explicitZone: Bo
     runCatching { return OffsetDateTime.parse(normalized).toZonedDateTime().withZoneSameInstant(zone) }
     runCatching { return Instant.parse(normalized).atZone(zone) }
     runCatching { return LocalDateTime.parse(normalized).atZone(zone) }
+    runCatching { return LocalDate.parse(normalized).atStartOfDay(zone) }
     throw IllegalArgumentException("无法解析时间：$normalized")
 }

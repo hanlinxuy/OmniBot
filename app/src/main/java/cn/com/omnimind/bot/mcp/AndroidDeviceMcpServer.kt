@@ -20,6 +20,9 @@ import cn.com.omnimind.bot.plugin.OmniPluginHost
 import cn.com.omnimind.bot.plugin.official.OmniVlmLiteProvider
 import io.modelcontextprotocol.kotlin.sdk.server.Server
 import io.modelcontextprotocol.kotlin.sdk.server.ServerOptions
+import io.modelcontextprotocol.kotlin.sdk.shared.RequestHandlerExtra
+import io.modelcontextprotocol.kotlin.sdk.types.ProgressNotification
+import io.modelcontextprotocol.kotlin.sdk.types.ProgressNotificationParams
 import io.modelcontextprotocol.kotlin.sdk.types.CallToolResult
 import io.modelcontextprotocol.kotlin.sdk.types.Implementation
 import io.modelcontextprotocol.kotlin.sdk.types.McpJson
@@ -28,6 +31,7 @@ import io.modelcontextprotocol.kotlin.sdk.types.TextContent
 import io.modelcontextprotocol.kotlin.sdk.types.ToolSchema
 import io.modelcontextprotocol.kotlin.sdk.types.toJson
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonNull
@@ -308,6 +312,9 @@ internal object AndroidDeviceMcpServer {
                         required = tool.required.takeIf(List<String>::isNotEmpty),
                     ),
                 ) { request ->
+                    val progressToken = request.params.meta?.progressToken
+                    val requestContext = currentCoroutineContext()[RequestHandlerExtra]
+                    var progress = 0.0
                     runCatching {
                         if (tool.requiresOmniFlowPlugin) {
                             ensureOmniFlowReady(context)
@@ -317,6 +324,20 @@ internal object AndroidDeviceMcpServer {
                             tool = tool,
                             arguments = request.params.arguments.orEmpty().toKotlinMap(),
                             modelClient = modelClient,
+                            onProgress = { _, _ ->
+                                if (progressToken != null && requestContext != null) {
+                                    progress += 1.0
+                                    requestContext.sendNotification(
+                                        ProgressNotification(
+                                            ProgressNotificationParams(
+                                                progressToken = progressToken,
+                                                progress = progress,
+                                                message = "GUI execution progressed",
+                                            )
+                                        )
+                                    )
+                                }
+                            },
                         )
                     }.fold(
                         onSuccess = ::successResult,
@@ -363,6 +384,7 @@ internal object AndroidDeviceMcpServer {
         tool: DeviceTool,
         arguments: Map<String, Any?>,
         modelClient: cn.com.omnimind.bot.omniflow.OmniFlowModelClient,
+        onProgress: suspend (String, Map<String, Any?>) -> Unit = { _, _ -> },
     ): Map<String, Any?> = when (tool.operation) {
         "personal_context" -> PersonalContextService(context).execute(tool.name, JsonObject(arguments.toJson()))
         "run_gui" -> {
@@ -377,6 +399,7 @@ internal object AndroidDeviceMcpServer {
                     maxSteps = (arguments["max_steps"] as? Number)?.toInt(),
                 ),
                 modelClient = modelClient,
+                hooks = OmniVlmPlugin.Hooks(onProgress = onProgress),
             ).payload
         }
         "run_function" -> {

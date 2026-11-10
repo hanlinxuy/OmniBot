@@ -33,4 +33,18 @@ class CalendarDateTimeTest {
         assertEquals("Asia/Shanghai", parsed.zone.id)
         assertEquals(Instant.parse("2026-11-04T07:30:00Z"), parsed.toInstant())
     }
+    @Test
+    fun `date-only calendar input preserves its date in the selected timezone`() {
+        for (zone in listOf("UTC", "Asia/Shanghai", "America/New_York")) {
+            val parsed = parseCalendarDateTime("2028-02-29", ZoneId.of(zone), explicitZone = true)
+            assertEquals("2028-02-29", parsed.toLocalDate().toString())
+            assertEquals(0, parsed.hour)
+            assertEquals(zone, parsed.zone.id)
+        }
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `invalid calendar date is not normalized into another day`() {
+        parseCalendarDateTime("2026-02-29", ZoneId.of("UTC"), explicitZone = true)
+    }
 }
