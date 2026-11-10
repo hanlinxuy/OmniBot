@@ -29,7 +29,11 @@ parser.add_argument('--endpoint', default='http://127.0.0.1:18081/v1/chat/comple
 parser.add_argument('--model', default='qwen3.6-35b-a3b-q4_k_m')
 parser.add_argument('--provider',choices=['qwen','deepseek'],default='qwen')
 parser.add_argument('--api-key-file',type=pathlib.Path)
+parser.add_argument('--max-provider-requests',type=int,default=30)
+parser.add_argument('--task-timeout',type=int,default=240)
 args = parser.parse_args()
+if args.max_provider_requests < 1 or args.task_timeout < 1:
+    parser.error('Request budget and task timeout must be positive')
 ROOT = args.output.resolve()
 ROOT.mkdir(parents=True, exist_ok=True, mode=0o700)
 phone_root = args.runtime_root.resolve()
@@ -62,7 +66,7 @@ class Provider(BaseHTTPRequestHandler):
     def do_POST(self):
         body = json.loads(self.rfile.read(int(self.headers['Content-Length'])))
         requests.append(body)
-        if len(requests) > 30:
+        if len(requests) > args.max_provider_requests:
             self.send_error(429, 'bounded task request budget exceeded')
             return
         body['model'] = MODEL
@@ -155,7 +159,7 @@ if args.transport == 'mcp':
     PROMPT=task['goal']+'\nEvaluation environment: operate only the run-owned files through the available structured workspace tools. The spreadsheet and slide files are real XLSX/PPTX; documents are text exports. Read the actual data, make the requested changes and confirm saved state. These tools replace source-app navigation for this Android adaptation. For dated source data, the fixture reference date is 2026-03-05. Use source-backed facts; do not invent issue numbers, names, or completed work details. When content is unspecified, keep wording generic. Report only requested results accurately, using structured time/price fields without mental conversion. Changes across artifacts must convey the same concrete plan; avoid dangling tracker cells and placeholder text. When adding spreadsheet rows, ensure existing total formulas include the new rows and read back both the row and the formula. Do not infer the business content of your changes from these environment instructions. Group independent reads in one assistant turn where possible. Use query text and field projections to narrow large collections; do not repeatedly request the same first page with a larger limit. Use aggregation tools for exact totals and frequencies. Follow pagination when the request requires a complete list. Attribute statements to their actual sender; preferences expressed by other senders are not necessarily user preferences. Distinguish past, upcoming and cancelled records using their explicit status and date. If a required source fact is unavailable, report the gap instead of inventing it. Do not substitute a different recipient or communication channel when the requested one is unavailable; complete independent parts and clearly report the blocked step.'
 if args.case=='weather-004':
     PROMPT += '\nThis case uses the live NWS forecast snapshot. Use capturedAt and the forecast startTime fields as the date reference instead of the March fixture date. State the weekend dates and temperature units.'
-(RUN/'task.json').write_text(json.dumps({'sourceTask':args.case,'sourceCommit':task.get('sourceCommit','c59287b6ec9a9d0d7269613ad873f6aa9db0f42c'),'prompt':PROMPT,'rubric':task['rubric'],'fixtureSeedSha256':hashlib.sha256(seed.read_bytes()).hexdigest() if not args.fixture_dir else None,'fixtureFileSha256':{p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in local_work.iterdir() if p.is_file()},'adapterSha256':{p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in ADAPTER.glob('*.py')},'adaptation':task.get('classification','Original seed data in phone-owned files; native file capability replaces iOS GUI; not official score')},indent=2))
+(RUN/'task.json').write_text(json.dumps({'sourceTask':args.case,'requestBudget':args.max_provider_requests,'taskTimeoutSeconds':args.task_timeout,'sourceCommit':task.get('sourceCommit','c59287b6ec9a9d0d7269613ad873f6aa9db0f42c'),'prompt':PROMPT,'rubric':task['rubric'],'fixtureSeedSha256':hashlib.sha256(seed.read_bytes()).hexdigest() if not args.fixture_dir else None,'fixtureFileSha256':{p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in local_work.iterdir() if p.is_file()},'adapterSha256':{p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in ADAPTER.glob('*.py')},'adaptation':task.get('classification','Original seed data in phone-owned files; native file capability replaces iOS GUI; not official score')},indent=2))
 apk = subprocess.check_output(BASE + ['shell', 'pm', 'path', PKG], text=True).strip()[8:]
 from workspace_mcp import TOOLS, RECORD_TOOLS
 selected_tools=shlex.quote(json.dumps(['mcp__workspace__'+name for name in [*TOOLS,*RECORD_TOOLS]] if args.transport=='mcp' else ['bash','read']))
@@ -187,7 +191,7 @@ def rpc(method, params):
     next_id += 1
     expected = next_id
     send({'jsonrpc': '2.0', 'id': expected, 'method': method, 'params': params})
-    deadline = time.monotonic() + 240
+    deadline = time.monotonic() + (args.task_timeout if method=='session/prompt' else 240)
     while time.monotonic() < deadline:
         if b'\n' not in buffer:
             if not sel.select(timeout=1):
@@ -254,12 +258,12 @@ try:
         from fixtures import verify_fixture
         acceptance=verify_fixture(args.case,local_work,saved_dir,final)
     acceptance['passed']=all(acceptance.values()) and not acceptance.get('semanticReviewRequired',False)
-    report={'classification':task.get('classification','iOSWorld Android native-file adaptation; GUI rubric not scored'),'sourceTask':args.case,'provider':args.provider,'transport':args.transport,'model':MODEL,'elapsedSeconds':time.monotonic()-START,'acceptance':acceptance,'initialize':initialized,'promptResult':result,'toolNames':names,'final':final,'providerRequests':len(requests)}
+    report={'classification':task.get('classification','iOSWorld Android native-file adaptation; GUI rubric not scored'),'sourceTask':args.case,'provider':args.provider,'transport':args.transport,'model':MODEL,'elapsedSeconds':time.monotonic()-START,'acceptance':acceptance,'initialize':initialized,'promptResult':result,'toolNames':names,'final':final,'providerRequests':len(requests),'requestBudget':args.max_provider_requests,'taskTimeoutSeconds':args.task_timeout}
     (RUN / 'result.json').write_text(json.dumps(report, ensure_ascii=False, indent=2))
     print(json.dumps({'stopReason': result.get('stopReason'), 'acceptance': acceptance, 'providerRequests': len(requests), 'artifact': str(RUN)}, ensure_ascii=False), flush=True)
 finally:
     if sys.exc_info()[0] is not None:
-        (RUN / 'failure.json').write_text(json.dumps({'type':sys.exc_info()[0].__name__,'sourceTask':args.case,'provider':args.provider,'model':MODEL,'message':str(sys.exc_info()[1]),'providerRequests':len(requests)}))
+        (RUN / 'failure.json').write_text(json.dumps({'type':sys.exc_info()[0].__name__,'sourceTask':args.case,'provider':args.provider,'model':MODEL,'message':str(sys.exc_info()[1]),'providerRequests':len(requests),'requestBudget':args.max_provider_requests,'taskTimeoutSeconds':args.task_timeout}))
     child.stdin.close()
     try:
         child.wait(timeout=15)
