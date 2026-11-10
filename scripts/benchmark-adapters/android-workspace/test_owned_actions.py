@@ -28,11 +28,12 @@ class OwnedActionsTest(unittest.TestCase):
 
     def test_document_refuses_overwrite_and_survives_readback(self):
         with tempfile.TemporaryDirectory() as directory:
-            root=pathlib.Path(directory);(root/'work').mkdir();(root/'work/documents.json').write_text('{"documents":[]}')
+            root=pathlib.Path(directory);(root/'work').mkdir();(root/'work/documents.json').write_text('{"documents":[]}');(root/'work/drive.json').write_text(json.dumps({'folders':[{'id':'root','name':'My Drive','ownerName':'Jordan','trashed':False}],'files':[]}))
             with patch.object(records,'__file__',str(root/'records.py')):
                 result=records.records('create_document',{'file':'documents.json','title':'Interview Prep','text':'Evidence'})
                 self.assertEqual((root/'work/Interview Prep.txt').read_text(),'Evidence')
                 self.assertTrue(result['savedDocument']['shareLink'].startswith('fixture://documents/'))
+                self.assertEqual(json.loads((root/'work/drive.json').read_text())['files'][0]['id'],result['savedDocument']['id'])
                 for title in ['Interview Prep','../escaped']:
                     with self.assertRaises(ValueError):records.records('create_document',{'file':'documents.json','title':title,'text':'overwrite'})
                 self.assertEqual((root/'work/Interview Prep.txt').read_text(),'Evidence')

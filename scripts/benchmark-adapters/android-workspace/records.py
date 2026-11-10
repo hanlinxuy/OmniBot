@@ -26,6 +26,12 @@ def records(action, args):
         entry['shareLink']='fixture://documents/'+entry['id']
         target.write_text(args['text'])
         data['documents'].append(entry);path.write_text(json.dumps(data,ensure_ascii=False,indent=2))
+        drive_path=root/'drive.json'
+        if drive_path.is_file():
+            drive=json.loads(drive_path.read_text())
+            folder=next(x for x in drive['folders'] if x['name']=='My Drive' and not x['trashed'])
+            drive['files'].append({'id':entry['id'],'name':title,'fileType':'document','parentFolderId':folder['id'],'ownerName':folder['ownerName'],'createdAt':entry['createdAt'],'updatedAt':entry['createdAt'],'starred':False,'trashed':False,'shared':False,'accessRole':'editor','comments':[],'permissions':[]})
+            drive_path.write_text(json.dumps(drive,ensure_ascii=False,indent=2))
         return {'savedDocument':entry,'scope':'Owned text document and fixture-only sharing reference; not a public cloud URL.'}
     if action=='search_flights' and path.name=='skytrip.json':
         from datetime import datetime
