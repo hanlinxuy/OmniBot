@@ -11,11 +11,14 @@ def main():
     parser.add_argument('--ios-source', type=pathlib.Path, required=True)
     parser.add_argument('--coverage', type=pathlib.Path, required=True)
     parser.add_argument('--results', type=pathlib.Path)
+    parser.add_argument('--mw-api-results', type=pathlib.Path)
     parser.add_argument('--output', type=pathlib.Path, required=True)
     args = parser.parse_args()
     ios_bytes = (args.ios_source / 'tasks.json').read_bytes()
     ios = json.loads(ios_bytes)
     previous = json.loads(args.coverage.read_text())
+    previous_tasks = previous['tasks'] if 'tasks' in previous else previous['variants']
+    pins = previous['pins'] if 'pins' in previous else previous['sourcePins']
     assert len(ios) == 133 and len({t['name'] for t in ios}) == 133
     # These are capability mappings, not assertions that the fixtures already exist.
     routes = {
@@ -47,13 +50,22 @@ def main():
         'splitpay': ('EXCLUDED', 'payment app excluded by user'),
     }
     variants = []
-    for t in previous['tasks']:
+    for t in previous_tasks:
         if t['benchmark'] != 'MobileWorld':
             continue
         variants.append({**t, 'key': 'MobileWorld/' + t['id'], 'canonicalScenario': 'MobileWorld/' + t['id'],
-                         'sourceCommit': previous['pins']['MobileWorld'], 'resultScope': 'historical Android adaptations; see individual evidence',
+                         'sourceCommit': pins['MobileWorld'], 'resultScope': 'historical Android adaptations; see individual evidence',
                          'originalJudge': 'pinned MobileWorld task definition; sourceSha256 retained'})
     assert len(variants) == 201
+    if args.mw_api_results:
+        api_runs = json.loads(args.mw_api_results.read_text())['runs']
+        for variant in variants:
+            matching = [run for run in api_runs if run['sourceClass'] == variant['id']]
+            if matching:
+                variant['apiAdaptationResults'] = matching
+                variant['status'] = ('android_api_adaptation_passed' if any(run['passed'] for run in matching)
+                                     else 'android_api_adaptation_attempted_not_passed')
+                variant['resultScope'] = 'Original isolated backend API adaptation; prior results retained separately; not official GUI scores'
     for t in ios:
         excluded = any(a in ('mybank', 'splitpay') for a in t['apps'])
         native = set(t['apps']) <= {'clock', 'notes', 'clouddocs', 'cloudsheets', 'cloudslides'}
@@ -61,7 +73,7 @@ def main():
         rubric = [{'criterion': r['criterion'], 'androidCheck': r['criterion'],
                    'executionContract': 'Preserve business outcome and values; original app-navigation steps are not scored as passed when using an API/file adapter.'} for r in t['rubric']]
         variants.append({'key': 'iOSWorld/' + t['name'], 'id': t['name'], 'benchmark': 'iOSWorld',
-            'sourceCommit': previous['pins']['iOSWorld'], 'tasksFileSha256': hashlib.sha256(ios_bytes).hexdigest(),
+            'sourceCommit': pins['iOSWorld'], 'tasksFileSha256': hashlib.sha256(ios_bytes).hexdigest(),
             'sourceSha256': hashlib.sha256(json.dumps(t, sort_keys=True).encode()).hexdigest(),
             'prompt': t['goal'], 'apps': t['apps'], 'category': t['category'], 'difficulty': t['difficulty'],
             'rubric': rubric, 'androidMapping': [{'sourceApp': a, 'targetCapability': routes[a][0], 'requiredFixtureAndVerifier': routes[a][1]} for a in t['apps']],
@@ -85,11 +97,12 @@ def main():
                    'reason': 'Same prompt, but Task2 requires creating a missing contact before favorites and messaging; Task1 has all contacts.'}]
     # Only reviewed full-workflow equivalence is merged. Shared apps/components are not duplicates.
     result = {'schemaVersion': 1, 'sourceCounts': {'MobileWorld': 201, 'iOSWorld': 133},
-        'sourcePins': previous['pins'], 'variantCount': len(variants),
+        'sourcePins': pins, 'variantCount': len(variants),
         'canonicalScenarioCount': len({v['canonicalScenario'] for v in variants}),
         'deduplication': {'exactDuplicates': 0, 'samePromptNotMerged': not_merged, 'reviewedParameterizedRelations': [{'left': 'iOSWorld/clock-001', 'right': 'MobileWorld/SetAlarmTask', 'shared': 'create and verify an alarm', 'differences': 'time, label, recurrence, ringtone and vibration remain separate variant assertions; never share results'}],
                           'rule': 'Unreviewed candidates remain distinct; shared components do not imply equivalent complete tasks.'},
-        'iosStatusCounts': dict(Counter(v['status'] for v in variants if v['benchmark'] == 'iOSWorld')), 'variants': variants}
+        'iosStatusCounts': dict(Counter(v['status'] for v in variants if v['benchmark'] == 'iOSWorld')),
+        'mobileWorldStatusCounts': dict(Counter(v['status'] for v in variants if v['benchmark'] == 'MobileWorld')), 'variants': variants}
     args.output.mkdir(parents=True, exist_ok=True)
     (args.output / 'android-unified-scenarios.json').write_text(json.dumps(result, ensure_ascii=False, indent=2) + '\n')
     lines = ['# iOSWorld → Android 逐项映射', '', '完整 prompt、逐条 rubric、固定源版本、历史结果及差异见同目录 `android-unified-scenarios.json`。', '',

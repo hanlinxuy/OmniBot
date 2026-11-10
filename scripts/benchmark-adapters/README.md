@@ -80,4 +80,4 @@ Run the observed regression cases with:
 
 ## Unified Android source catalog
 
-`build_android_scenario_catalog.py` maps all 133 pinned iOSWorld variants into Android capabilities and combines them with the existing 201-task MobileWorld inventory. It conservatively shares reviewed templates without inheriting results. Use `--ios-source`, `--coverage`, `--results` and `--output` to regenerate the JSON and 133-row mapping. See [current mapping and measured results](../../docs/testing/android-unified-2026-11-10.md) and [phone Pi workspace runner](android-workspace/README.md).
+`build_android_scenario_catalog.py` maps all 133 pinned iOSWorld variants into Android capabilities and combines them with the existing 201-task MobileWorld inventory. It conservatively shares reviewed templates without inheriting results. Use `--ios-source`, `--coverage`, `--results`, optional `--mw-api-results`, and `--output` to regenerate the JSON and 133-row mapping. See [current mapping and measured results](../../docs/testing/android-unified-2026-11-10.md) and [phone Pi workspace runner](android-workspace/README.md).

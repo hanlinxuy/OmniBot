@@ -20,6 +20,8 @@ def records(action, args):
         if value.tzinfo is None: raise ValueError('Timestamp must include an explicit offset or Z')
         local=value.astimezone(ZoneInfo(args['timezone']))
         return {'input':args['timestamp'],'timezone':args['timezone'],'isoLocal':local.isoformat(),'display':local.strftime('%Y-%m-%d %H:%M %Z')}
+    if action=='create_document' and args['file']!='documents.json':
+        raise ValueError('Create requires file=documents.json; title names the new document. Do not append to an existing document as a creation fallback.')
     root=pathlib.Path(__file__).resolve().parent/'work'
     path=(root/args['file']).resolve()
     if path.parent!=root.resolve() or path.suffix!='.json' or not path.is_file():

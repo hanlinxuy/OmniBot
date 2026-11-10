@@ -24,6 +24,7 @@ def collect(artifacts):
                       and cleanup.get('workspaceAbsent') and cleanup.get('reverseRemoved'))
         runs.append({'artifact': directory.name,
                      'sourceTask': files['task'].get('sourceTask'),
+                     'sourceClass': report.get('sourceTask'),
                      'provider': '35a3', 'officialBenchmarkScore': None,
                      'sourcePredicateScore': predicate_score,
                      'terminalCompleted': terminal,
