@@ -2,6 +2,7 @@
   "scope": "Android phone Pi source-backed file/API adaptations, not original GUI scores; historical failures retained",
   "runs": [
     {
+      "completedRun": true,
       "artifact": "ios-android-clouddocs-004-qwen-dcc03ee4ff",
       "sourceTask": "clouddocs-004",
       "provider": "35a3",
@@ -28,6 +29,7 @@
       "providerRequests": 7
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-clouddocs-004-qwen-e7e5fd76f4",
       "sourceTask": "clouddocs-004",
       "provider": "35a3",
@@ -54,6 +56,7 @@
       "providerRequests": 5
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-cloudsheets-003-qwen-04306fbc89",
       "sourceTask": "cloudsheets-003",
       "provider": "35a3",
@@ -84,13 +87,17 @@
       "sourceTask": "cloudsheets-003",
       "provider": "35a3",
       "officialBenchmarkScore": null,
-      "cleanup": {
-        "workspaceAbsent": true
+      "acceptance": {
+        "passed": false
       },
-      "status": "independent_readback_failed",
-      "reason": "ADB split an unquoted filename containing spaces; no pass awarded."
+      "cleanup": {},
+      "failureType": "CalledProcessError",
+      "classification": "runtime_failure",
+      "providerRequests": 5,
+      "completedRun": false
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-cloudsheets-003-qwen-95236dc8e0",
       "sourceTask": "cloudsheets-003",
       "provider": "35a3",
@@ -117,6 +124,7 @@
       "providerRequests": 5
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-caltrack-001-qwen-d5e33d5918",
       "sourceTask": "caltrack-001",
       "provider": "35a3",
@@ -145,6 +153,7 @@
       "providerRequests": 10
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-cinephile-001-qwen-e374893447",
       "sourceTask": "cinephile-001",
       "provider": "35a3",
@@ -171,6 +180,7 @@
       "providerRequests": 5
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-cityride-001-qwen-f38e6745b8",
       "sourceTask": "cityride-001",
       "provider": "35a3",
@@ -201,6 +211,7 @@
       }
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-clouddrive-001-qwen-f38a15bb7e",
       "sourceTask": "clouddrive-001",
       "provider": "35a3",
@@ -227,6 +238,7 @@
       "providerRequests": 13
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-cloudslides-002-qwen-4125baeb35",
       "sourceTask": "cloudslides-002",
       "provider": "35a3",
@@ -257,6 +269,7 @@
       "providerRequests": 5
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-dinespot-001-qwen-34bf608cc3",
       "sourceTask": "dinespot-001",
       "provider": "35a3",
@@ -287,6 +300,7 @@
       }
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-freshcart-001-qwen-04bf2a2fda",
       "sourceTask": "freshcart-001",
       "provider": "35a3",
@@ -317,6 +331,7 @@
       }
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-lockedin-003-qwen-9300de600a",
       "sourceTask": "lockedin-003",
       "provider": "35a3",
@@ -347,6 +362,7 @@
       }
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-lockedin-004-qwen-5b26499b3d",
       "sourceTask": "lockedin-004",
       "provider": "35a3",
@@ -377,6 +393,7 @@
       }
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-mail-002-qwen-ce82099426",
       "sourceTask": "mail-002",
       "provider": "35a3",
@@ -401,6 +418,7 @@
       "providerRequests": 16
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-megamart-001-qwen-fba3ef01aa",
       "sourceTask": "megamart-001",
       "provider": "35a3",
@@ -447,6 +465,7 @@
       }
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-multi-012-qwen-98b8821cbe",
       "sourceTask": "multi-012",
       "provider": "35a3",
@@ -477,6 +496,7 @@
       }
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-multi-013-qwen-2295e4d4d5",
       "sourceTask": "multi-013",
       "provider": "35a3",
@@ -517,6 +537,7 @@
       }
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-multi-013-qwen-584dc0a64c",
       "sourceTask": "multi-013",
       "provider": "35a3",
@@ -557,6 +578,7 @@
       }
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-multi-013-qwen-aff8869b31",
       "sourceTask": "multi-013",
       "provider": "35a3",
@@ -597,6 +619,7 @@
       }
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-multi-013-qwen-cfe8ca174c",
       "sourceTask": "multi-013",
       "provider": "35a3",
@@ -637,6 +660,7 @@
       }
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-notes-001-qwen-7803dcdef9",
       "sourceTask": "notes-001",
       "provider": "35a3",
@@ -671,6 +695,7 @@
       }
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-notes-001-qwen-7bc59f1227",
       "sourceTask": "notes-001",
       "provider": "35a3",
@@ -705,6 +730,7 @@
       }
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-notes-001-qwen-f0ad2bd81e",
       "sourceTask": "notes-001",
       "provider": "35a3",
@@ -739,6 +765,7 @@
       }
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-quickchat-003-qwen-dd6185092a",
       "sourceTask": "quickchat-003",
       "provider": "35a3",
@@ -769,6 +796,7 @@
       }
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-scorezone-003-qwen-8764c12853",
       "sourceTask": "scorezone-003",
       "provider": "35a3",
@@ -799,6 +827,7 @@
       }
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-skytrip-002-qwen-bc1bfba853",
       "sourceTask": "skytrip-002",
       "provider": "35a3",
@@ -829,6 +858,7 @@
       }
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-skytrip-002-qwen-c04473c4e6",
       "sourceTask": "skytrip-002",
       "provider": "35a3",
@@ -859,6 +889,7 @@
       }
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-skytrip-002-qwen-c81d98eaed",
       "sourceTask": "skytrip-002",
       "provider": "35a3",
@@ -889,6 +920,7 @@
       }
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-skytrip-002-qwen-cd971ba98f",
       "sourceTask": "skytrip-002",
       "provider": "35a3",
@@ -919,6 +951,7 @@
       }
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-skytrip-002-qwen-f34bab6821",
       "sourceTask": "skytrip-002",
       "provider": "35a3",
@@ -949,6 +982,7 @@
       }
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-stayfinder-001-qwen-070c748a79",
       "sourceTask": "stayfinder-001",
       "provider": "35a3",
@@ -983,6 +1017,7 @@
       }
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-tasterank-001-qwen-f24cfc5ca3",
       "sourceTask": "tasterank-001",
       "provider": "35a3",
@@ -1009,6 +1044,7 @@
       "providerRequests": 6
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-teamchat-003-qwen-492ad0282a",
       "sourceTask": "teamchat-003",
       "provider": "35a3",
@@ -1039,6 +1075,7 @@
       }
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-teamchat-003-qwen-e6abf64f18",
       "sourceTask": "teamchat-003",
       "provider": "35a3",
@@ -1069,6 +1106,7 @@
       }
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-ticketbox-004-qwen-0d490fc1f2",
       "sourceTask": "ticketbox-004",
       "provider": "35a3",
@@ -1109,6 +1147,7 @@
       }
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-ticketbox-004-qwen-45487df95c",
       "sourceTask": "ticketbox-004",
       "provider": "35a3",
@@ -1137,6 +1176,7 @@
       "providerRequests": 7
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-ticketbox-004-qwen-d5fb166a71",
       "sourceTask": "ticketbox-004",
       "provider": "35a3",
@@ -1165,6 +1205,7 @@
       "providerRequests": 6
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-trailblaze-004-qwen-8dd2104e49",
       "sourceTask": "trailblaze-004",
       "provider": "35a3",
@@ -1193,6 +1234,7 @@
       "providerRequests": 6
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-weather-004-qwen-13d28d2b25",
       "sourceTask": "weather-004",
       "provider": "35a3",
@@ -1223,6 +1265,7 @@
       }
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-mem-002-qwen-e8a2f04eac",
       "sourceTask": "mem-002",
       "provider": "35a3",
@@ -1244,9 +1287,15 @@
         "passed": false
       },
       "elapsedSeconds": 28.150962957999997,
-      "providerRequests": 10
+      "providerRequests": 10,
+      "independentReview": {
+        "passed": false,
+        "reviewer": "root",
+        "reason": "ACP terminated with max_tokens; final requested business result is incomplete. Preserve partial changes and cleanup separately."
+      }
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-mem-004-qwen-f28c05659d",
       "sourceTask": "mem-004",
       "provider": "35a3",
@@ -1268,9 +1317,15 @@
         "passed": false
       },
       "elapsedSeconds": 33.091683374999995,
-      "providerRequests": 7
+      "providerRequests": 7,
+      "independentReview": {
+        "passed": false,
+        "reviewer": "root",
+        "reason": "ACP terminated with max_tokens; final requested business result is incomplete. Preserve partial changes and cleanup separately."
+      }
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-mem-007-qwen-ae828f3f02",
       "sourceTask": "mem-007",
       "provider": "35a3",
@@ -1292,9 +1347,15 @@
         "passed": false
       },
       "elapsedSeconds": 41.213601834,
-      "providerRequests": 10
+      "providerRequests": 10,
+      "independentReview": {
+        "passed": false,
+        "reviewer": "root",
+        "reason": "Incomplete enumeration: source has 10 upcoming games for followed teams; final reports 6 and omits March 8/9/10 Lakers and March 9 Yankees records. Pagination completeness not verified."
+      }
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-mem-009-qwen-212487f144",
       "sourceTask": "mem-009",
       "provider": "35a3",
@@ -1316,9 +1377,15 @@
         "passed": false
       },
       "elapsedSeconds": 96.540307708,
-      "providerRequests": 18
+      "providerRequests": 18,
+      "independentReview": {
+        "passed": false,
+        "reviewer": "root",
+        "reason": "ACP terminated with max_tokens; final requested business result is incomplete. Preserve partial changes and cleanup separately."
+      }
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-mem-015-qwen-aed617c26c",
       "sourceTask": "mem-015",
       "provider": "35a3",
@@ -1340,9 +1407,15 @@
         "passed": false
       },
       "elapsedSeconds": 36.968625125,
-      "providerRequests": 18
+      "providerRequests": 18,
+      "independentReview": {
+        "passed": false,
+        "reviewer": "root",
+        "reason": "ACP terminated with max_tokens; final requested business result is incomplete. Preserve partial changes and cleanup separately."
+      }
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-mem-018-qwen-c674ccbac9",
       "sourceTask": "mem-018",
       "provider": "35a3",
@@ -1364,9 +1437,15 @@
         "passed": false
       },
       "elapsedSeconds": 41.361779375000005,
-      "providerRequests": 15
+      "providerRequests": 15,
+      "independentReview": {
+        "passed": false,
+        "reviewer": "root",
+        "reason": "ACP terminated with max_tokens; final requested business result is incomplete. Preserve partial changes and cleanup separately."
+      }
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-mem-041-qwen-98253fbbf0",
       "sourceTask": "mem-041",
       "provider": "35a3",
@@ -1388,9 +1467,15 @@
         "passed": false
       },
       "elapsedSeconds": 43.302647832999995,
-      "providerRequests": 13
+      "providerRequests": 13,
+      "independentReview": {
+        "passed": false,
+        "reviewer": "root",
+        "reason": "The saved profile attributes writing own poems to the user, but the source sender is Grace. read_thread previously omitted an explicit current-user indicator; boundary is being improved."
+      }
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-mem-043-qwen-d267abd5b1",
       "sourceTask": "mem-043",
       "provider": "35a3",
@@ -1412,9 +1497,15 @@
         "passed": false
       },
       "elapsedSeconds": 35.215687333000005,
-      "providerRequests": 15
+      "providerRequests": 15,
+      "independentReview": {
+        "passed": false,
+        "reviewer": "root",
+        "reason": "ACP terminated with max_tokens; final requested business result is incomplete. Preserve partial changes and cleanup separately."
+      }
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-mem-051-qwen-58c5af5a31",
       "sourceTask": "mem-051",
       "provider": "35a3",
@@ -1436,9 +1527,15 @@
         "passed": false
       },
       "elapsedSeconds": 74.61827783400001,
-      "providerRequests": 16
+      "providerRequests": 16,
+      "independentReview": {
+        "passed": false,
+        "reviewer": "root",
+        "reason": "The saved Top Opportunities note claims compensation is unavailable for Stripe Staff Platform Engineer although source salaryRange is $220K/yr - $310K/yr. It also describes multiple roles as saved listings while only the Apple role isSaved=true. Correct note creation does not make inaccurate ranking evidence a pass."
+      }
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-multi-001-qwen-00cdacc78b",
       "sourceTask": "multi-001",
       "provider": "35a3",
@@ -1468,6 +1565,7 @@
       }
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-multi-005-qwen-0cd0916193",
       "sourceTask": "multi-005",
       "provider": "35a3",
@@ -1486,12 +1584,18 @@
       "acceptance": {
         "sourceFilesPreserved": true,
         "semanticReviewRequired": true,
-        "passed": false
+        "passed": true
       },
       "elapsedSeconds": 23.818526374999998,
-      "providerRequests": 7
+      "providerRequests": 7,
+      "independentReview": {
+        "passed": true,
+        "reviewer": "root",
+        "reason": "Independent seed/saved comparison confirms exactly one Home-to-Work CityRideX request with ETA 8 and price 12.80, exactly one support-ops running-late message, unchanged Mail and other state. Report matches source Q2 planning invitation. Isolated request/message effects only, not external dispatch."
+      }
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-multi-008-qwen-43e302b3b0",
       "sourceTask": "multi-008",
       "provider": "35a3",
@@ -1527,6 +1631,7 @@
       }
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-multi-018-qwen-d008606efc",
       "sourceTask": "multi-018",
       "provider": "35a3",
@@ -1563,6 +1668,7 @@
       }
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-multi-025-qwen-0606174549",
       "sourceTask": "multi-025",
       "provider": "35a3",
@@ -1598,6 +1704,7 @@
       }
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-multi-032-qwen-53ea225545",
       "sourceTask": "multi-032",
       "provider": "35a3",
@@ -1627,6 +1734,7 @@
       }
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-multi-032-qwen-96b1784d50",
       "sourceTask": "multi-032",
       "provider": "35a3",
@@ -1656,6 +1764,7 @@
       }
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-multi-037-qwen-61534e13f1",
       "sourceTask": "multi-037",
       "provider": "35a3",
@@ -1685,6 +1794,7 @@
       }
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-multi-048-qwen-7609ce923d",
       "sourceTask": "multi-048",
       "provider": "35a3",
@@ -1714,6 +1824,7 @@
       }
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-multi-077-qwen-722fe01a58",
       "sourceTask": "multi-077",
       "provider": "35a3",
@@ -1743,6 +1854,7 @@
       }
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-multi-080-deepseek-ddb995ee69",
       "sourceTask": "multi-080",
       "provider": "deepseek",
@@ -1772,6 +1884,7 @@
       }
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-multi-080-qwen-ebfa05e387",
       "sourceTask": "multi-080",
       "provider": "35a3",
@@ -1801,6 +1914,7 @@
       }
     },
     {
+      "completedRun": true,
       "artifact": "ios-android-mem-043-qwen-ea616c19f2",
       "sourceTask": "mem-043",
       "provider": "35a3",
@@ -1833,6 +1947,1006 @@
           "stopReason": "end_turn",
           "providerRequests": 9
         }
+      }
+    },
+    {
+      "artifact": "ios-android-lockedin-001-qwen-c0d64286c9",
+      "sourceTask": "lockedin-001",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "acceptance": {
+        "passed": false
+      },
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "failureType": "RuntimeError",
+      "classification": "runtime_failure",
+      "providerRequests": 31,
+      "completedRun": false
+    },
+    {
+      "completedRun": true,
+      "artifact": "ios-android-lockedin-002-qwen-0e8526de15",
+      "sourceTask": "lockedin-002",
+      "provider": "35a3",
+      "model": "qwen3.6-35b-a3b-q4_k_m",
+      "officialBenchmarkScore": null,
+      "transport": "mcp",
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "rawAcceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "acceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": true
+      },
+      "elapsedSeconds": 38.476695125,
+      "providerRequests": 19,
+      "independentReview": {
+        "passed": true,
+        "reason": "Correct Elena Substack post like/comment/repost, only expected counters updated; direct invite to Elena; one Golden Gate Izakaya table for 2 on Saturday Mar 7 19:00 PST (Mar 8 03:00 UTC). No other mutations; cleanup verified."
+      }
+    },
+    {
+      "artifact": "ios-android-mem-003-qwen-dff4c4a423",
+      "sourceTask": "mem-003",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "acceptance": {
+        "passed": false
+      },
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "failureType": "RuntimeError",
+      "classification": "runtime_failure",
+      "providerRequests": 31,
+      "completedRun": false
+    },
+    {
+      "artifact": "ios-android-mem-004-qwen-671f8486e4",
+      "sourceTask": "mem-004",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "acceptance": {
+        "passed": false
+      },
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "failureType": "RuntimeError",
+      "classification": "runtime_failure",
+      "providerRequests": 7,
+      "completedRun": false
+    },
+    {
+      "completedRun": true,
+      "artifact": "ios-android-mem-005-qwen-1903b92557",
+      "sourceTask": "mem-005",
+      "provider": "35a3",
+      "model": "qwen3.6-35b-a3b-q4_k_m",
+      "officialBenchmarkScore": null,
+      "transport": "mcp",
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "rawAcceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "acceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "elapsedSeconds": 50.226378,
+      "providerRequests": 18,
+      "independentReview": {
+        "passed": false,
+        "reviewer": "root",
+        "reason": "Independent source filtering finds 28 current-user run activities, not the claimed 49. route_001 is most frequent (14), but the universal Saturday 07:00 local pattern is unsupported; timestamps vary. Also November forecast was used for a March next-run plan. Message cleanup succeeded but profile facts are wrong."
+      }
+    },
+    {
+      "artifact": "ios-android-mem-006-qwen-903e9cde92",
+      "sourceTask": "mem-006",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "acceptance": {
+        "passed": false
+      },
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "failureType": "RuntimeError",
+      "classification": "runtime_failure",
+      "providerRequests": 31,
+      "completedRun": false
+    },
+    {
+      "artifact": "ios-android-mem-013-qwen-004861c51b",
+      "sourceTask": "mem-013",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "acceptance": {
+        "passed": false
+      },
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "failureType": "RuntimeError",
+      "classification": "runtime_failure",
+      "providerRequests": 31,
+      "completedRun": false
+    },
+    {
+      "artifact": "ios-android-mem-016-qwen-54dd9093a3",
+      "sourceTask": "mem-016",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "acceptance": {
+        "passed": false
+      },
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "failureType": "RuntimeError",
+      "classification": "runtime_failure",
+      "providerRequests": 31,
+      "completedRun": false
+    },
+    {
+      "artifact": "ios-android-mem-018-qwen-d167284e30",
+      "sourceTask": "mem-018",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "acceptance": {
+        "passed": false
+      },
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "failureType": "RuntimeError",
+      "classification": "runtime_failure",
+      "providerRequests": 12,
+      "completedRun": false
+    },
+    {
+      "completedRun": true,
+      "artifact": "ios-android-mem-024-qwen-8217789203",
+      "sourceTask": "mem-024",
+      "provider": "35a3",
+      "model": "qwen3.6-35b-a3b-q4_k_m",
+      "officialBenchmarkScore": null,
+      "transport": "mcp",
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "rawAcceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "acceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "elapsedSeconds": 77.319246208,
+      "providerRequests": 18,
+      "independentReview": {
+        "passed": false,
+        "reviewer": "root",
+        "reason": "Recommended and messaged a March 3 event as upcoming despite the March 5 fixture reference date. Claims no past comedy tickets despite source Chappelle/Ali Wong/Bargatze history, and supplies seen-movie/genre mappings inconsistent with the reported missing movie IDs. Tool completion and message delivery do not establish factual correctness."
+      }
+    },
+    {
+      "completedRun": true,
+      "artifact": "ios-android-mem-025-qwen-c5b2467f8e",
+      "sourceTask": "mem-025",
+      "provider": "35a3",
+      "model": "qwen3.6-35b-a3b-q4_k_m",
+      "officialBenchmarkScore": null,
+      "transport": "mcp",
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "rawAcceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "acceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "elapsedSeconds": 108.00378725,
+      "providerRequests": 17,
+      "independentReview": {
+        "passed": false,
+        "reviewer": "root",
+        "reason": "Requested new Travel Log document was not created; existing Untitled document was modified instead. The report also maps Carmel Valley to London based on listing ID and treats airport ride estimates as history. Missing create-document tool is fixed in pending phone version; geography/history claims still require revalidation."
+      }
+    },
+    {
+      "completedRun": true,
+      "artifact": "ios-android-mem-026-qwen-e77e89428f",
+      "sourceTask": "mem-026",
+      "provider": "35a3",
+      "model": "qwen3.6-35b-a3b-q4_k_m",
+      "officialBenchmarkScore": null,
+      "transport": "mcp",
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "rawAcceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "acceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "elapsedSeconds": 104.370832625,
+      "providerRequests": 30,
+      "independentReview": {
+        "passed": false,
+        "reviewer": "root",
+        "reason": "Mail counts are correct, but requested CloudDocs review was replaced with Notes data; no document .txt read is present in tool trace. The saved note conflates Notes with CloudDocs and contradicts itself about latest channel activity. Only partial analysis is established."
+      }
+    },
+    {
+      "artifact": "ios-android-mem-027-qwen-c08c1e4908",
+      "sourceTask": "mem-027",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "acceptance": {
+        "passed": false
+      },
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "failureType": "RuntimeError",
+      "classification": "runtime_failure",
+      "providerRequests": 31,
+      "completedRun": false
+    },
+    {
+      "artifact": "ios-android-mem-029-qwen-e8aba18108",
+      "sourceTask": "mem-029",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "acceptance": {
+        "passed": false
+      },
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "failureType": "RuntimeError",
+      "classification": "runtime_failure",
+      "providerRequests": 31,
+      "completedRun": false
+    },
+    {
+      "artifact": "ios-android-mem-036-qwen-5158544547",
+      "sourceTask": "mem-036",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "acceptance": {
+        "passed": false
+      },
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "failureType": "RuntimeError",
+      "classification": "runtime_failure",
+      "providerRequests": 31,
+      "completedRun": false
+    },
+    {
+      "completedRun": true,
+      "artifact": "ios-android-mem-039-qwen-abc965e222",
+      "sourceTask": "mem-039",
+      "provider": "35a3",
+      "model": "qwen3.6-35b-a3b-q4_k_m",
+      "officialBenchmarkScore": null,
+      "transport": "mcp",
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "rawAcceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "acceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "elapsedSeconds": 71.994722625,
+      "providerRequests": 14,
+      "independentReview": {
+        "passed": false,
+        "reason": "Itinerary dates Mar 10-13 contradict lodging Mar 11-14 and outbound flight Mar 12. Required Los Angeles weather absent; complete claim unsupported."
+      }
+    },
+    {
+      "artifact": "ios-android-mem-045-qwen-64ab483601",
+      "sourceTask": "mem-045",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "acceptance": {
+        "passed": false
+      },
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "failureType": "RuntimeError",
+      "classification": "runtime_failure",
+      "providerRequests": 31,
+      "completedRun": false
+    },
+    {
+      "artifact": "ios-android-mem-048-qwen-30a3d0b82c",
+      "sourceTask": "mem-048",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "acceptance": {
+        "passed": false
+      },
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "failureType": "RuntimeError",
+      "classification": "runtime_failure",
+      "providerRequests": 31,
+      "completedRun": false
+    },
+    {
+      "completedRun": true,
+      "artifact": "ios-android-mem-052-qwen-d5513ca1ff",
+      "sourceTask": "mem-052",
+      "provider": "35a3",
+      "model": "qwen3.6-35b-a3b-q4_k_m",
+      "officialBenchmarkScore": null,
+      "transport": "mcp",
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "rawAcceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "acceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "elapsedSeconds": 51.05793225,
+      "providerRequests": 19,
+      "independentReview": {
+        "passed": false,
+        "reason": "Profile and document summary saved, but requested notification signals omitted: adapter lacked notifications despite upstream seeds. Profile profileViewsThisWeek=23 was present, yet report omitted this signal. Partial, requires exporter fix and rerun."
+      }
+    },
+    {
+      "completedRun": true,
+      "artifact": "ios-android-multi-002-qwen-d9adcff4a3",
+      "sourceTask": "multi-002",
+      "provider": "35a3",
+      "model": "qwen3.6-35b-a3b-q4_k_m",
+      "officialBenchmarkScore": null,
+      "transport": "mcp",
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "rawAcceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "acceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "elapsedSeconds": 37.613006,
+      "providerRequests": 10,
+      "independentReview": {
+        "passed": false,
+        "reviewer": "root",
+        "reason": "Required New York forecast unavailable in fixture; note explicitly records missing weather. Flight and note are partial coverage, not full task success."
+      }
+    },
+    {
+      "completedRun": true,
+      "artifact": "ios-android-multi-007-qwen-4bca58efeb",
+      "sourceTask": "multi-007",
+      "provider": "35a3",
+      "model": "qwen3.6-35b-a3b-q4_k_m",
+      "officialBenchmarkScore": null,
+      "transport": "mcp",
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "rawAcceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "acceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "elapsedSeconds": 30.868600875,
+      "providerRequests": 9,
+      "independentReview": {
+        "passed": false,
+        "reviewer": "root",
+        "reason": "Seattle forecast and add-location capability unavailable; partial flight and packing-note result only."
+      }
+    },
+    {
+      "artifact": "ios-android-multi-008-deepseek-aa42f7c6a0",
+      "sourceTask": "multi-008",
+      "provider": "deepseek",
+      "officialBenchmarkScore": null,
+      "acceptance": {
+        "passed": false
+      },
+      "cleanup": {
+        "workspaceAbsent": true,
+        "recoveredAfterInterruption": true
+      },
+      "failureType": "RuntimeError",
+      "classification": "runtime_failure",
+      "providerRequests": 0,
+      "completedRun": false
+    },
+    {
+      "artifact": "ios-android-multi-008-qwen-3e1c2fb1c1",
+      "sourceTask": "multi-008",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "acceptance": {
+        "passed": false
+      },
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "failureType": "RuntimeError",
+      "classification": "runtime_failure",
+      "providerRequests": 1,
+      "completedRun": false
+    },
+    {
+      "completedRun": true,
+      "artifact": "ios-android-multi-011-qwen-47c7f40f26",
+      "sourceTask": "multi-011",
+      "provider": "35a3",
+      "model": "qwen3.6-35b-a3b-q4_k_m",
+      "officialBenchmarkScore": null,
+      "transport": "mcp",
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "rawAcceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "acceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "elapsedSeconds": 39.504643125,
+      "providerRequests": 8,
+      "independentReview": {
+        "passed": false,
+        "reviewer": "root",
+        "reason": "Available forecast covers November while trip is March. Correctly disclosed mismatch, but required trip-date weather is unavailable."
+      }
+    },
+    {
+      "completedRun": true,
+      "artifact": "ios-android-multi-014-qwen-d1032b6ab6",
+      "sourceTask": "multi-014",
+      "provider": "35a3",
+      "model": "qwen3.6-35b-a3b-q4_k_m",
+      "officialBenchmarkScore": null,
+      "transport": "mcp",
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "rawAcceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "acceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": true
+      },
+      "elapsedSeconds": 31.642295709,
+      "providerRequests": 9,
+      "independentReview": {
+        "passed": true,
+        "reason": "Popular source movie The Dark Knight in new Movie Night custom list; isolated Shake Shack order matches source menu, Home address and checkout arithmetic 45.06; only one Avery Fam message with matching movie/order. All other fixtures unchanged; cleanup verified."
+      }
+    },
+    {
+      "completedRun": true,
+      "artifact": "ios-android-multi-015-qwen-92e8fbdc8a",
+      "sourceTask": "multi-015",
+      "provider": "35a3",
+      "model": "qwen3.6-35b-a3b-q4_k_m",
+      "officialBenchmarkScore": null,
+      "transport": "mcp",
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "rawAcceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "acceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "elapsedSeconds": 58.760854541,
+      "providerRequests": 26,
+      "independentReview": {
+        "passed": false,
+        "reviewer": "root",
+        "reason": "Spreadsheet numeric seeds and writes were exported as strings, invalidating arithmetic fidelity; model also leaves the new row outside the Total SUM range. Requires numeric export fix and rerun."
+      }
+    },
+    {
+      "completedRun": true,
+      "artifact": "ios-android-multi-028-qwen-765eada170",
+      "sourceTask": "multi-028",
+      "provider": "35a3",
+      "model": "qwen3.6-35b-a3b-q4_k_m",
+      "officialBenchmarkScore": null,
+      "transport": "mcp",
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "rawAcceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "acceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "elapsedSeconds": 28.485906542000002,
+      "providerRequests": 7
+    },
+    {
+      "artifact": "ios-android-multi-035-qwen-c5971b89f0",
+      "sourceTask": "multi-035",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "acceptance": {
+        "passed": false
+      },
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "failureType": "RuntimeError",
+      "classification": "runtime_failure",
+      "providerRequests": 31,
+      "completedRun": false
+    },
+    {
+      "artifact": "ios-android-multi-037-qwen-39a973aeda",
+      "sourceTask": "multi-037",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "acceptance": {
+        "passed": false
+      },
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "failureType": "RuntimeError",
+      "classification": "runtime_failure",
+      "providerRequests": 12,
+      "completedRun": false
+    },
+    {
+      "completedRun": true,
+      "artifact": "ios-android-multi-040-qwen-5066008ad0",
+      "sourceTask": "multi-040",
+      "provider": "35a3",
+      "model": "qwen3.6-35b-a3b-q4_k_m",
+      "officialBenchmarkScore": null,
+      "transport": "mcp",
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "rawAcceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "acceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "elapsedSeconds": 68.225032375,
+      "providerRequests": 24,
+      "independentReview": {
+        "passed": false,
+        "reviewer": "root",
+        "reason": "Event-date weather unavailable. Additionally model requested real fixture rides while the goal asked to compare ride estimates; these are unwanted mutations in the isolated state."
+      }
+    },
+    {
+      "artifact": "ios-android-multi-044-qwen-3cdee961c1",
+      "sourceTask": "multi-044",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "acceptance": {
+        "passed": false
+      },
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "failureType": "RuntimeError",
+      "classification": "runtime_failure",
+      "providerRequests": 31,
+      "completedRun": false
+    },
+    {
+      "artifact": "ios-android-multi-048-qwen-a41e64da17",
+      "sourceTask": "multi-048",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "acceptance": {
+        "passed": false
+      },
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "failureType": "RuntimeError",
+      "classification": "runtime_failure",
+      "providerRequests": 1,
+      "completedRun": false
+    },
+    {
+      "completedRun": true,
+      "artifact": "ios-android-multi-053-qwen-e348d070e6",
+      "sourceTask": "multi-053",
+      "provider": "35a3",
+      "model": "qwen3.6-35b-a3b-q4_k_m",
+      "officialBenchmarkScore": null,
+      "transport": "mcp",
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "rawAcceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "acceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "elapsedSeconds": 62.159022708,
+      "providerRequests": 25,
+      "independentReview": {
+        "passed": false,
+        "reviewer": "root",
+        "reason": "Dinner reserved March 5 local for an April 1 UTC show, not a coherent pre-show plan. Missing create-document API led to modification of Untitled document instead of requested new document; claimed full completion is invalid."
+      }
+    },
+    {
+      "completedRun": true,
+      "artifact": "ios-android-multi-061-qwen-8fddb388a3",
+      "sourceTask": "multi-061",
+      "provider": "35a3",
+      "model": "qwen3.6-35b-a3b-q4_k_m",
+      "officialBenchmarkScore": null,
+      "transport": "mcp",
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "rawAcceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "acceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "elapsedSeconds": 40.458118542,
+      "providerRequests": 21,
+      "independentReview": {
+        "passed": false,
+        "reviewer": "root",
+        "reason": "Replaced requested custom list with Wishlist and chose Drama/Crime instead of Thriller; no-games conclusion also needs local-date verification. Partial mutations do not satisfy the conditional task."
+      }
+    },
+    {
+      "completedRun": true,
+      "artifact": "ios-android-multi-068-qwen-b7eba0a315",
+      "sourceTask": "multi-068",
+      "provider": "35a3",
+      "model": "qwen3.6-35b-a3b-q4_k_m",
+      "officialBenchmarkScore": null,
+      "transport": "mcp",
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "rawAcceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "acceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "elapsedSeconds": 62.017960208,
+      "providerRequests": 23,
+      "independentReview": {
+        "passed": false,
+        "reviewer": "root",
+        "reason": "Created a Notes note instead of the requested CloudDocs document and did not star it in CloudDrive. Missing create-document capability is now being tested separately."
+      }
+    },
+    {
+      "artifact": "ios-android-multi-071-qwen-e3c75f45f3",
+      "sourceTask": "multi-071",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "acceptance": {
+        "passed": false
+      },
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "failureType": "RuntimeError",
+      "classification": "runtime_failure",
+      "providerRequests": 31,
+      "completedRun": false
+    },
+    {
+      "completedRun": true,
+      "artifact": "ios-android-multi-075-qwen-ff77abeb15",
+      "sourceTask": "multi-075",
+      "provider": "35a3",
+      "model": "qwen3.6-35b-a3b-q4_k_m",
+      "officialBenchmarkScore": null,
+      "transport": "mcp",
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "rawAcceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "acceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "elapsedSeconds": 40.343843416999995,
+      "providerRequests": 11,
+      "independentReview": {
+        "passed": false,
+        "reviewer": "root",
+        "reason": "Uses November weather against a March fixture date; 256 seconds/km over 21.0975 km is 5400.96 seconds, so the stated pace does not break 1:30:00."
+      }
+    },
+    {
+      "artifact": "ios-android-multi-077-qwen-4aa781310a",
+      "sourceTask": "multi-077",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "acceptance": {
+        "passed": false
+      },
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "failureType": "RuntimeError",
+      "classification": "runtime_failure",
+      "providerRequests": 7,
+      "completedRun": false
+    },
+    {
+      "completedRun": true,
+      "artifact": "ios-android-multi-079-qwen-250a2164a3",
+      "sourceTask": "multi-079",
+      "provider": "35a3",
+      "model": "qwen3.6-35b-a3b-q4_k_m",
+      "officialBenchmarkScore": null,
+      "transport": "mcp",
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "rawAcceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "acceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "elapsedSeconds": 36.1343855,
+      "providerRequests": 10,
+      "independentReview": {
+        "passed": false,
+        "reviewer": "root",
+        "reason": "Seating choice uses a November forecast for a March reservation. Historical restaurant descriptions are also presented as friends reviews without demonstrated review authorship."
+      }
+    },
+    {
+      "artifact": "ios-android-multi-084-qwen-a2cd215aa0",
+      "sourceTask": "multi-084",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "acceptance": {
+        "passed": false
+      },
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "failureType": "RuntimeError",
+      "classification": "runtime_failure",
+      "providerRequests": 31,
+      "completedRun": false
+    },
+    {
+      "artifact": "ios-android-multi-090-qwen-f71aa8fffc",
+      "sourceTask": "multi-090",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "acceptance": {
+        "passed": false
+      },
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "failureType": "RuntimeError",
+      "classification": "runtime_failure",
+      "providerRequests": 31,
+      "completedRun": false
+    },
+    {
+      "completedRun": true,
+      "artifact": "ios-android-multi-092-qwen-7417477bc9",
+      "sourceTask": "multi-092",
+      "provider": "35a3",
+      "model": "qwen3.6-35b-a3b-q4_k_m",
+      "officialBenchmarkScore": null,
+      "transport": "mcp",
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "rawAcceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "acceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "elapsedSeconds": 50.398940249999995,
+      "providerRequests": 30,
+      "independentReview": {
+        "passed": false,
+        "reviewer": "root",
+        "reason": "Required Insightful reaction and top comments unavailable in fixture/tools; agent explicitly reported these incomplete. Full-task pass is false."
+      }
+    },
+    {
+      "completedRun": true,
+      "artifact": "ios-android-quickbite-001-qwen-b726bc253a",
+      "sourceTask": "quickbite-001",
+      "provider": "35a3",
+      "model": "qwen3.6-35b-a3b-q4_k_m",
+      "officialBenchmarkScore": null,
+      "transport": "mcp",
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "rawAcceptance": {
+        "oneChickenBowl": true,
+        "chipotleSelected": true,
+        "homeAddress": true,
+        "onlyOwnedOrderAdded": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "acceptance": {
+        "oneChickenBowl": true,
+        "chipotleSelected": true,
+        "homeAddress": true,
+        "onlyOwnedOrderAdded": true,
+        "semanticReviewRequired": true,
+        "passed": true
+      },
+      "elapsedSeconds": 21.469152875,
+      "providerRequests": 5,
+      "independentReview": {
+        "passed": true,
+        "reason": "Exactly one source Chipotle Chicken Bowl delivery to source Home address 410 Brannan; price 20.70 matches source fee arithmetic; final confirmation explicitly states isolated fixture only; no unrelated state mutation; workspace absent and reverse removed."
       }
     }
   ]

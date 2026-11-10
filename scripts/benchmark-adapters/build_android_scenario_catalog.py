@@ -77,6 +77,9 @@ def main():
                 variant['results'] = [r for r in runs if r['sourceTask'] == variant['id']]
                 if any(r.get('acceptance', {}).get('passed') and r.get('cleanup', {}).get('workspaceAbsent') for r in variant['results']):
                     variant['status'] = 'android_file_adaptation_passed'
+                elif variant['results']:
+                    variant['status'] = 'android_adaptation_attempted_not_passed'
+                    variant['reviewPending'] = any(r.get('completedRun') and r.get('rawAcceptance', {}).get('semanticReviewRequired') and 'independentReview' not in r for r in variant['results'])
     # Identical goals can hide a different required branch in the source fixture.
     not_merged = [{'left': 'MobileWorld/SayHelloRoommatesAskUserTask1', 'right': 'MobileWorld/SayHelloRoommatesAskUserTask2',
                    'reason': 'Same prompt, but Task2 requires creating a missing contact before favorites and messaging; Task1 has all contacts.'}]
