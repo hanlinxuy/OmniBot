@@ -60,7 +60,7 @@ def analyze_page_context(state: dict[str, Any], *, limit: int = 48) -> PageConte
             continue
         seen.add(key)
         parts: list[str] = []
-        node_id = _clean(attrs.get("id") or attrs.get("index"))
+        node_id = _clean(attrs.get("id"))
         if node_id:
             parts.append(f"node_id={node_id}")
         if text:

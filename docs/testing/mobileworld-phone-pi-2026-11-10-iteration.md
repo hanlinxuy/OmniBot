@@ -199,3 +199,45 @@ subject/sender/date/body in 3.82 seconds. The source fixture is synthetic; no
 personal mailbox is accessed. The second incomplete attempt was also stopped
 and fully restored. The corrected six-app matrix is now running with both
 source patches and explicit sequential execution.
+
+## Android refocus: weekend alarm and selector dispatch
+
+The iOS simulator branch has been stopped and its one owned simulator deleted;
+zero simulators remained booted at readback. Existing iOS adaptations remain
+separate from vivo Android coverage.
+
+The first explicit reminder-skill SetAlarmTask run on phone Pi with 35a3 passed
+independent configuration readback: 08:25, Saturday and Sunday, enabled, exact
+owned BeeBeep audio filename, vibration off. The host then deleted only the
+uniquely marked test alarm and verified the visible alarm baseline remained.
+Actual ringing was not tested. Performance was poor: 213.7567 seconds, three
+GUI calls and 36 actions. The first GUI call alone lasted 152.218 seconds with
+real progress notifications, demonstrating that the prior MCP progress change
+supports an actively progressing call beyond 60 seconds.
+
+One missing explicit node ID fell through to model coordinates and opened a
+different alarm; the agent backed out without editing it. A managed execution
+override now rejects that live action before dispatch and returns to the
+existing planner recovery path. A separate context fix removes sibling index
+as a purported node ID. Thirty-seven focused tests pass; source readback and
+worker reload pass on the phone. A reminder skill revision also carries exact
+observed asset filenames/URIs into delegated GUI goals, avoiding repeated
+searches for a friendly media title that the device picker does not display.
+The repaired 35a3 run is underway; these changes are not yet a measured speedup.
+
+The repaired 35a3 run completed in 92.394 seconds with one GUI call and 16 GUI
+steps (76.573 seconds inside GUI). Independent UI readback confirmed 08:25,
+Saturday/Sunday, enabled, the unique audio filename (vivo omits its extension),
+and no vibration. One unresolved node action was blocked without dispatch;
+the planner then issued a separate visual action and completed. This is one
+combined-change observation, not causal attribution or a general speed claim.
+The shared GUI executor is DeepSeek Flash: the outer model comparison does not
+mean that each model independently controls every GUI action.
+
+The host verifier initially hit the floating Add button over a lower alarm row
+and opened an unsaved draft. It cancelled that draft, repositioned the row, and
+completed independent readback. This is a host acceptance-tool defect, separate
+from model execution. No draft alarm was saved. Cleanup confirmation is tracked
+separately in private evidence. Ninety-two seconds remains poor alarm-setting
+latency despite the improvement; DeepSeek and Terra still need the same revised
+condition before a model comparison is valid.

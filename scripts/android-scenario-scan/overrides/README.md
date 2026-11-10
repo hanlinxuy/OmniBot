@@ -41,3 +41,28 @@ The control-loop performance follow-up reuses the prior guarded action's fresh `
 Deploy the schemas, grounding and context files together through the official whole-file override interface while idle, after saving exact current sources. Context uses bullets rather than a second numbered index that the model confused with node IDs. Read back all three files. Roll back using the saved individual sources, preserving unrelated overrides. The pinned runtime ZIP is unchanged; fresh installations still require managed deployment.
 
 The current candidate passed 32 focused override tests. In the original Mail CancelMeetingTask adaptation, three outer Pi models sharing one GUI executor each completed four actions; all 12 resolved through `accessibility_node_id`, with independent local send and cleanup checks. This is bounded evidence for selector plumbing, not a general GUI reliability or speed claim.
+
+## Reject unresolved live node identities (2026-11-10)
+
+`execution.py` is a whole-file override derived from installed runtime
+`2026.08.21.catalog.dc201798.d453a47e`, source SHA-256
+`347b0faa2901229c7b65fedbf11e56d78cb781a5571d92a53e8cafe198bbac9d`.
+In the vivo weekend-alarm run, an unresolved explicit node ID fell back to
+coordinates and opened a different existing alarm. The agent returned without
+editing it, but this demonstrated a wrong-target dispatch.
+
+The live execution entry point now blocks click/input_text with an unresolved
+explicit node ID before preparation or host dispatch. The existing planner gets
+an actionable error and can select a current ID or issue a separate visual
+action. Recorded Function transfer keeps its existing policy. This supersedes
+the earlier statement that all missing IDs retain coordinate fallback.
+`context.py` now advertises only XML `id`, never sibling `index`, as node identity.
+The index mismatch is independently verified; it is not established as the
+cause of the particular failed node ID in that device run.
+
+Save current sources, compare hashes, and apply these files via the official
+whole-file override while idle. Read back both source hashes. Never clear other
+overrides to roll this change back. The focused suite has 37 passing tests,
+including no host dispatch for a missing live ID, successful grounding for a
+valid ID, explicit visual fallback, and unchanged recorded-transfer dispatch.
+Live task speed/reliability still require separate verification.

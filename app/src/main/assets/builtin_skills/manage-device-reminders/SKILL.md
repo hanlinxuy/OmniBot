@@ -1,0 +1,18 @@
+---
+name: manage-device-reminders
+description: Create and verify system clock alarms, timers, and calendar events through device APIs, using GUI only for verification or unsupported fields.
+---
+
+# Manage device reminders
+
+Read the current device date and time zone before interpreting relative dates or choosing the next occurrence. Preserve the user's requested time, AM/PM, recurrence and notification settings. If a required detail is genuinely missing, ask for it; do not substitute a different time when an operation fails.
+
+For a system Clock alarm, prefer `alarm_reminder_create` with `mode=clock_app`. Its `repeatDays` uses ISO weekdays, Monday=1 through Sunday=7. A weekend request needs both Saturday and Sunday. Pass `vibrate` and a verified device `ringtoneUri` when requested and available. An `exact_alarm` reminder belongs to OmniBot and is not a substitute for a system Clock alarm. For a timer, prefer `timer_create` with the requested duration in seconds.
+
+A Clock Intent receipt is dispatch evidence: `creationVerified=false` means the alarm/timer still needs verification. Use the existing clock screen if it already shows the target. Identify the specific alarm by its observed label and time; do not create another alarm just because the receipt does not verify it. If GUI verification is needed, give the GUI executor the target identity and all required fields. Ask it to inspect the existing object, repair only fields that differ, save and read back the final state. When an asset has an observed URI or filename, include that exact identity in the GUI goal as well as the user-facing name; device pickers may display the filename instead of the media title. Once that exact asset is selected and saved, do not keep searching for its friendly name. Some device clocks ignore ringtone or vibration Intent extras. Verify those settings in the actual clock UI instead of assuming the supplied arguments took effect.
+
+For GUI edits, use current controls and inspect the time-picker layout. Two-wheel 24-hour and three-wheel 12-hour pickers require different inputs. Verify the chosen hour/minute before saving. A tool that echoes the requested time while also reporting a picker failure has not established success. If a write may have succeeded, inspect the existing object before any retry. Preserve other alarms and user data.
+
+For calendar events, select the intended calendar and pass its ID. Use explicit dates and time zones, and include the requested reminders. After creation, independently list that calendar over an explicit date range and match the event's identity, start/end, recurrence where supported, and reminder values. A keyword alone does not restrict reads to one calendar. Preserve any title prefix or other constraint the user requested.
+
+Report what was independently verified and any remaining mismatch. Saved alarm configuration is not proof that it will ring at the scheduled time. Do not claim unsupported cancellation or verification APIs exist. Do not delete user reminders as part of verification; a development harness may separately clean up only its recorded test objects.

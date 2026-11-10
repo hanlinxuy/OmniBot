@@ -31,6 +31,14 @@ class ContextTests(unittest.TestCase):
             self.assertLessEqual(len(after.splitlines()) - 1, 48)
             self.assertIn('copy the exact text or desc label', after)
 
+    def test_sibling_index_is_not_a_node_identity(self):
+        module = load('context_node_identity', pathlib.Path(__file__).with_name('context.py'))
+        xml = '<root><node index="41" text="old"/><node id="7" index="0" text="current"/></root>'
+        evidence = module.analyze_page_context({'xml': xml}).evidence
+        self.assertNotIn('node_id=41', evidence)
+        self.assertNotIn('node_id=0', evidence)
+        self.assertIn('node_id=7', evidence)
+
     def test_priority_visibility_and_limit(self):
         module = load('context_synthetic', pathlib.Path(__file__).with_name('context.py'))
         nodes = ''.join(f'<node resource-id="container{i}"/>' for i in range(50))
