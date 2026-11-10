@@ -6,6 +6,13 @@ Only owned work/ files are exposed. This is a benchmark capability, not a shell 
 import json
 import pathlib
 import sys
+import re
+
+
+def spreadsheet_value(raw):
+    if re.fullmatch(r"[+-]?(?:\d+(?:\.\d*)?|\.\d+)", raw):
+        return float(raw) if "." in raw else int(raw)
+    return raw
 
 
 def main():
@@ -29,7 +36,7 @@ def main():
             if sheet not in book.sheetnames:
                 print(json.dumps({'error':'worksheet_not_found','requestedSheet':sheet,'availableSheetNames':book.sheetnames,'retryHint':'Use an exact availableSheetNames value; do not guess or create a sheet.'}))
                 sys.exit(1)
-            book[sheet][cell] = value
+            book[sheet][cell] = spreadsheet_value(value)
             book.save(path)
             saved = openpyxl.load_workbook(path)
             print(json.dumps({'file': path.name, 'sheet': sheet, 'cell': cell, 'savedValue': saved[sheet][cell].value}))

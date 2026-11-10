@@ -226,7 +226,9 @@ try:
     rpc('session/close', {'sessionId': session['sessionId']})
     names = [t['function']['name'] for t in requests[0].get('tools', [])]
     saved_dir=RUN/'saved'; saved_dir.mkdir()
-    for filename in filenames:
+    phone_names=subprocess.check_output(BASE+['shell','-T','run-as',PKG,'ls','-1',HOST+'/work'],text=True).splitlines()
+    for filename in phone_names:
+        if pathlib.PurePosixPath(filename).name!=filename: raise ValueError('Invalid workspace filename')
         saved=subprocess.check_output(BASE+['shell','-T','run-as',PKG,'cat',shlex.quote(HOST+'/work/'+filename)])
         (saved_dir/filename).write_bytes(saved)
     final=''.join(u.get('update',{}).get('content',{}).get('text','') for u in updates if u.get('update',{}).get('sessionUpdate')=='agent_message_chunk')

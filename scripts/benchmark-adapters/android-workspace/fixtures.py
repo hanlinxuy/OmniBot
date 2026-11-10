@@ -10,7 +10,7 @@ def build_fixture(ios, output, case):
     from pptx import Presentation
     app = case.split('-')[0]
     task_apps=next(t['apps'] for t in json.loads((ios/'tasks.json').read_text()) if t['name']==case)
-    if len(task_apps)==1 and app in ('ticketbox','tasterank','trailblaze','megamart','caltrack','skytrip','scorezone','notes','stayfinder','cinephile','mail','freshcart','quickchat','teamchat','lockedin','weather','cityride','dinespot'):
+    if len(task_apps)==1 and app in ('quickbite','ticketbox','tasterank','trailblaze','megamart','caltrack','skytrip','scorezone','notes','stayfinder','cinephile','mail','freshcart','quickchat','teamchat','lockedin','weather','cityride','dinespot'):
         export=output.parent.parent/'source-exports'/(app+'.json')
         provenance=export.with_name(app+'-provenance.json')
         data=json.loads(export.read_text())
@@ -49,7 +49,8 @@ def build_fixture(ios, output, case):
                 for sheet in item['sheets']:
                     target = book.create_sheet(sheet['name'])
                     for cell in sheet['cells']:
-                        target[cell['address']] = cell['rawValue']
+                        from workspace import spreadsheet_value
+                        target[cell['address']] = spreadsheet_value(cell['rawValue'])
                 book.save(output / (filename+'.xlsx'))
             else:
                 book = Presentation()
@@ -58,6 +59,8 @@ def build_fixture(ios, output, case):
                     target.shapes.title.text = slide['title']
                     target.placeholders[1].text = slide['body']
                 book.save(output / (filename+'.pptx'))
+    if 'clouddocs' in task_apps:
+        (output/'documents.json').write_text(json.dumps({'documents':[dict(item,file=item['title'].replace('/', '／')+'.txt') for item in data['documents']]},ensure_ascii=False,indent=2))
     if 'clouddrive' in task_apps:
         (output/'drive.json').write_text(json.dumps({'folders': data['folders'], 'files': data['files']}, ensure_ascii=False, indent=2))
     return sorted(p.name for p in output.iterdir())
@@ -66,6 +69,12 @@ def build_fixture(ios, output, case):
 def verify_fixture(case, original, saved, final):
     import openpyxl
     from pptx import Presentation
+    if case=='quickbite-001':
+        before=json.loads((original/'quickbite.json').read_text());after=json.loads((saved/'quickbite.json').read_text())
+        orders=after.get('activeOrders',[])
+        if len(orders)!=1:return {'exactlyOneOrderCreated':False}
+        order=orders[0]; expected=dict(before,activeOrders=orders)
+        return {'oneChickenBowl':len(order['items'])==1 and order['items'][0]['item']['name']=='Chicken Bowl' and order['items'][0]['quantity']==1,'chipotleSelected':order['restaurant']['name']=='Chipotle','homeAddress':'410 Brannan St' in order['destinationAddress']['detail'],'onlyOwnedOrderAdded':after==expected,'semanticReviewRequired':True}
     if case == 'cloudslides-002':
         name = '[Draft] Autonomous Agents.pptx'
         before, after = Presentation(original/name), Presentation(saved/name)

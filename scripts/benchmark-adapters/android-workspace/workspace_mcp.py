@@ -15,6 +15,11 @@ TOOLS = {
 }
 
 RECORD_TOOLS = {
+ 'place_food_order': ('Create an isolated delivery order from source restaurant/menu/address IDs. items maps menu item IDs to quantities. Source fees and default tip apply. No real payment, order, delivery or external account.', {'file':'string','restaurant_id':'string','address_id':'string','items':'object'}, ['file','restaurant_id','address_id','items']),
+ 'interact_with_post': ('Like, comment or repost an existing source post in the isolated fixture; comment requires text. No external social interaction.', {'file':'string','record_id':'string','interaction':'string','text':'string'}, ['file','record_id','interaction']),
+ 'create_document': ('Create a new text document with a fixture-only sharing reference. No public cloud link or real sharing.', {'file':'string','title':'string','text':'string'}, ['file','title','text']),
+ 'send_mail': ('Write a Sent message to an existing source correspondent in the isolated mail fixture. No real email transmitted.', {'file':'string','recipient':'string','subject':'string','text':'string'}, ['file','recipient','subject','text']),
+ 'add_movie_to_list': ('Add a source movie to a named custom list, creating that list if absent. Isolated fixture only.', {'file':'string','record_id':'string','list_name':'string'}, ['file','record_id','list_name']),
  'list_channels': ('Discover TeamChat channel names and exact IDs without loading message history. Call read_thread with a returned ID to read messages, then send_message to post.', {'file':'string'}, ['file']),
  'create_note': ('Create a new note in an existing source folder. Refuses duplicate titles; no real account changes.', {'file':'string','folder':'string','title':'string','text':'string'}, ['file','folder','title','text']),
  'request_ride': ('Create an isolated CityRide request from an existing route estimate ID. No real dispatch or payment. Read the source estimates to select route and ride type.', {'file':'string','estimate_id':'string'}, ['file','estimate_id']),
@@ -45,12 +50,12 @@ def main():
     for extension,names in {'.xlsx':['set_cell'],'.pptx':['add_bullet','add_slide'],'.txt':['append_text']}.items():
         if any(p.endswith(extension) for p in files): allowed.update(names)
     capability_files={
-        'drive.json':['star_file'], 'notes.json':['create_note','append_note','append_note_bullet'],
+        'documents.json':['create_document'], 'drive.json':['star_file'], 'notes.json':['create_note','append_note','append_note_bullet'],
         'teamchat.json':['list_channels','list_threads','read_thread','send_message'],
         'quickchat.json':['list_threads','read_thread','send_message'],
-        'lockedin.json':['list_threads','read_thread','send_message','send_direct_message','save_job','follow_company'],
+        'quickbite.json':['place_food_order'], 'lockedin.json':['interact_with_post','list_threads','read_thread','send_message','send_direct_message','save_job','follow_company'],
         'skytrip.json':['search_flights'], 'cityride.json':['request_ride'], 'dinespot.json':['reserve_table'],
-        'cinephile.json':['add_movie_to_wishlist'], 'mail.json':['archive_mail'],
+        'cinephile.json':['add_movie_to_wishlist','add_movie_to_list'], 'mail.json':['archive_mail','send_mail'],
         'tasterank.json':['add_to_list'], 'trailblaze.json':['give_kudos'],
         'freshcart.json':['add_to_cart'], 'megamart.json':['add_to_cart'], 'caltrack.json':['log_food'],
     }

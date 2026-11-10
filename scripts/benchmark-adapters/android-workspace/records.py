@@ -17,6 +17,16 @@ def records(action, args):
     if path.parent!=root.resolve() or path.suffix!='.json' or not path.is_file():
         raise ValueError('Use an existing owned JSON fixture')
     data=json.loads(path.read_text())
+    if action=='create_document' and path.name=='documents.json':
+        title=args['title'].strip()
+        if not title or '/' in title or '\\' in title or title in ('.','..'): raise ValueError('Use a nonempty document title without path separators')
+        target=root/(title+'.txt')
+        if target.exists() or any(x['title']==title for x in data['documents']): raise ValueError('Document already exists; append to it instead')
+        entry={'id':'owned_'+uuid.uuid4().hex,'title':title,'file':target.name,'shareLink':'','createdAt':'2026-03-05T12:00:00Z'}
+        entry['shareLink']='fixture://documents/'+entry['id']
+        target.write_text(args['text'])
+        data['documents'].append(entry);path.write_text(json.dumps(data,ensure_ascii=False,indent=2))
+        return {'savedDocument':entry,'scope':'Owned text document and fixture-only sharing reference; not a public cloud URL.'}
     if action=='search_flights' and path.name=='skytrip.json':
         from datetime import datetime
         from zoneinfo import ZoneInfo
@@ -44,7 +54,8 @@ def records(action, args):
             thread=next(x for x in threads if x['id']==args['thread_id'])
             limit=min(50,max(1,args.get('limit',10)))
             offset=max(0,args.get('offset',max(0,len(thread['messages'])-limit)))
-            messages=thread['messages'][offset:offset+limit]
+            current_user=data['currentUserID'] if path.name=='quickchat.json' else data['profile']['id'] if path.name=='lockedin.json' else data['workspaces'][0]['currentUserId']
+            messages=[dict(m, isFromCurrentUser=m.get('senderID',m.get('senderId'))==current_user) for m in thread['messages'][offset:offset+limit]]
             return {'thread':{k:v for k,v in thread.items() if k!='messages'},'messages':messages,'offset':offset,'totalMessages':len(thread['messages']),'nextOffset':offset+len(messages) if offset+len(messages)<len(thread['messages']) else None,'note':'Defaults to the latest messages. Read the incoming message before composing a contextual reply.'}
         rows=[]
         for thread in threads:
@@ -128,6 +139,48 @@ def records(action, args):
         item=next(x for x in data['movies'] if str(x['id'])==str(args['record_id']))
         if item['id'] not in data['wishlist']: data['wishlist'].append(item['id'])
         result={'movie':item,'wishlist':data['wishlist']}
+    elif action=='place_food_order' and path.name=='quickbite.json':
+        restaurant=next(x for x in data['restaurants'] if x['id']==args['restaurant_id'])
+        address=next(x for x in data['addresses'] if x['id']==args['address_id'])
+        quantities=args['items']
+        if not quantities or any(not isinstance(q,int) or isinstance(q,bool) or not 1<=q<=10 for q in quantities.values()): raise ValueError('items must map source menu item IDs to integer quantities from 1 to 10')
+        menu={x['id']:x for section in restaurant['menu'] for x in section['items']}
+        if any(key not in menu for key in quantities): raise ValueError('All items must belong to the selected restaurant menu')
+        items=[{'item':menu[key],'quantity':quantity,'restaurantID':restaurant['id']} for key,quantity in quantities.items()]
+        subtotal=sum(x['item']['price']*x['quantity'] for x in items)
+        # Source DashStore.orderTotals: delivery 1.99, service 2.99, tax 8.25%, default tip 3.
+        totals={'subtotal':round(subtotal,2),'deliveryFee':1.99,'serviceFee':2.99,'tax':round(subtotal*.0825,2),'tip':3.0,'total':round(subtotal+1.99+2.99+subtotal*.0825+3,2)}
+        order={'id':'owned_'+uuid.uuid4().hex,'restaurant':restaurant,'items':items,'destinationAddress':address,'orderType':'delivery','startDate':'2026-03-05T12:00:00Z','scheduledFor':None,'statusIndex':0,'distanceMiles':restaurant['distanceMiles'],'totals':totals}
+        data.setdefault('activeOrders',[]).append(order)
+        result={'savedOrderId':order['id'],'restaurant':restaurant['name'],'items':items,'deliveryAddress':address,'totals':totals,'scope':'Isolated order fixture only; no payment, external order or delivery.'}
+    elif action=='interact_with_post' and path.name=='lockedin.json':
+        post=next(x for x in data['posts'] if x['id']==args['record_id'])
+        kind=args['interaction']
+        if kind=='like':
+            if not post['userHasLiked']: post['userHasLiked']=True;post['reactionCount']+=1
+        elif kind=='repost':
+            reposted=data.setdefault('repostedPosts',[])
+            if post['id'] not in reposted: reposted.append(post['id']);post['repostCount']+=1
+        elif kind=='comment':
+            text=args.get('text','').strip()
+            if not text: raise ValueError('Comment text is required')
+            comment={'id':'owned_'+uuid.uuid4().hex,'authorId':data['profile']['id'],'content':text,'timestamp':'2026-03-05T12:00:00Z','likeCount':0}
+            data.setdefault('postComments',{}).setdefault(post['id'],[]).insert(0,comment);post['commentCount']+=1
+        else: raise ValueError('interaction must be like, comment or repost')
+        result={'savedPost':post,'interaction':kind,'isolatedFixtureOnly':True}
+    elif action=='add_movie_to_list' and path.name=='cinephile.json':
+        movie=next(x for x in data['movies'] if str(x['id'])==str(args['record_id']))
+        lists=data.setdefault('customLists',[])
+        target=next((x for x in lists if x['name']==args['list_name']),None)
+        if target is None:
+            target={'id':max([x['id'] for x in lists],default=0)+1,'name':args['list_name'],'cover':movie['id'],'movies':[]};lists.append(target)
+        if movie['id'] not in target['movies']: target['movies'].append(movie['id'])
+        result={'savedList':target,'movieTitle':movie['title'],'isolatedFixtureOnly':True}
+    elif action=='send_mail' and path.name=='mail.json':
+        recipient=args['recipient'].strip()
+        if not recipient or not any(recipient.casefold() in str(x.get('from','')).casefold() or recipient.casefold() in str(x.get('to','')).casefold() for x in data['items']): raise ValueError('Select a correspondent present in source mail records')
+        item={'id':'owned_'+uuid.uuid4().hex,'threadId':'owned_'+uuid.uuid4().hex,'from':'You','to':recipient,'subject':args['subject'],'body':args['text'],'folder':'Sent','category':'Primary','date':'2026-03-05T12:00:00Z','isUnread':False}
+        data['items'].append(item);result={'savedMessage':item,'scope':'Isolated Sent record only; no email transmitted.'}
     elif action=='archive_mail' and path.name=='mail.json':
         item=next(x for x in data['items'] if x['id']==args['record_id'])
         if item['folder']!='Inbox': raise ValueError('Select an inbox message')
