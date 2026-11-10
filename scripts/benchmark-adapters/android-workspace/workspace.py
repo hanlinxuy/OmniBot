@@ -60,7 +60,7 @@ def main():
     elif path.suffix == '.pptx':
         from presentations import presentation
         print(json.dumps(presentation(path, action, args[1:]), ensure_ascii=False))
-    elif path.suffix == '.txt' and action in ('read', 'append'):
+    elif (path.suffix == '.txt' and action in ('read', 'append')) or (path.suffix == '.csv' and action == 'read'):
         if action == 'append':
             with path.open('a') as out:
                 out.write('\n' + args[1] + '\n')

@@ -6,6 +6,7 @@ import json
 import os
 import pathlib
 import shlex
+import shutil
 import subprocess
 import sys
 import time
@@ -39,6 +40,12 @@ path=source/'src/mobile_world/tasks/definitions/mastodon'/a.task
 parsed=ast.parse(path.read_text());cls=next(n for n in parsed.body if isinstance(n,ast.ClassDef));goal=next(ast.literal_eval(n.value) for n in cls.body if isinstance(n,ast.Assign) and any(isinstance(v,ast.Name) and v.id=='goal' for v in n.targets))
 case='mw-'+path.stem.removeprefix('mastodon_').replace('_','-');work=out/(case+'-input');work.mkdir(exist_ok=True,mode=0o700);fixture=work/'fixture';fixture.mkdir(exist_ok=True)
 (fixture/'mastodon.json').write_text(json.dumps({'relay':'http://127.0.0.1:18301','scope':'isolated original MobileWorld Mastodon; account test; external federation disabled'}))
+asset = {'mastodon_new_filter.py': 'newFilter/filter_BCS.txt',
+         'mastodon_import_muted.py': 'importMuted/muted_accounts.csv'}.get(a.task)
+if asset:
+    # Copy original input bytes, never reconstruct input from judge constants.
+    asset_path = path.parent/'assets'/asset
+    shutil.copyfile(asset_path, fixture/asset_path.name)
 (work/'task.json').write_text(json.dumps({'name':case,'goal':goal,'apps':['mastodon'],'rubric':[],'sourceCommit':'aa2ea47052dd15729bfca1f27fa6aca4630607a9','classification':'MobileWorld original isolated backend, phone Pi REST API adaptation, source SQL judge; not official GUI score'}))
 reset();before_hash=state_hash();baseline_score=judge(source,a.task,ssh,str(compose))
 if a.backend_check:
