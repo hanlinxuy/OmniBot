@@ -12,6 +12,17 @@ def record_field(item, key):
     return item
 
 
+def mastodon_api(data, payload):
+    import urllib.request
+    if payload['method'].upper()=='GET':
+        payload['params']=dict(payload.get('params',{}))
+        payload['params']['limit']=max(1,min(int(payload['params'].get('limit',5)),5))
+    request=urllib.request.Request(data['relay'],data=json.dumps(payload).encode(),headers={'Content-Type':'application/json'})
+    with urllib.request.urlopen(request,timeout=35) as response: result=json.load(response)
+    if result['status']>=400:result['error']='mastodon_api_error'
+    return result
+
+
 def records(action, args):
     if action=='convert_time':
         from datetime import datetime
@@ -28,16 +39,31 @@ def records(action, args):
         raise ValueError('Use an existing owned JSON fixture')
     data=json.loads(path.read_text())
     if action=='mastodon_request' and path.name=='mastodon.json':
-        import urllib.request
-        payload={key:args[key] for key in ('method','path','params') if key in args}
-        if payload['method'].upper()=='GET':
-            # Ten source statuses exceeded Pi's 20 KiB MCP output limit and
-            # produced an unreadable spill-file reference in this scoped harness.
-            payload['params']=dict(payload.get('params',{}))
-            payload['params']['limit']=max(1,min(int(payload['params'].get('limit',5)),5))
-        request=urllib.request.Request(data['relay'],data=json.dumps(payload).encode(),headers={'Content-Type':'application/json'})
-        with urllib.request.urlopen(request,timeout=35) as response: result=json.load(response)
-        if result['status']>=400:result['error']='mastodon_api_error'
+        return mastodon_api(data,{key:args[key] for key in ('method','path','params') if key in args})
+    if action=='mastodon_report_post' and path.name=='mastodon.json':
+        from html.parser import HTMLParser
+        status_id=args['status_id']
+        if not status_id.isdigit() or args['category'] not in ('spam','violation','other'):
+            raise ValueError('Use an opaque numeric status ID string and a supported report category')
+        source=mastodon_api(data,{'method':'GET','path':'/api/v1/statuses/'+status_id})
+        if 'error' in source:return source
+        class PostText(HTMLParser):
+            def __init__(self):
+                super().__init__(convert_charrefs=True)
+                self.parts=[]
+            def handle_data(self,text):self.parts.append(text)
+            def handle_starttag(self,tag,attrs):
+                if tag=='br':self.parts.append('\n')
+            def handle_endtag(self,tag):
+                if tag=='p':self.parts.append('\n\n')
+        text=PostText();text.feed(source['body']['content'])
+        comment=''.join(text.parts).strip()
+        result=mastodon_api(data,{'method':'POST','path':'/api/v1/reports','params':{
+            'account_id':source['body']['account']['id'],'status_ids':[status_id],
+            'category':args['category'],'comment':comment}})
+        result['copiedComment']=comment
+        result['sourceStatusId']=status_id
+        result['sourceAccountId']=source['body']['account']['id']
         return result
     if action=='create_document' and path.name=='documents.json':
         title=args['title'].strip()

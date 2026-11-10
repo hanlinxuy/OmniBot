@@ -7,6 +7,22 @@ import records
 
 
 class OwnedActionsTest(unittest.TestCase):
+    def test_report_copies_selected_post_without_retyping_or_extra_actions(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=pathlib.Path(directory);(root/'work').mkdir()
+            (root/'work/mastodon.json').write_text('{"relay":"http://owned.invalid"}')
+            source={'status':200,'body':{'content':'<p>They’re here &amp; ready.<br>Don’t rewrite.</p><p>Next paragraph.</p>','account':{'id':'987654321012345678'}}}
+            with patch.object(records,'__file__',str(root/'records.py')), patch.object(records,'mastodon_api',side_effect=[source,{'status':200,'body':{'id':'3'}}]) as api:
+                result=records.records('mastodon_report_post',{'file':'mastodon.json','status_id':'123456789012345678','category':'spam'})
+                posted=api.call_args_list[1].args[1]
+                self.assertEqual(posted,{'method':'POST','path':'/api/v1/reports','params':{'account_id':'987654321012345678','status_ids':['123456789012345678'],'category':'spam','comment':'They’re here & ready.\nDon’t rewrite.\n\nNext paragraph.'}})
+                self.assertEqual(api.call_count,2)
+                self.assertEqual(result['sourceAccountId'],'987654321012345678')
+            with patch.object(records,'__file__',str(root/'records.py')), patch.object(records,'mastodon_api',return_value={'status':404,'error':'mastodon_api_error'}) as api:
+                result=records.records('mastodon_report_post',{'file':'mastodon.json','status_id':'123456789012345678','category':'spam'})
+                self.assertEqual(api.call_count,1)
+                self.assertEqual(result['status'],404)
+
     def test_spreadsheet_numbers_remain_numeric_for_totals(self):
         from workspace import spreadsheet_value
         self.assertEqual(spreadsheet_value('249.45'),249.45)
