@@ -651,3 +651,44 @@ verified after restart. APK SHA-256:
 `e1b0321c7acda762923af26da9d5d58515cd62f9b7df5a02084296b188ab5bb9`.
 This establishes installation and two explicit-selection observations, not reliable
 autonomous skill selection or broad generalization across message types.
+
+## Attachment sending and failure termination (16:50 Beijing)
+
+`SendWaiverTask` uses the original 1,155-byte `waiver.jpg`, copied to a unique
+owned Downloads directory. All models used phone Pi and the same native GUI
+executor, one GUI delegation with at most 20 steps. Mail is the offline fixture;
+these are not external email delivery or official benchmark scores.
+
+| Outer model | Seconds | Original recipient/subject/attachment-name predicate | Observation |
+| --- | ---: | --- | --- |
+| 35a3 | 81.77 | pass | Attachment URI resolves syntactically to the unique owned source path; recorded size matches. |
+| DeepSeek | 21.11 | fail | Spent its sole GUI delegation on opening Mail, then requested a separate compose click. |
+| Terra | 71.40 | fail | GUI misidentified the attachment icon as Send, creating a local message with no attachment. |
+
+Original image hashes remained unchanged. Every run reached GUI terminal state,
+restored the mail fixture, and removed only its owned image/directory and matching
+MediaStore row. 35a3's first run did not independently read attachment bytes back
+through the content provider before cleanup; do not retroactively claim this
+stronger verification. Later runners include that readback when a matching
+attachment reference exists. Private evidence: `waiver-matrix-audit.json`.
+
+A separately labelled DeepSeek control explicitly described `run_gui` as an
+end-to-end task executor. Its first delegation included the whole goal, but the
+shared GUI provider returned HTTP 500. A second attempted delegation was denied
+by the unchanged one-call budget. It failed acceptance and was cleaned; this is
+not proof that prompting fixes the task, nor a missing user permission.
+
+Terra's subsequent attempt to report failure exposed a concrete runtime contract
+bug: planner instructions require `abort`, and the engine already handles it,
+but `vlm_action_tools()` filtered it out. The schema override now exposes the
+existing `abort(value)` action without making it replayable. Three focused schema
+tests pass, including reason-field exposure and replay rejection. The official
+whole-file override applied and reloaded successfully, SHA-256
+`6b3016b6975502d14b81b1008b8ccb0ae2f26b2a85bff8f41bb666613c21a8a3`.
+A live no-action missing-attachment control returned `success=false`,
+`done_reason=abort`, the actual missing-attachment reason, and zero actions in
+3.32 seconds. This verifies failure termination only; it does not fix icon
+selection or turn the original attachment failure into a pass.
+
+The iOS simulator branch is stopped. A fresh `simctl list devices booted` check
+reported zero running devices; remaining evaluation stays on vivo/Android.

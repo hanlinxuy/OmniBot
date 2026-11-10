@@ -23,3 +23,12 @@ class LiveNodeSchemaTest(unittest.TestCase):
     def test_unknown_arguments_still_fail(self):
         with self.assertRaisesRegex(ValueError,'unknown'):
             module.canonicalize_action({'tool':'click','args':{'x':100,'y':200,'made_up_id':'7'}},persisted_only=False)
+
+    def test_abort_is_visible_with_reason_and_is_not_replayable(self):
+        tools = {x['function']['name']: x['function'] for x in module.vlm_action_tools()}
+        self.assertIn('abort', tools)
+        self.assertEqual({'value'}, set(tools['abort']['parameters']['properties']))
+        action = {'tool': 'abort', 'args': {'value': 'Attachment could not be verified'}}
+        self.assertEqual(action, module.canonicalize_action(action, persisted_only=False, allow_non_action=True))
+        with self.assertRaises(ValueError):
+            module.canonicalize_action(action, replayable_only=True)

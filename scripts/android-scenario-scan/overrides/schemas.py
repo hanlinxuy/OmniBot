@@ -23,6 +23,7 @@ VLM_ACTION_TOOL_NAMES = (
     "open_app",
     "press_key",
     "finished",
+    "abort",
 )
 _VLM_ACTION_ARGUMENT_NAMES = {
     "click": ("target_description", "node_id", "x", "y"),
@@ -31,6 +32,7 @@ _VLM_ACTION_ARGUMENT_NAMES = {
     "open_app": ("package_name",),
     "press_key": ("key",),
     "finished": ("content",),
+    "abort": ("value",),
 }
 
 
