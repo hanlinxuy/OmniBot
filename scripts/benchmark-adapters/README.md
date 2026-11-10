@@ -77,3 +77,7 @@ identifier, credential or personal file belongs in this module.
 
 Run the observed regression cases with:
 `python3 -m unittest discover -s scripts/benchmark-adapters -p test_file_command_policy.py`.
+
+## Unified Android source catalog
+
+`build_android_scenario_catalog.py` maps all 133 pinned iOSWorld variants into Android capabilities and combines them with the existing 201-task MobileWorld inventory. It conservatively shares reviewed templates without inheriting results. Use `--ios-source`, `--coverage`, `--results` and `--output` to regenerate the JSON and 133-row mapping. See [current mapping and measured results](../../docs/testing/android-unified-2026-11-10.md) and [phone Pi workspace runner](android-workspace/README.md).

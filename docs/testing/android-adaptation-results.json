@@ -1,0 +1,88 @@
+{
+  "scope": "Android native-file adaptations, not original iOS UI scores",
+  "runs": [
+    {
+      "artifact": "ios-android-clouddocs-004-qwen-dcc03ee4ff",
+      "sourceTask": "clouddocs-004",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "cleanup": {
+        "workspaceAbsent": true
+      },
+      "acceptance": {
+        "originalBodyPreserved": true,
+        "Q2NoteAppended": true,
+        "savedReported": true,
+        "passed": true
+      },
+      "elapsedSeconds": 21.733331208,
+      "providerRequests": 7,
+      "permissionDenials": 2
+    },
+    {
+      "artifact": "ios-android-clouddocs-004-qwen-e7e5fd76f4",
+      "sourceTask": "clouddocs-004",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "cleanup": {
+        "workspaceAbsent": true
+      },
+      "acceptance": {
+        "originalBodyPreserved": true,
+        "Q2NoteAppended": true,
+        "savedReported": true,
+        "passed": true
+      },
+      "elapsedSeconds": 20.329505625,
+      "providerRequests": 5,
+      "permissionDenials": 0
+    },
+    {
+      "artifact": "ios-android-cloudsheets-003-qwen-04306fbc89",
+      "sourceTask": "cloudsheets-003",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "cleanup": {
+        "workspaceAbsent": true
+      },
+      "acceptance": {
+        "exactlyOneEligibleStatusChanged": true,
+        "otherCellsPreserved": true,
+        "volunteerReported": true,
+        "passed": true
+      },
+      "elapsedSeconds": 23.703297292,
+      "providerRequests": 5,
+      "permissionDenials": 0
+    },
+    {
+      "artifact": "ios-android-cloudsheets-003-qwen-632ffcc7ab",
+      "sourceTask": "cloudsheets-003",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "cleanup": {
+        "workspaceAbsent": true
+      },
+      "status": "independent_readback_failed",
+      "reason": "ADB split an unquoted filename containing spaces; no pass awarded."
+    },
+    {
+      "artifact": "ios-android-cloudsheets-003-qwen-95236dc8e0",
+      "sourceTask": "cloudsheets-003",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "cleanup": {
+        "workspaceAbsent": true
+      },
+      "acceptance": {
+        "exactlyOneEligibleStatusChanged": true,
+        "otherCellsPreserved": true,
+        "volunteerReported": true,
+        "passed": true
+      },
+      "elapsedSeconds": 24.320809917,
+      "providerRequests": 5,
+      "permissionDenials": 0
+    }
+  ]
+}
