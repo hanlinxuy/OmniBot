@@ -49,6 +49,16 @@
       "hasReferences": false,
       "hasAssets": false,
       "hasEvals": false
+    },
+    {
+      "id": "read-local-pdf",
+      "name": "read-local-pdf",
+      "description": "Read and search text in downloaded PDF reports, invoices and papers on the phone using local file tools before GUI.",
+      "assetPath": "builtin_skills/read-local-pdf",
+      "hasScripts": true,
+      "hasReferences": false,
+      "hasAssets": false,
+      "hasEvals": false
     }
   ]
 }

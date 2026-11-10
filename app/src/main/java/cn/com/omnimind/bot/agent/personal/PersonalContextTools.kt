@@ -50,7 +50,7 @@ internal object PersonalContextTools {
             tool("context_file_import", "读取已授权文件", "Import Authorized File", "Copy one specifically requested authorized document/media file into the existing file inbox. Returns fileId and localPath for native file tools; external clients use file_transfer(action=get,fileId=...). This reads file contents; first discover metadata and only import files relevant to the request.", mapOf("uri" to field("string", "Document/media URI returned by a context query."), "path" to field("string", "Alternatively a shared-storage file path from context_documents_query."))),
             tool("context_sms_query", "查询短信", "Query SMS", "Read SMS matching text/time filters. Defaults to the last 30 days. Requires READ_SMS and installer/system eligibility; this never sends or modifies messages.", paging + search + time),
             tool("context_call_log_query", "查询通话记录", "Query Call Log", "Read call history matching number/name/time filters. Defaults to the last 30 days. Requires READ_CALL_LOG and installer/system eligibility; this never places calls.", paging + search + time),
-            tool("context_environment_get", "设备环境", "Device Environment", "Read current battery, charging, network transport, screen/lock state, ringer mode and output-device types. Does not read private app data."),
+            tool("context_environment_get", "设备环境", "Device Environment", "Read current device date/time with UTC offset and IANA timezone, battery, charging, network transport, screen/lock state, ringer mode and output-device types. Use before resolving relative dates such as today or next Saturday; the terminal may use UTC. Does not read private app data."),
         )
     }
 }

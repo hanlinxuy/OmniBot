@@ -21,10 +21,12 @@ import androidx.core.location.LocationManagerCompat
 import cn.com.omnimind.bot.util.NestedBackgroundStateUtil
 import kotlinx.coroutines.*
 import kotlinx.serialization.json.JsonObject
+import java.time.Clock
+import java.time.ZonedDateTime
 import java.util.concurrent.Executor
 import kotlin.coroutines.resume
 
-internal class PersonalDeviceContext(private val context: Context) {
+internal class PersonalDeviceContext(private val context: Context, private val clock: Clock = Clock.systemDefaultZone()) {
     private val access get() = PersonalContextAccess(context)
 
     suspend fun usage(args: JsonObject): Map<String, Any?> {
@@ -98,13 +100,18 @@ internal class PersonalDeviceContext(private val context: Context) {
     }
 
     fun environment(): Map<String, Any?> {
+        val now = ZonedDateTime.now(clock)
         val battery = context.registerReceiver(null, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
         val level = battery?.getIntExtra(BatteryManager.EXTRA_LEVEL, -1) ?: -1
         val scale = battery?.getIntExtra(BatteryManager.EXTRA_SCALE, -1) ?: -1
         val connectivity = context.getSystemService(ConnectivityManager::class.java)
         val network = connectivity?.getNetworkCapabilities(connectivity.activeNetwork)
         val audio = context.getSystemService(AudioManager::class.java)
-        return mapOf("success" to true, "source" to "device_environment", "sampledAt" to System.currentTimeMillis(),
+        return mapOf("success" to true, "source" to "device_environment", "sampledAt" to now.toInstant().toEpochMilli(),
+            "currentTime" to now.toOffsetDateTime().toString(),
+            "localDate" to now.toLocalDate().toString(),
+            "timezone" to now.zone.id,
+            "utcOffsetSeconds" to now.offset.totalSeconds,
             "batteryPercent" to if (level >= 0 && scale > 0) level * 100.0 / scale else null,
             "plugged" to battery?.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0),
             "batteryStatus" to battery?.getIntExtra(BatteryManager.EXTRA_STATUS, -1),
