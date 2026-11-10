@@ -130,7 +130,7 @@ test("Provider failures return ACP errors without retrying the logical turn", { 
   } finally { await host.close(); await provider.close(); }
 });
 
-test("native MCP connects with session headers, exposes a direct tool and returns its content", { timeout: 20000 }, async () => {
+test("native MCP preserves permission ownership with default and selected tool surfaces", { timeout: 20000 }, async () => {
   const mcp = await httpFixture((body, response) => {
     if (!body.id) { response.writeHead(202); response.end(); return; }
     let result: unknown;
@@ -145,16 +145,24 @@ test("native MCP connects with session headers, exposes a direct tool and return
     if (body.messages.at(-1).role === "tool") stream(response, { text: "Phone completed" });
     else stream(response, { tool: { id: "phone-call", name: "mcp__phone__ping", arguments: {} } });
   });
-  const host = await harness(provider.url);
   try {
-    const session = await host.newSession([{ type: "http", name: "phone", url: `${mcp.url}/mcp`, headers: [{ name: "Authorization", value: "Bearer session-token" }] }]);
-    await host.prompt(session.sessionId, "use the phone");
-    assert.ok(provider.requests[0].body.tools.some((tool: any) => tool.function?.name === "mcp__phone__ping"));
-    assert.ok(mcp.requests.some(({ body }) => body.method === "tools/call"));
-    assert.ok(mcp.requests.every(({ headers }) => headers.authorization === "Bearer session-token"));
-    assert.match(JSON.stringify(host.updates), /phone-result/);
-    assert.equal(host.permissions(), 1);
-  } finally { await host.close(); await provider.close(); await mcp.close(); }
+    for (const toolNames of [undefined, ["mcp__phone__ping"]]) {
+      const requestIndex = provider.requests.length;
+      const host = await harness(provider.url, { configure: config => { config.toolNames = toolNames; } });
+      try {
+        const session = await host.newSession([{ type: "http", name: "phone", url: `${mcp.url}/mcp`, headers: [{ name: "Authorization", value: "Bearer session-token" }] }]);
+        await host.prompt(session.sessionId, "use the phone");
+        assert.ok(provider.requests[requestIndex].body.tools.some((tool: any) => tool.function?.name === "mcp__phone__ping"));
+        const advertised = provider.requests[requestIndex].body.tools.map((tool: any) => tool.function?.name);
+        if (toolNames) assert.deepEqual(advertised, ["mcp__phone__ping"]);
+        else assert.ok(advertised.includes("bash") && advertised.includes("read"));
+        assert.ok(mcp.requests.some(({ body }) => body.method === "tools/call"));
+        assert.ok(mcp.requests.every(({ headers }) => headers.authorization === "Bearer session-token"));
+        assert.match(JSON.stringify(host.updates), /phone-result/);
+        assert.equal(host.permissions(), 1);
+      } finally { await host.close(); }
+    }
+  } finally { await provider.close(); await mcp.close(); }
 });
 
 test("MCP values are literal, names are isolated and SSE is rejected", () => {

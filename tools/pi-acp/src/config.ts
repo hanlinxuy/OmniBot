@@ -15,6 +15,7 @@ export interface LaunchConfig {
   apiKey: string;
   provider: Parameters<ModelRuntime["registerProvider"]>[1];
   skillPaths: string[];
+  toolNames?: string[];
 }
 
 // Pi configuration values support interpolation and !commands. ACP and host
@@ -49,6 +50,10 @@ export function readLaunchConfig(env = process.env): LaunchConfig {
   if (Object.values(headers).some((value) => typeof value !== "string")) {
     throw new Error("Provider headers must contain string values.");
   }
+  const toolNames = env.OMNIBOT_PI_TOOLS_JSON === undefined ? undefined : JSON.parse(env.OMNIBOT_PI_TOOLS_JSON);
+  if (toolNames !== undefined && (!Array.isArray(toolNames) || toolNames.some((name) => typeof name !== "string"))) {
+    throw new Error("OMNIBOT_PI_TOOLS_JSON must be an array of Pi tool names or patterns.");
+  }
   return {
     agentDir,
     sessionDir: join(agentDir, "sessions"),
@@ -60,6 +65,7 @@ export function readLaunchConfig(env = process.env): LaunchConfig {
       headers: Object.fromEntries(Object.entries(headers).map(([name, value]) => [name, piLiteral(value as string)])),
     },
     skillPaths: (env.OMNIBOT_PI_SKILL_PATHS || "").split(":").filter(Boolean),
+    toolNames,
   };
 }
 

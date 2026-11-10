@@ -70,6 +70,7 @@ export class PiAcpSession {
     const result = await createAgentSession({
       cwd: manager.getCwd(), agentDir: config.agentDir, sessionManager: manager,
       settingsManager: settings, resourceLoader: resources, modelRuntime: models, model,
+      tools: config.toolNames,
       sessionStartEvent: { type: "session_start", reason: storedModel ? "resume" : "startup" },
     });
     owned.session = result.session;

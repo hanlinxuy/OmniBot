@@ -136,3 +136,18 @@ files and port mappings when finished.
 References: [Pi SDK](https://github.com/earendil-works/pi/blob/v1.4.0/packages/coding-agent/docs/sdk.md),
 [MCP](https://github.com/earendil-works/pi/blob/v1.4.0/packages/coding-agent/docs/mcp.md),
 [ACP](https://agentclientprotocol.com/).
+
+## Task-specific tool selection
+
+A host can set `OMNIBOT_PI_TOOLS_JSON` to a JSON array of Pi tool names or
+wildcard patterns, for example `["mcp__phone__*"]` for an app-only task.
+The adapter passes this selection to the official Pi SDK's `tools` option.
+An omitted setting keeps the normal tool surface; an empty array selects no
+tools. Pi owns matching, MCP registration and execution. This avoids showing
+shell/file tools that a particular task's host would repeatedly reject.
+
+Tool selection is not filesystem isolation or an authorization policy. Existing
+ACP permission decisions still apply to selected tools. Record the selection
+as an evaluation condition, and retain independent acceptance and cleanup.
+Native `/skill:` expansion can be selected explicitly; a model that must discover
+and read skills needs the corresponding read capability in its tool selection.
