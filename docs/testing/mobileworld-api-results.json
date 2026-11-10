@@ -1,0 +1,601 @@
+{
+  "scope": "Original MobileWorld isolated backend, Android phone Pi API adaptation; not official GUI scores",
+  "attemptedTasks": 18,
+  "tasksWithAnyPass": 15,
+  "runs": [
+    {
+      "artifact": "ios-android-mw-add-bookmark-qwen-4001f8dee0",
+      "sourceTask": "mw-add-bookmark",
+      "sourceClass": "MastodonAddBookmarkTask",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "sourcePredicateScore": 1.0,
+      "terminalCompleted": true,
+      "providerRequests": 15,
+      "phoneCleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "backendRestored": true,
+      "reviewed": true,
+      "passed": true,
+      "reviewReason": "Only two requested kitty cats-tag statuses bookmarked; original predicate 1 from baseline 0. No unrelated mutations. Phone cleanup and complete backend hash restoration confirmed; API adaptation only."
+    },
+    {
+      "artifact": "ios-android-mw-add-bookmark-qwen-4b7a42a8de",
+      "sourceTask": "mw-add-bookmark",
+      "sourceClass": "MastodonAddBookmarkTask",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "sourcePredicateScore": 1.0,
+      "terminalCompleted": true,
+      "providerRequests": 6,
+      "phoneCleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "backendRestored": true,
+      "reviewed": true,
+      "passed": true,
+      "reviewReason": "Exactly two kitty cats posts bookmarked, all original bookmarks preserved. Complete paginated tag timeline; source predicate 1; no MCP output spill. Six requests versus fifteen in previous run. Cleanup confirmed."
+    },
+    {
+      "artifact": "ios-android-mw-add-bookmark-qwen-706f569016",
+      "sourceTask": "mw-add-bookmark",
+      "sourceClass": null,
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "sourcePredicateScore": null,
+      "terminalCompleted": true,
+      "providerRequests": 8,
+      "phoneCleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "backendRestored": false,
+      "reviewed": true,
+      "passed": false,
+      "reviewReason": "Pi reached end_turn after 8 requests and phone workspace cleanup succeeded. SSH jump host dropped during backend restoration health check, before backend report was persisted; original source score and per-attempt final hash unavailable. Not scored as a model business failure. Subsequent fresh owned reset and rerun verified original baseline hash before new prompt and after cleanup."
+    },
+    {
+      "artifact": "ios-android-mw-add-featured-hashtags-qwen-d09cd0f83f",
+      "sourceTask": "mw-add-featured-hashtags",
+      "sourceClass": "MastodonAddFeaturedHashtagsTask",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "sourcePredicateScore": 1.0,
+      "terminalCompleted": true,
+      "providerRequests": 9,
+      "phoneCleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "backendRestored": true,
+      "reviewed": true,
+      "passed": true,
+      "reviewReason": "Exactly three requested featured tags created. Unsupported featured_tags profile field excluded by running controller strong parameters; no unrelated profile change. Source predicate 1. Phone cleanup and complete backend hash restoration verified. API adaptation only."
+    },
+    {
+      "artifact": "ios-android-mw-adjust-toots-qwen-a1ee379718",
+      "sourceTask": "mw-adjust-toots",
+      "sourceClass": "MastodonAdjustTootsTask",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "sourcePredicateScore": 1.0,
+      "terminalCompleted": true,
+      "providerRequests": 5,
+      "phoneCleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "backendRestored": true,
+      "reviewed": true,
+      "passed": true,
+      "reviewReason": "All three original bookmarks unbookmarked, favourited and reblogged. Initial unfavourite calls corrected within run; no other target mutations. Source predicate 1. Phone cleanup and complete backend hash restoration verified. API adaptation only."
+    },
+    {
+      "artifact": "ios-android-mw-conditional-favo-qwen-5fbb7877ed",
+      "sourceTask": "mw-conditional-favo",
+      "sourceClass": "MastodonConditionalFavoTask",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "sourcePredicateScore": 1.0,
+      "terminalCompleted": true,
+      "providerRequests": 11,
+      "phoneCleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "backendRestored": true,
+      "reviewed": true,
+      "passed": true,
+      "reviewReason": "Only the two dogs-tag posts absent from both favourites and bookmarks were favourited. Existing bookmarked/favourite entries preserved; original predicate 1. Phone cleanup and complete backend hash restoration confirmed; API adaptation only."
+    },
+    {
+      "artifact": "ios-android-mw-create-list-qwen-232f9769d5",
+      "sourceTask": "mw-create-list",
+      "sourceClass": "MastodonCreateListTask",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "sourcePredicateScore": 1.0,
+      "terminalCompleted": true,
+      "providerRequests": 8,
+      "phoneCleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "backendRestored": true,
+      "reviewed": true,
+      "passed": true,
+      "reviewReason": "Only Family list created with followed policy and exact Alex/Emma/Jack string IDs; source SQL predicate verifies members. No other mutation. Terminal and both cleanup checks confirmed; API adaptation only."
+    },
+    {
+      "artifact": "ios-android-mw-create-list-qwen-2a8bf07879",
+      "sourceTask": "mw-create-list",
+      "sourceClass": "MastodonCreateListTask",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "sourcePredicateScore": 0.0,
+      "terminalCompleted": false,
+      "providerRequests": 31,
+      "phoneCleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "backendRestored": true,
+      "reviewed": true,
+      "passed": false,
+      "reviewReason": "Runtime request budget exhausted after guessing replies_policy enums and list membership HTTP method; source judge reports replies policy 0 instead of 1. Wrong numeric IDs also attempted. Backend fully restored. Phone cleanup and complete backend hash restoration confirmed; API adaptation only."
+    },
+    {
+      "artifact": "ios-android-mw-favorite-toots-qwen-200eb1b7ba",
+      "sourceTask": "mw-favorite-toots",
+      "sourceClass": "MastodonFavoriteTootsTask",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "sourcePredicateScore": 1.0,
+      "terminalCompleted": true,
+      "providerRequests": 7,
+      "phoneCleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "backendRestored": true,
+      "reviewed": true,
+      "passed": true,
+      "reviewReason": "Paginated tag timeline; exactly five original dogs statuses favourited. No other mutations; source predicate 1. Phone cleanup and complete backend hash restoration verified. API adaptation only."
+    },
+    {
+      "artifact": "ios-android-mw-favorite-toots-qwen-9449a1e7ea",
+      "sourceTask": "mw-favorite-toots",
+      "sourceClass": "MastodonFavoriteTootsTask",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "sourcePredicateScore": 0.0,
+      "terminalCompleted": true,
+      "providerRequests": 13,
+      "phoneCleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "backendRestored": true,
+      "reviewed": true,
+      "passed": false,
+      "reviewReason": "Only three of five dogs-tag posts favourited; original source judge identifies two missing. Full-text search was used instead of hashtag timeline, and pagination/completeness failed. Phone cleanup and complete backend hash restoration confirmed; API adaptation only."
+    },
+    {
+      "artifact": "ios-android-mw-import-muted-qwen-575d5968ad",
+      "sourceTask": "mw-import-muted",
+      "sourceClass": "MastodonImportMutedUsersTask",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "sourcePredicateScore": 1.0,
+      "terminalCompleted": true,
+      "providerRequests": 8,
+      "phoneCleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "backendRestored": true,
+      "reviewed": true,
+      "passed": true,
+      "reviewReason": "Read original CSV, resolved its local source account, and made exactly one indefinite mute with notifications hidden. Exact source SQL predicate, full mute-list pagination, terminal and both cleanups confirmed. REST adaptation of import; not UI import workflow."
+    },
+    {
+      "artifact": "ios-android-mw-manage-hashtags-qwen-810baa5fa7",
+      "sourceTask": "mw-manage-hashtags",
+      "sourceClass": "MastodonManageHashtagsTask",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "sourcePredicateScore": 1.0,
+      "terminalCompleted": true,
+      "providerRequests": 8,
+      "phoneCleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "backendRestored": true,
+      "reviewed": true,
+      "passed": true,
+      "reviewReason": "Full followed-tag pagination, only cats/dogs unfollowed; all twelve other tags preserved. Source SQL predicate 1 and complete readback agree. Terminal and both cleanup checks confirmed; API adaptation only."
+    },
+    {
+      "artifact": "ios-android-mw-manage-hashtags-qwen-e9349126a1",
+      "sourceTask": "mw-manage-hashtags",
+      "sourceClass": "MastodonManageHashtagsTask",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "sourcePredicateScore": 0.0,
+      "terminalCompleted": false,
+      "providerRequests": 31,
+      "phoneCleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "backendRestored": true,
+      "reviewed": true,
+      "passed": false,
+      "reviewReason": "Exhausted runtime request budget without any tag-unfollow mutation; original judge shows animal tags still followed. Missing endpoint guidance addressed in next revision. Phone workspace and full backend baseline restoration verified."
+    },
+    {
+      "artifact": "ios-android-mw-manage-multi-list-qwen-22255c7784",
+      "sourceTask": "mw-manage-multi-list",
+      "sourceClass": "MastodonManageMultiListTask",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "sourcePredicateScore": 0.0,
+      "terminalCompleted": true,
+      "providerRequests": 17,
+      "phoneCleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "backendRestored": true,
+      "reviewed": true,
+      "passed": false,
+      "reviewReason": "Exclusive list setting now correct, but avatar-based member selection omits one source account; source predicate 0. Running 35a3 server reports vision/video/audio false, and current tool exposes avatar URLs rather than image observation. No answer IDs supplied as a workaround. Phone and full backend cleanup verified."
+    },
+    {
+      "artifact": "ios-android-mw-manage-multi-list-qwen-732f1479ab",
+      "sourceTask": "mw-manage-multi-list",
+      "sourceClass": "MastodonManageMultiListTask",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "sourcePredicateScore": 0.0,
+      "terminalCompleted": true,
+      "providerRequests": 16,
+      "phoneCleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "backendRestored": true,
+      "reviewed": true,
+      "passed": false,
+      "reviewReason": "Source exclusive requirement remains unmet; model mislabels API capability unavailable. Cleanup confirmed."
+    },
+    {
+      "artifact": "ios-android-mw-manage-multi-list-qwen-a0a9144017",
+      "sourceTask": "mw-manage-multi-list",
+      "sourceClass": "MastodonManageMultiListTask",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "sourcePredicateScore": 0.0,
+      "terminalCompleted": true,
+      "providerRequests": 17,
+      "phoneCleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "backendRestored": true,
+      "reviewed": true,
+      "passed": false,
+      "reviewReason": "Cute list exclusive remains false. Wrong replies_policy_exclusive parameter; source predicate 0. Phone cleanup and complete backend hash restoration verified. API adaptation only."
+    },
+    {
+      "artifact": "ios-android-mw-new-filter-qwen-7047e6bd60",
+      "sourceTask": "mw-new-filter",
+      "sourceClass": "MastodonNewFilterTask",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "sourcePredicateScore": null,
+      "terminalCompleted": true,
+      "providerRequests": 6,
+      "phoneCleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "backendRestored": true,
+      "reviewed": true,
+      "passed": false,
+      "reviewReason": "Model reached end_turn, but original source judge raised NameError for missing pytz dependency. No valid source score assigned. Phone cleanup and full backend baseline restoration independently confirmed; safe to rerun after dependency fix."
+    },
+    {
+      "artifact": "ios-android-mw-new-filter-qwen-a0d1a8f743",
+      "sourceTask": "mw-new-filter",
+      "sourceClass": "MastodonNewFilterTask",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "sourcePredicateScore": 1.0,
+      "terminalCompleted": true,
+      "providerRequests": 8,
+      "phoneCleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "backendRestored": true,
+      "reviewed": true,
+      "passed": true,
+      "reviewReason": "One new named filter only, exact five original file keywords, whole-word matching, expiry 432000 seconds. Existing Violence filter retained. Source SQL judge 1, persisted API readback, terminal and full cleanup confirmed. Filter action warn explicitly reported; source goal does not prescribe hide mode."
+    },
+    {
+      "artifact": "ios-android-mw-new-post-qwen-e6e66670dd",
+      "sourceTask": "mw-new-post",
+      "sourceClass": "MastodonNewPostTask",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "sourcePredicateScore": 1.0,
+      "terminalCompleted": true,
+      "providerRequests": 2,
+      "phoneCleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "backendRestored": true,
+      "reviewed": true,
+      "passed": true,
+      "reviewReason": "Original source SQL predicate 1 from baseline 0; exactly one POST statuses with exact requested text, no extra mutations; ACP end_turn after 2 requests; owned workspace absent; full backend hash restored. API adaptation only, not official GUI score."
+    },
+    {
+      "artifact": "ios-android-mw-pin-toots-qwen-1828c5a3a7",
+      "sourceTask": "mw-pin-toots",
+      "sourceClass": "MastodonPinTootsTask",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "sourcePredicateScore": 1.0,
+      "terminalCompleted": true,
+      "providerRequests": 5,
+      "phoneCleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "backendRestored": true,
+      "reviewed": true,
+      "passed": true,
+      "reviewReason": "Original predicate changed 0 to 1. Only mutation is pinning the original earliest status; no unrelated changes in action trace. ACP end_turn and phone workspace cleanup confirmed; backend data hash restored. Model verification used ignored pinning parameter, but original independent SQL predicate establishes effect. API adaptation only."
+    },
+    {
+      "artifact": "ios-android-mw-remove-bookmark-qwen-11d7b99848",
+      "sourceTask": "mw-remove-bookmark",
+      "sourceClass": "MastodonRemoveBookmarkTask",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "sourcePredicateScore": 1.0,
+      "terminalCompleted": true,
+      "providerRequests": 4,
+      "phoneCleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "backendRestored": true,
+      "reviewed": true,
+      "passed": true,
+      "reviewReason": "Only the two bookmarked statuses tagged pets were unbookmarked; non-pets dogs bookmark preserved. Original SQL judge 1 from baseline 0; native Pi end_turn after 4 requests and cleanup confirmed; complete backend hash restored."
+    },
+    {
+      "artifact": "ios-android-mw-reply-qwen-94d58c45f0",
+      "sourceTask": "mw-reply",
+      "sourceClass": "MastodonReplyTask",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "sourcePredicateScore": 1.0,
+      "terminalCompleted": true,
+      "providerRequests": 17,
+      "phoneCleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "backendRestored": true,
+      "reviewed": true,
+      "passed": true,
+      "reviewReason": "Exactly one reply to the source gourmet Moussaka post, exact requested content and in_reply_to_id; original predicate 1. Phone cleanup and complete backend hash restoration confirmed; API adaptation only."
+    },
+    {
+      "artifact": "ios-android-mw-report-qwen-71e07b6294",
+      "sourceTask": "mw-report",
+      "sourceClass": "MastodonReportTask",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "sourcePredicateScore": 0.0,
+      "terminalCompleted": true,
+      "providerRequests": 8,
+      "phoneCleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "backendRestored": true,
+      "reviewed": true,
+      "passed": false,
+      "reviewReason": "Copied post text changes Unicode apostrophes; source predicate 0. Cleanup confirmed."
+    },
+    {
+      "artifact": "ios-android-mw-report-qwen-72bf738e73",
+      "sourceTask": "mw-report",
+      "sourceClass": "MastodonReportTask",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "sourcePredicateScore": 0.0,
+      "terminalCompleted": true,
+      "providerRequests": 9,
+      "phoneCleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "backendRestored": true,
+      "reviewed": true,
+      "passed": false,
+      "reviewReason": "Comment changes Unicode apostrophes; spam category omitted. Blocking alone is partial; source predicate 0. Phone cleanup and complete backend hash restoration verified. API adaptation only."
+    },
+    {
+      "artifact": "ios-android-mw-report-qwen-d29099a07e",
+      "sourceTask": "mw-report",
+      "sourceClass": "MastodonReportTask",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "sourcePredicateScore": 0.0,
+      "terminalCompleted": true,
+      "providerRequests": 19,
+      "phoneCleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "backendRestored": true,
+      "reviewed": true,
+      "passed": false,
+      "reviewReason": "Full post reason still rewrites Unicode apostrophes despite explicit instruction; source predicate 0. Exact source-copy tool scheduled. Phone and full backend cleanup verified."
+    },
+    {
+      "artifact": "ios-android-mw-revise-photo-alt-qwen-6281954f42",
+      "sourceTask": "mw-revise-photo-alt",
+      "sourceClass": "MastodonRevisePhotoAltTask",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "sourcePredicateScore": 0.0,
+      "terminalCompleted": true,
+      "providerRequests": 18,
+      "phoneCleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "backendRestored": true,
+      "reviewed": true,
+      "passed": false,
+      "reviewReason": "Wrong edit fields removed image; deleted original and posted text-only replacement. API misuse, not demonstrated fixture limitation. Source predicate 0. Phone cleanup and complete backend hash restoration verified. API adaptation only."
+    },
+    {
+      "artifact": "ios-android-mw-revise-photo-alt-qwen-a0f05742fe",
+      "sourceTask": "mw-revise-photo-alt",
+      "sourceClass": "MastodonRevisePhotoAltTask",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "sourcePredicateScore": 0.0,
+      "terminalCompleted": true,
+      "providerRequests": 11,
+      "phoneCleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "backendRestored": true,
+      "reviewed": true,
+      "passed": false,
+      "reviewReason": "ALT unchanged despite model attempts; original predicate 0. Claimed fixture limitation is contradicted by source-supported media_attributes editing contract. Cleanup confirmed."
+    },
+    {
+      "artifact": "ios-android-mw-revise-photo-alt-qwen-bf38e06b24",
+      "sourceTask": "mw-revise-photo-alt",
+      "sourceClass": "MastodonRevisePhotoAltTask",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "sourcePredicateScore": 1.0,
+      "terminalCompleted": true,
+      "providerRequests": 8,
+      "phoneCleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "backendRestored": true,
+      "reviewed": true,
+      "passed": true,
+      "reviewReason": "Exactly one in-place PUT. Compared original timeline response and post-update readback: same status/text/visibility/sensitive/spoiler/language and image ID; ALT equals requested prefix plus complete original ALT. No delete/recreate or extra mutation. Source predicate 1, terminal completion and both cleanups verified."
+    },
+    {
+      "artifact": "ios-android-mw-revise-poll-qwen-42b325e4ee",
+      "sourceTask": "mw-revise-poll",
+      "sourceClass": "MastodonRevisePollTask",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "sourcePredicateScore": 0.0,
+      "terminalCompleted": true,
+      "providerRequests": 10,
+      "phoneCleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "backendRestored": true,
+      "reviewed": true,
+      "passed": false,
+      "reviewReason": "Original poll deleted and replacement created; original predicate 0 and false claim that in-place editing is unsupported. Cleanup confirmed."
+    },
+    {
+      "artifact": "ios-android-mw-revise-poll-qwen-c24f74b291",
+      "sourceTask": "mw-revise-poll",
+      "sourceClass": "MastodonRevisePollTask",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "sourcePredicateScore": 0.0,
+      "terminalCompleted": true,
+      "providerRequests": 11,
+      "phoneCleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "backendRestored": true,
+      "reviewed": true,
+      "passed": false,
+      "reviewReason": "Deleted original poll and created replacement instead of editing same object. Source predicate 0. Phone cleanup and complete backend hash restoration verified. API adaptation only."
+    },
+    {
+      "artifact": "ios-android-mw-revise-poll-qwen-cd4c6b69ec",
+      "sourceTask": "mw-revise-poll",
+      "sourceClass": "MastodonRevisePollTask",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "sourcePredicateScore": 0.0,
+      "terminalCompleted": true,
+      "providerRequests": 13,
+      "phoneCleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "backendRestored": true,
+      "reviewed": true,
+      "passed": false,
+      "reviewReason": "Original expired poll remains unchanged. In-place requests used unsupported expires_at rather than required expires_in; control scheduled to distinguish API expiry semantics from model claim. Phone and full backend cleanup verified."
+    },
+    {
+      "artifact": "ios-android-mw-unfollow-qwen-d1d2df709b",
+      "sourceTask": "mw-unfollow",
+      "sourceClass": "MastodonUnfollowTask",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "sourcePredicateScore": 1.0,
+      "terminalCompleted": true,
+      "providerRequests": 7,
+      "phoneCleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "backendRestored": true,
+      "reviewed": true,
+      "passed": true,
+      "reviewReason": "Only eight older relationships unfollowed; kept exact source latest three openCompany/gourmet/kitty. No unrelated mutations. Source predicate, terminal, phone cleanup and complete backend restore verified. API adaptation only."
+    },
+    {
+      "artifact": "ios-android-mw-unfollow-qwen-e43afb2318",
+      "sourceTask": "mw-unfollow",
+      "sourceClass": "MastodonUnfollowTask",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "sourcePredicateScore": 0.0,
+      "terminalCompleted": true,
+      "providerRequests": 8,
+      "phoneCleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "backendRestored": true,
+      "reviewed": true,
+      "passed": false,
+      "reviewReason": "Deleted/kept wrong follow relationships: source judge identifies unexpected jack/pupper/alice and missing kitty/gourmet/openCompany. Confused account creation timestamps with relationship recency; original source sorts Follow IDs descending. Phone workspace and full backend baseline restoration verified."
+    }
+  ]
+}

@@ -31,11 +31,23 @@
     "rule": "Unreviewed candidates remain distinct; shared components do not imply equivalent complete tasks."
   },
   "iosStatusCounts": {
-    "android_file_adaptation_passed": 26,
+    "android_file_adaptation_passed": 28,
     "native_adapter_candidate": 1,
-    "android_adaptation_attempted_not_passed": 54,
+    "android_adaptation_attempted_not_passed": 55,
     "excluded_user_scope": 34,
-    "requires_isolated_source_fixtures": 18
+    "requires_isolated_source_fixtures": 15
+  },
+  "mobileWorldStatusCounts": {
+    "adapted_phone_pi_matrix_run": 20,
+    "inventory_not_run": 148,
+    "blocked_source_fixture_not_located": 5,
+    "adapted_phone_pi_three_model_configuration_pass": 2,
+    "adapted_phone_pi_three_model_business_pass": 4,
+    "adapted_three_model_source_predicate_failed": 1,
+    "android_api_adaptation_passed": 15,
+    "android_api_adaptation_attempted_not_passed": 3,
+    "adapted_phone_pi_three_model_pass": 2,
+    "adapted_phone_pi_matrix_source_ambiguity": 1
   },
   "variants": [
     {
@@ -2328,14 +2340,52 @@
         "Mastodon"
       ],
       "sourceSubset": "gui-only",
-      "status": "inventory_not_run",
+      "status": "android_api_adaptation_passed",
       "adaptation": null,
       "results": [],
       "key": "MobileWorld/MastodonAddBookmarkTask",
       "canonicalScenario": "MobileWorld/MastodonAddBookmarkTask",
       "sourceCommit": "aa2ea47052dd15729bfca1f27fa6aca4630607a9",
-      "resultScope": "historical Android adaptations; see individual evidence",
-      "originalJudge": "pinned MobileWorld task definition; sourceSha256 retained"
+      "resultScope": "Original isolated backend API adaptation; prior results retained separately; not official GUI scores",
+      "originalJudge": "pinned MobileWorld task definition; sourceSha256 retained",
+      "apiAdaptationResults": [
+        {
+          "artifact": "ios-android-mw-add-bookmark-qwen-4001f8dee0",
+          "sourceTask": "mw-add-bookmark",
+          "sourceClass": "MastodonAddBookmarkTask",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "sourcePredicateScore": 1.0,
+          "terminalCompleted": true,
+          "providerRequests": 15,
+          "phoneCleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "backendRestored": true,
+          "reviewed": true,
+          "passed": true,
+          "reviewReason": "Only two requested kitty cats-tag statuses bookmarked; original predicate 1 from baseline 0. No unrelated mutations. Phone cleanup and complete backend hash restoration confirmed; API adaptation only."
+        },
+        {
+          "artifact": "ios-android-mw-add-bookmark-qwen-4b7a42a8de",
+          "sourceTask": "mw-add-bookmark",
+          "sourceClass": "MastodonAddBookmarkTask",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "sourcePredicateScore": 1.0,
+          "terminalCompleted": true,
+          "providerRequests": 6,
+          "phoneCleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "backendRestored": true,
+          "reviewed": true,
+          "passed": true,
+          "reviewReason": "Exactly two kitty cats posts bookmarked, all original bookmarks preserved. Complete paginated tag timeline; source predicate 1; no MCP output spill. Six requests versus fifteen in previous run. Cleanup confirmed."
+        }
+      ]
     },
     {
       "benchmark": "MobileWorld",
@@ -2346,14 +2396,34 @@
         "Mastodon"
       ],
       "sourceSubset": "gui-only",
-      "status": "inventory_not_run",
+      "status": "android_api_adaptation_passed",
       "adaptation": null,
       "results": [],
       "key": "MobileWorld/MastodonAddFeaturedHashtagsTask",
       "canonicalScenario": "MobileWorld/MastodonAddFeaturedHashtagsTask",
       "sourceCommit": "aa2ea47052dd15729bfca1f27fa6aca4630607a9",
-      "resultScope": "historical Android adaptations; see individual evidence",
-      "originalJudge": "pinned MobileWorld task definition; sourceSha256 retained"
+      "resultScope": "Original isolated backend API adaptation; prior results retained separately; not official GUI scores",
+      "originalJudge": "pinned MobileWorld task definition; sourceSha256 retained",
+      "apiAdaptationResults": [
+        {
+          "artifact": "ios-android-mw-add-featured-hashtags-qwen-d09cd0f83f",
+          "sourceTask": "mw-add-featured-hashtags",
+          "sourceClass": "MastodonAddFeaturedHashtagsTask",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "sourcePredicateScore": 1.0,
+          "terminalCompleted": true,
+          "providerRequests": 9,
+          "phoneCleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "backendRestored": true,
+          "reviewed": true,
+          "passed": true,
+          "reviewReason": "Exactly three requested featured tags created. Unsupported featured_tags profile field excluded by running controller strong parameters; no unrelated profile change. Source predicate 1. Phone cleanup and complete backend hash restoration verified. API adaptation only."
+        }
+      ]
     },
     {
       "benchmark": "MobileWorld",
@@ -2364,14 +2434,34 @@
         "Mastodon"
       ],
       "sourceSubset": "gui-only",
-      "status": "inventory_not_run",
+      "status": "android_api_adaptation_passed",
       "adaptation": null,
       "results": [],
       "key": "MobileWorld/MastodonAdjustTootsTask",
       "canonicalScenario": "MobileWorld/MastodonAdjustTootsTask",
       "sourceCommit": "aa2ea47052dd15729bfca1f27fa6aca4630607a9",
-      "resultScope": "historical Android adaptations; see individual evidence",
-      "originalJudge": "pinned MobileWorld task definition; sourceSha256 retained"
+      "resultScope": "Original isolated backend API adaptation; prior results retained separately; not official GUI scores",
+      "originalJudge": "pinned MobileWorld task definition; sourceSha256 retained",
+      "apiAdaptationResults": [
+        {
+          "artifact": "ios-android-mw-adjust-toots-qwen-a1ee379718",
+          "sourceTask": "mw-adjust-toots",
+          "sourceClass": "MastodonAdjustTootsTask",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "sourcePredicateScore": 1.0,
+          "terminalCompleted": true,
+          "providerRequests": 5,
+          "phoneCleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "backendRestored": true,
+          "reviewed": true,
+          "passed": true,
+          "reviewReason": "All three original bookmarks unbookmarked, favourited and reblogged. Initial unfavourite calls corrected within run; no other target mutations. Source predicate 1. Phone cleanup and complete backend hash restoration verified. API adaptation only."
+        }
+      ]
     },
     {
       "benchmark": "MobileWorld",
@@ -2438,14 +2528,34 @@
         "Mastodon"
       ],
       "sourceSubset": "gui-only",
-      "status": "inventory_not_run",
+      "status": "android_api_adaptation_passed",
       "adaptation": null,
       "results": [],
       "key": "MobileWorld/MastodonConditionalFavoTask",
       "canonicalScenario": "MobileWorld/MastodonConditionalFavoTask",
       "sourceCommit": "aa2ea47052dd15729bfca1f27fa6aca4630607a9",
-      "resultScope": "historical Android adaptations; see individual evidence",
-      "originalJudge": "pinned MobileWorld task definition; sourceSha256 retained"
+      "resultScope": "Original isolated backend API adaptation; prior results retained separately; not official GUI scores",
+      "originalJudge": "pinned MobileWorld task definition; sourceSha256 retained",
+      "apiAdaptationResults": [
+        {
+          "artifact": "ios-android-mw-conditional-favo-qwen-5fbb7877ed",
+          "sourceTask": "mw-conditional-favo",
+          "sourceClass": "MastodonConditionalFavoTask",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "sourcePredicateScore": 1.0,
+          "terminalCompleted": true,
+          "providerRequests": 11,
+          "phoneCleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "backendRestored": true,
+          "reviewed": true,
+          "passed": true,
+          "reviewReason": "Only the two dogs-tag posts absent from both favourites and bookmarks were favourited. Existing bookmarked/favourite entries preserved; original predicate 1. Phone cleanup and complete backend hash restoration confirmed; API adaptation only."
+        }
+      ]
     },
     {
       "benchmark": "MobileWorld",
@@ -2456,14 +2566,52 @@
         "Mastodon"
       ],
       "sourceSubset": "gui-only",
-      "status": "inventory_not_run",
+      "status": "android_api_adaptation_passed",
       "adaptation": null,
       "results": [],
       "key": "MobileWorld/MastodonCreateListTask",
       "canonicalScenario": "MobileWorld/MastodonCreateListTask",
       "sourceCommit": "aa2ea47052dd15729bfca1f27fa6aca4630607a9",
-      "resultScope": "historical Android adaptations; see individual evidence",
-      "originalJudge": "pinned MobileWorld task definition; sourceSha256 retained"
+      "resultScope": "Original isolated backend API adaptation; prior results retained separately; not official GUI scores",
+      "originalJudge": "pinned MobileWorld task definition; sourceSha256 retained",
+      "apiAdaptationResults": [
+        {
+          "artifact": "ios-android-mw-create-list-qwen-232f9769d5",
+          "sourceTask": "mw-create-list",
+          "sourceClass": "MastodonCreateListTask",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "sourcePredicateScore": 1.0,
+          "terminalCompleted": true,
+          "providerRequests": 8,
+          "phoneCleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "backendRestored": true,
+          "reviewed": true,
+          "passed": true,
+          "reviewReason": "Only Family list created with followed policy and exact Alex/Emma/Jack string IDs; source SQL predicate verifies members. No other mutation. Terminal and both cleanup checks confirmed; API adaptation only."
+        },
+        {
+          "artifact": "ios-android-mw-create-list-qwen-2a8bf07879",
+          "sourceTask": "mw-create-list",
+          "sourceClass": "MastodonCreateListTask",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "sourcePredicateScore": 0.0,
+          "terminalCompleted": false,
+          "providerRequests": 31,
+          "phoneCleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "backendRestored": true,
+          "reviewed": true,
+          "passed": false,
+          "reviewReason": "Runtime request budget exhausted after guessing replies_policy enums and list membership HTTP method; source judge reports replies policy 0 instead of 1. Wrong numeric IDs also attempted. Backend fully restored. Phone cleanup and complete backend hash restoration confirmed; API adaptation only."
+        }
+      ]
     },
     {
       "benchmark": "MobileWorld",
@@ -2547,14 +2695,52 @@
         "Mastodon"
       ],
       "sourceSubset": "gui-only",
-      "status": "inventory_not_run",
+      "status": "android_api_adaptation_passed",
       "adaptation": null,
       "results": [],
       "key": "MobileWorld/MastodonFavoriteTootsTask",
       "canonicalScenario": "MobileWorld/MastodonFavoriteTootsTask",
       "sourceCommit": "aa2ea47052dd15729bfca1f27fa6aca4630607a9",
-      "resultScope": "historical Android adaptations; see individual evidence",
-      "originalJudge": "pinned MobileWorld task definition; sourceSha256 retained"
+      "resultScope": "Original isolated backend API adaptation; prior results retained separately; not official GUI scores",
+      "originalJudge": "pinned MobileWorld task definition; sourceSha256 retained",
+      "apiAdaptationResults": [
+        {
+          "artifact": "ios-android-mw-favorite-toots-qwen-200eb1b7ba",
+          "sourceTask": "mw-favorite-toots",
+          "sourceClass": "MastodonFavoriteTootsTask",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "sourcePredicateScore": 1.0,
+          "terminalCompleted": true,
+          "providerRequests": 7,
+          "phoneCleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "backendRestored": true,
+          "reviewed": true,
+          "passed": true,
+          "reviewReason": "Paginated tag timeline; exactly five original dogs statuses favourited. No other mutations; source predicate 1. Phone cleanup and complete backend hash restoration verified. API adaptation only."
+        },
+        {
+          "artifact": "ios-android-mw-favorite-toots-qwen-9449a1e7ea",
+          "sourceTask": "mw-favorite-toots",
+          "sourceClass": "MastodonFavoriteTootsTask",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "sourcePredicateScore": 0.0,
+          "terminalCompleted": true,
+          "providerRequests": 13,
+          "phoneCleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "backendRestored": true,
+          "reviewed": true,
+          "passed": false,
+          "reviewReason": "Only three of five dogs-tag posts favourited; original source judge identifies two missing. Full-text search was used instead of hashtag timeline, and pagination/completeness failed. Phone cleanup and complete backend hash restoration confirmed; API adaptation only."
+        }
+      ]
     },
     {
       "benchmark": "MobileWorld",
@@ -2620,14 +2806,34 @@
         "Mastodon"
       ],
       "sourceSubset": "gui-only",
-      "status": "inventory_not_run",
+      "status": "android_api_adaptation_passed",
       "adaptation": null,
       "results": [],
       "key": "MobileWorld/MastodonImportMutedUsersTask",
       "canonicalScenario": "MobileWorld/MastodonImportMutedUsersTask",
       "sourceCommit": "aa2ea47052dd15729bfca1f27fa6aca4630607a9",
-      "resultScope": "historical Android adaptations; see individual evidence",
-      "originalJudge": "pinned MobileWorld task definition; sourceSha256 retained"
+      "resultScope": "Original isolated backend API adaptation; prior results retained separately; not official GUI scores",
+      "originalJudge": "pinned MobileWorld task definition; sourceSha256 retained",
+      "apiAdaptationResults": [
+        {
+          "artifact": "ios-android-mw-import-muted-qwen-575d5968ad",
+          "sourceTask": "mw-import-muted",
+          "sourceClass": "MastodonImportMutedUsersTask",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "sourcePredicateScore": 1.0,
+          "terminalCompleted": true,
+          "providerRequests": 8,
+          "phoneCleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "backendRestored": true,
+          "reviewed": true,
+          "passed": true,
+          "reviewReason": "Read original CSV, resolved its local source account, and made exactly one indefinite mute with notifications hidden. Exact source SQL predicate, full mute-list pagination, terminal and both cleanups confirmed. REST adaptation of import; not UI import workflow."
+        }
+      ]
     },
     {
       "benchmark": "MobileWorld",
@@ -2695,14 +2901,52 @@
         "Mastodon"
       ],
       "sourceSubset": "gui-only",
-      "status": "inventory_not_run",
+      "status": "android_api_adaptation_passed",
       "adaptation": null,
       "results": [],
       "key": "MobileWorld/MastodonManageHashtagsTask",
       "canonicalScenario": "MobileWorld/MastodonManageHashtagsTask",
       "sourceCommit": "aa2ea47052dd15729bfca1f27fa6aca4630607a9",
-      "resultScope": "historical Android adaptations; see individual evidence",
-      "originalJudge": "pinned MobileWorld task definition; sourceSha256 retained"
+      "resultScope": "Original isolated backend API adaptation; prior results retained separately; not official GUI scores",
+      "originalJudge": "pinned MobileWorld task definition; sourceSha256 retained",
+      "apiAdaptationResults": [
+        {
+          "artifact": "ios-android-mw-manage-hashtags-qwen-810baa5fa7",
+          "sourceTask": "mw-manage-hashtags",
+          "sourceClass": "MastodonManageHashtagsTask",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "sourcePredicateScore": 1.0,
+          "terminalCompleted": true,
+          "providerRequests": 8,
+          "phoneCleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "backendRestored": true,
+          "reviewed": true,
+          "passed": true,
+          "reviewReason": "Full followed-tag pagination, only cats/dogs unfollowed; all twelve other tags preserved. Source SQL predicate 1 and complete readback agree. Terminal and both cleanup checks confirmed; API adaptation only."
+        },
+        {
+          "artifact": "ios-android-mw-manage-hashtags-qwen-e9349126a1",
+          "sourceTask": "mw-manage-hashtags",
+          "sourceClass": "MastodonManageHashtagsTask",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "sourcePredicateScore": 0.0,
+          "terminalCompleted": false,
+          "providerRequests": 31,
+          "phoneCleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "backendRestored": true,
+          "reviewed": true,
+          "passed": false,
+          "reviewReason": "Exhausted runtime request budget without any tag-unfollow mutation; original judge shows animal tags still followed. Missing endpoint guidance addressed in next revision. Phone workspace and full backend baseline restoration verified."
+        }
+      ]
     },
     {
       "benchmark": "MobileWorld",
@@ -2713,14 +2957,70 @@
         "Mastodon"
       ],
       "sourceSubset": "gui-only",
-      "status": "inventory_not_run",
+      "status": "android_api_adaptation_attempted_not_passed",
       "adaptation": null,
       "results": [],
       "key": "MobileWorld/MastodonManageMultiListTask",
       "canonicalScenario": "MobileWorld/MastodonManageMultiListTask",
       "sourceCommit": "aa2ea47052dd15729bfca1f27fa6aca4630607a9",
-      "resultScope": "historical Android adaptations; see individual evidence",
-      "originalJudge": "pinned MobileWorld task definition; sourceSha256 retained"
+      "resultScope": "Original isolated backend API adaptation; prior results retained separately; not official GUI scores",
+      "originalJudge": "pinned MobileWorld task definition; sourceSha256 retained",
+      "apiAdaptationResults": [
+        {
+          "artifact": "ios-android-mw-manage-multi-list-qwen-22255c7784",
+          "sourceTask": "mw-manage-multi-list",
+          "sourceClass": "MastodonManageMultiListTask",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "sourcePredicateScore": 0.0,
+          "terminalCompleted": true,
+          "providerRequests": 17,
+          "phoneCleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "backendRestored": true,
+          "reviewed": true,
+          "passed": false,
+          "reviewReason": "Exclusive list setting now correct, but avatar-based member selection omits one source account; source predicate 0. Running 35a3 server reports vision/video/audio false, and current tool exposes avatar URLs rather than image observation. No answer IDs supplied as a workaround. Phone and full backend cleanup verified."
+        },
+        {
+          "artifact": "ios-android-mw-manage-multi-list-qwen-732f1479ab",
+          "sourceTask": "mw-manage-multi-list",
+          "sourceClass": "MastodonManageMultiListTask",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "sourcePredicateScore": 0.0,
+          "terminalCompleted": true,
+          "providerRequests": 16,
+          "phoneCleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "backendRestored": true,
+          "reviewed": true,
+          "passed": false,
+          "reviewReason": "Source exclusive requirement remains unmet; model mislabels API capability unavailable. Cleanup confirmed."
+        },
+        {
+          "artifact": "ios-android-mw-manage-multi-list-qwen-a0a9144017",
+          "sourceTask": "mw-manage-multi-list",
+          "sourceClass": "MastodonManageMultiListTask",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "sourcePredicateScore": 0.0,
+          "terminalCompleted": true,
+          "providerRequests": 17,
+          "phoneCleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "backendRestored": true,
+          "reviewed": true,
+          "passed": false,
+          "reviewReason": "Cute list exclusive remains false. Wrong replies_policy_exclusive parameter; source predicate 0. Phone cleanup and complete backend hash restoration verified. API adaptation only."
+        }
+      ]
     },
     {
       "benchmark": "MobileWorld",
@@ -2770,14 +3070,52 @@
         "Mastodon"
       ],
       "sourceSubset": "gui-only",
-      "status": "inventory_not_run",
+      "status": "android_api_adaptation_passed",
       "adaptation": null,
       "results": [],
       "key": "MobileWorld/MastodonNewFilterTask",
       "canonicalScenario": "MobileWorld/MastodonNewFilterTask",
       "sourceCommit": "aa2ea47052dd15729bfca1f27fa6aca4630607a9",
-      "resultScope": "historical Android adaptations; see individual evidence",
-      "originalJudge": "pinned MobileWorld task definition; sourceSha256 retained"
+      "resultScope": "Original isolated backend API adaptation; prior results retained separately; not official GUI scores",
+      "originalJudge": "pinned MobileWorld task definition; sourceSha256 retained",
+      "apiAdaptationResults": [
+        {
+          "artifact": "ios-android-mw-new-filter-qwen-7047e6bd60",
+          "sourceTask": "mw-new-filter",
+          "sourceClass": "MastodonNewFilterTask",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "sourcePredicateScore": null,
+          "terminalCompleted": true,
+          "providerRequests": 6,
+          "phoneCleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "backendRestored": true,
+          "reviewed": true,
+          "passed": false,
+          "reviewReason": "Model reached end_turn, but original source judge raised NameError for missing pytz dependency. No valid source score assigned. Phone cleanup and full backend baseline restoration independently confirmed; safe to rerun after dependency fix."
+        },
+        {
+          "artifact": "ios-android-mw-new-filter-qwen-a0d1a8f743",
+          "sourceTask": "mw-new-filter",
+          "sourceClass": "MastodonNewFilterTask",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "sourcePredicateScore": 1.0,
+          "terminalCompleted": true,
+          "providerRequests": 8,
+          "phoneCleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "backendRestored": true,
+          "reviewed": true,
+          "passed": true,
+          "reviewReason": "One new named filter only, exact five original file keywords, whole-word matching, expiry 432000 seconds. Existing Violence filter retained. Source SQL judge 1, persisted API readback, terminal and full cleanup confirmed. Filter action warn explicitly reported; source goal does not prescribe hide mode."
+        }
+      ]
     },
     {
       "benchmark": "MobileWorld",
@@ -2788,14 +3126,34 @@
         "Mastodon"
       ],
       "sourceSubset": "gui-only",
-      "status": "inventory_not_run",
+      "status": "android_api_adaptation_passed",
       "adaptation": null,
       "results": [],
       "key": "MobileWorld/MastodonNewPostTask",
       "canonicalScenario": "MobileWorld/MastodonNewPostTask",
       "sourceCommit": "aa2ea47052dd15729bfca1f27fa6aca4630607a9",
-      "resultScope": "historical Android adaptations; see individual evidence",
-      "originalJudge": "pinned MobileWorld task definition; sourceSha256 retained"
+      "resultScope": "Original isolated backend API adaptation; prior results retained separately; not official GUI scores",
+      "originalJudge": "pinned MobileWorld task definition; sourceSha256 retained",
+      "apiAdaptationResults": [
+        {
+          "artifact": "ios-android-mw-new-post-qwen-e6e66670dd",
+          "sourceTask": "mw-new-post",
+          "sourceClass": "MastodonNewPostTask",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "sourcePredicateScore": 1.0,
+          "terminalCompleted": true,
+          "providerRequests": 2,
+          "phoneCleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "backendRestored": true,
+          "reviewed": true,
+          "passed": true,
+          "reviewReason": "Original source SQL predicate 1 from baseline 0; exactly one POST statuses with exact requested text, no extra mutations; ACP end_turn after 2 requests; owned workspace absent; full backend hash restored. API adaptation only, not official GUI score."
+        }
+      ]
     },
     {
       "benchmark": "MobileWorld",
@@ -2824,14 +3182,34 @@
         "Mastodon"
       ],
       "sourceSubset": "gui-only",
-      "status": "inventory_not_run",
+      "status": "android_api_adaptation_passed",
       "adaptation": null,
       "results": [],
       "key": "MobileWorld/MastodonPinTootsTask",
       "canonicalScenario": "MobileWorld/MastodonPinTootsTask",
       "sourceCommit": "aa2ea47052dd15729bfca1f27fa6aca4630607a9",
-      "resultScope": "historical Android adaptations; see individual evidence",
-      "originalJudge": "pinned MobileWorld task definition; sourceSha256 retained"
+      "resultScope": "Original isolated backend API adaptation; prior results retained separately; not official GUI scores",
+      "originalJudge": "pinned MobileWorld task definition; sourceSha256 retained",
+      "apiAdaptationResults": [
+        {
+          "artifact": "ios-android-mw-pin-toots-qwen-1828c5a3a7",
+          "sourceTask": "mw-pin-toots",
+          "sourceClass": "MastodonPinTootsTask",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "sourcePredicateScore": 1.0,
+          "terminalCompleted": true,
+          "providerRequests": 5,
+          "phoneCleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "backendRestored": true,
+          "reviewed": true,
+          "passed": true,
+          "reviewReason": "Original predicate changed 0 to 1. Only mutation is pinning the original earliest status; no unrelated changes in action trace. ACP end_turn and phone workspace cleanup confirmed; backend data hash restored. Model verification used ignored pinning parameter, but original independent SQL predicate establishes effect. API adaptation only."
+        }
+      ]
     },
     {
       "benchmark": "MobileWorld",
@@ -2880,14 +3258,34 @@
         "Mastodon"
       ],
       "sourceSubset": "gui-only",
-      "status": "inventory_not_run",
+      "status": "android_api_adaptation_passed",
       "adaptation": null,
       "results": [],
       "key": "MobileWorld/MastodonRemoveBookmarkTask",
       "canonicalScenario": "MobileWorld/MastodonRemoveBookmarkTask",
       "sourceCommit": "aa2ea47052dd15729bfca1f27fa6aca4630607a9",
-      "resultScope": "historical Android adaptations; see individual evidence",
-      "originalJudge": "pinned MobileWorld task definition; sourceSha256 retained"
+      "resultScope": "Original isolated backend API adaptation; prior results retained separately; not official GUI scores",
+      "originalJudge": "pinned MobileWorld task definition; sourceSha256 retained",
+      "apiAdaptationResults": [
+        {
+          "artifact": "ios-android-mw-remove-bookmark-qwen-11d7b99848",
+          "sourceTask": "mw-remove-bookmark",
+          "sourceClass": "MastodonRemoveBookmarkTask",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "sourcePredicateScore": 1.0,
+          "terminalCompleted": true,
+          "providerRequests": 4,
+          "phoneCleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "backendRestored": true,
+          "reviewed": true,
+          "passed": true,
+          "reviewReason": "Only the two bookmarked statuses tagged pets were unbookmarked; non-pets dogs bookmark preserved. Original SQL judge 1 from baseline 0; native Pi end_turn after 4 requests and cleanup confirmed; complete backend hash restored."
+        }
+      ]
     },
     {
       "benchmark": "MobileWorld",
@@ -2898,14 +3296,34 @@
         "Mastodon"
       ],
       "sourceSubset": "gui-only",
-      "status": "inventory_not_run",
+      "status": "android_api_adaptation_passed",
       "adaptation": null,
       "results": [],
       "key": "MobileWorld/MastodonReplyTask",
       "canonicalScenario": "MobileWorld/MastodonReplyTask",
       "sourceCommit": "aa2ea47052dd15729bfca1f27fa6aca4630607a9",
-      "resultScope": "historical Android adaptations; see individual evidence",
-      "originalJudge": "pinned MobileWorld task definition; sourceSha256 retained"
+      "resultScope": "Original isolated backend API adaptation; prior results retained separately; not official GUI scores",
+      "originalJudge": "pinned MobileWorld task definition; sourceSha256 retained",
+      "apiAdaptationResults": [
+        {
+          "artifact": "ios-android-mw-reply-qwen-94d58c45f0",
+          "sourceTask": "mw-reply",
+          "sourceClass": "MastodonReplyTask",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "sourcePredicateScore": 1.0,
+          "terminalCompleted": true,
+          "providerRequests": 17,
+          "phoneCleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "backendRestored": true,
+          "reviewed": true,
+          "passed": true,
+          "reviewReason": "Exactly one reply to the source gourmet Moussaka post, exact requested content and in_reply_to_id; original predicate 1. Phone cleanup and complete backend hash restoration confirmed; API adaptation only."
+        }
+      ]
     },
     {
       "benchmark": "MobileWorld",
@@ -2916,14 +3334,70 @@
         "Mastodon"
       ],
       "sourceSubset": "gui-only",
-      "status": "inventory_not_run",
+      "status": "android_api_adaptation_attempted_not_passed",
       "adaptation": null,
       "results": [],
       "key": "MobileWorld/MastodonReportTask",
       "canonicalScenario": "MobileWorld/MastodonReportTask",
       "sourceCommit": "aa2ea47052dd15729bfca1f27fa6aca4630607a9",
-      "resultScope": "historical Android adaptations; see individual evidence",
-      "originalJudge": "pinned MobileWorld task definition; sourceSha256 retained"
+      "resultScope": "Original isolated backend API adaptation; prior results retained separately; not official GUI scores",
+      "originalJudge": "pinned MobileWorld task definition; sourceSha256 retained",
+      "apiAdaptationResults": [
+        {
+          "artifact": "ios-android-mw-report-qwen-71e07b6294",
+          "sourceTask": "mw-report",
+          "sourceClass": "MastodonReportTask",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "sourcePredicateScore": 0.0,
+          "terminalCompleted": true,
+          "providerRequests": 8,
+          "phoneCleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "backendRestored": true,
+          "reviewed": true,
+          "passed": false,
+          "reviewReason": "Copied post text changes Unicode apostrophes; source predicate 0. Cleanup confirmed."
+        },
+        {
+          "artifact": "ios-android-mw-report-qwen-72bf738e73",
+          "sourceTask": "mw-report",
+          "sourceClass": "MastodonReportTask",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "sourcePredicateScore": 0.0,
+          "terminalCompleted": true,
+          "providerRequests": 9,
+          "phoneCleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "backendRestored": true,
+          "reviewed": true,
+          "passed": false,
+          "reviewReason": "Comment changes Unicode apostrophes; spam category omitted. Blocking alone is partial; source predicate 0. Phone cleanup and complete backend hash restoration verified. API adaptation only."
+        },
+        {
+          "artifact": "ios-android-mw-report-qwen-d29099a07e",
+          "sourceTask": "mw-report",
+          "sourceClass": "MastodonReportTask",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "sourcePredicateScore": 0.0,
+          "terminalCompleted": true,
+          "providerRequests": 19,
+          "phoneCleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "backendRestored": true,
+          "reviewed": true,
+          "passed": false,
+          "reviewReason": "Full post reason still rewrites Unicode apostrophes despite explicit instruction; source predicate 0. Exact source-copy tool scheduled. Phone and full backend cleanup verified."
+        }
+      ]
     },
     {
       "benchmark": "MobileWorld",
@@ -2934,14 +3408,70 @@
         "Mastodon"
       ],
       "sourceSubset": "gui-only",
-      "status": "inventory_not_run",
+      "status": "android_api_adaptation_passed",
       "adaptation": null,
       "results": [],
       "key": "MobileWorld/MastodonRevisePhotoAltTask",
       "canonicalScenario": "MobileWorld/MastodonRevisePhotoAltTask",
       "sourceCommit": "aa2ea47052dd15729bfca1f27fa6aca4630607a9",
-      "resultScope": "historical Android adaptations; see individual evidence",
-      "originalJudge": "pinned MobileWorld task definition; sourceSha256 retained"
+      "resultScope": "Original isolated backend API adaptation; prior results retained separately; not official GUI scores",
+      "originalJudge": "pinned MobileWorld task definition; sourceSha256 retained",
+      "apiAdaptationResults": [
+        {
+          "artifact": "ios-android-mw-revise-photo-alt-qwen-6281954f42",
+          "sourceTask": "mw-revise-photo-alt",
+          "sourceClass": "MastodonRevisePhotoAltTask",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "sourcePredicateScore": 0.0,
+          "terminalCompleted": true,
+          "providerRequests": 18,
+          "phoneCleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "backendRestored": true,
+          "reviewed": true,
+          "passed": false,
+          "reviewReason": "Wrong edit fields removed image; deleted original and posted text-only replacement. API misuse, not demonstrated fixture limitation. Source predicate 0. Phone cleanup and complete backend hash restoration verified. API adaptation only."
+        },
+        {
+          "artifact": "ios-android-mw-revise-photo-alt-qwen-a0f05742fe",
+          "sourceTask": "mw-revise-photo-alt",
+          "sourceClass": "MastodonRevisePhotoAltTask",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "sourcePredicateScore": 0.0,
+          "terminalCompleted": true,
+          "providerRequests": 11,
+          "phoneCleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "backendRestored": true,
+          "reviewed": true,
+          "passed": false,
+          "reviewReason": "ALT unchanged despite model attempts; original predicate 0. Claimed fixture limitation is contradicted by source-supported media_attributes editing contract. Cleanup confirmed."
+        },
+        {
+          "artifact": "ios-android-mw-revise-photo-alt-qwen-bf38e06b24",
+          "sourceTask": "mw-revise-photo-alt",
+          "sourceClass": "MastodonRevisePhotoAltTask",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "sourcePredicateScore": 1.0,
+          "terminalCompleted": true,
+          "providerRequests": 8,
+          "phoneCleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "backendRestored": true,
+          "reviewed": true,
+          "passed": true,
+          "reviewReason": "Exactly one in-place PUT. Compared original timeline response and post-update readback: same status/text/visibility/sensitive/spoiler/language and image ID; ALT equals requested prefix plus complete original ALT. No delete/recreate or extra mutation. Source predicate 1, terminal completion and both cleanups verified."
+        }
+      ]
     },
     {
       "benchmark": "MobileWorld",
@@ -2952,14 +3482,70 @@
         "Mastodon"
       ],
       "sourceSubset": "gui-only",
-      "status": "inventory_not_run",
+      "status": "android_api_adaptation_attempted_not_passed",
       "adaptation": null,
       "results": [],
       "key": "MobileWorld/MastodonRevisePollTask",
       "canonicalScenario": "MobileWorld/MastodonRevisePollTask",
       "sourceCommit": "aa2ea47052dd15729bfca1f27fa6aca4630607a9",
-      "resultScope": "historical Android adaptations; see individual evidence",
-      "originalJudge": "pinned MobileWorld task definition; sourceSha256 retained"
+      "resultScope": "Original isolated backend API adaptation; prior results retained separately; not official GUI scores",
+      "originalJudge": "pinned MobileWorld task definition; sourceSha256 retained",
+      "apiAdaptationResults": [
+        {
+          "artifact": "ios-android-mw-revise-poll-qwen-42b325e4ee",
+          "sourceTask": "mw-revise-poll",
+          "sourceClass": "MastodonRevisePollTask",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "sourcePredicateScore": 0.0,
+          "terminalCompleted": true,
+          "providerRequests": 10,
+          "phoneCleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "backendRestored": true,
+          "reviewed": true,
+          "passed": false,
+          "reviewReason": "Original poll deleted and replacement created; original predicate 0 and false claim that in-place editing is unsupported. Cleanup confirmed."
+        },
+        {
+          "artifact": "ios-android-mw-revise-poll-qwen-c24f74b291",
+          "sourceTask": "mw-revise-poll",
+          "sourceClass": "MastodonRevisePollTask",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "sourcePredicateScore": 0.0,
+          "terminalCompleted": true,
+          "providerRequests": 11,
+          "phoneCleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "backendRestored": true,
+          "reviewed": true,
+          "passed": false,
+          "reviewReason": "Deleted original poll and created replacement instead of editing same object. Source predicate 0. Phone cleanup and complete backend hash restoration verified. API adaptation only."
+        },
+        {
+          "artifact": "ios-android-mw-revise-poll-qwen-cd4c6b69ec",
+          "sourceTask": "mw-revise-poll",
+          "sourceClass": "MastodonRevisePollTask",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "sourcePredicateScore": 0.0,
+          "terminalCompleted": true,
+          "providerRequests": 13,
+          "phoneCleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "backendRestored": true,
+          "reviewed": true,
+          "passed": false,
+          "reviewReason": "Original expired poll remains unchanged. In-place requests used unsupported expires_at rather than required expires_in; control scheduled to distinguish API expiry semantics from model claim. Phone and full backend cleanup verified."
+        }
+      ]
     },
     {
       "benchmark": "MobileWorld",
@@ -3047,14 +3633,52 @@
         "Mastodon"
       ],
       "sourceSubset": "gui-only",
-      "status": "inventory_not_run",
+      "status": "android_api_adaptation_passed",
       "adaptation": null,
       "results": [],
       "key": "MobileWorld/MastodonUnfollowTask",
       "canonicalScenario": "MobileWorld/MastodonUnfollowTask",
       "sourceCommit": "aa2ea47052dd15729bfca1f27fa6aca4630607a9",
-      "resultScope": "historical Android adaptations; see individual evidence",
-      "originalJudge": "pinned MobileWorld task definition; sourceSha256 retained"
+      "resultScope": "Original isolated backend API adaptation; prior results retained separately; not official GUI scores",
+      "originalJudge": "pinned MobileWorld task definition; sourceSha256 retained",
+      "apiAdaptationResults": [
+        {
+          "artifact": "ios-android-mw-unfollow-qwen-d1d2df709b",
+          "sourceTask": "mw-unfollow",
+          "sourceClass": "MastodonUnfollowTask",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "sourcePredicateScore": 1.0,
+          "terminalCompleted": true,
+          "providerRequests": 7,
+          "phoneCleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "backendRestored": true,
+          "reviewed": true,
+          "passed": true,
+          "reviewReason": "Only eight older relationships unfollowed; kept exact source latest three openCompany/gourmet/kitty. No unrelated mutations. Source predicate, terminal, phone cleanup and complete backend restore verified. API adaptation only."
+        },
+        {
+          "artifact": "ios-android-mw-unfollow-qwen-e43afb2318",
+          "sourceTask": "mw-unfollow",
+          "sourceClass": "MastodonUnfollowTask",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "sourcePredicateScore": 0.0,
+          "terminalCompleted": true,
+          "providerRequests": 8,
+          "phoneCleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "backendRestored": true,
+          "reviewed": true,
+          "passed": false,
+          "reviewReason": "Deleted/kept wrong follow relationships: source judge identifies unexpected jack/pupper/alice and missing kitty/gourmet/openCompany. Confused account creation timestamps with relationship recency; original source sorts Follow IDs descending. Phone workspace and full backend baseline restoration verified."
+        }
+      ]
     },
     {
       "benchmark": "MobileWorld",
@@ -8085,7 +8709,11 @@
             "passed": false
           },
           "elapsedSeconds": 26.372937125,
-          "providerRequests": 7
+          "providerRequests": 7,
+          "independentReview": {
+            "passed": false,
+            "reason": "Source event timestamp 2026-03-17T07:30:00Z is 00:30 PDT, but final reports 19:30 local or 15:30 local. Venue/prices correct and source unchanged; time conversion fails full acceptance."
+          }
         },
         {
           "completedRun": true,
@@ -8114,7 +8742,11 @@
             "passed": false
           },
           "elapsedSeconds": 22.798150167,
-          "providerRequests": 6
+          "providerRequests": 6,
+          "independentReview": {
+            "passed": false,
+            "reason": "Source event timestamp 2026-03-17T07:30:00Z is 00:30 PDT, but final reports 19:30 local or 15:30 local. Venue/prices correct and source unchanged; time conversion fails full acceptance."
+          }
         }
       ],
       "officialBenchmarkScore": null
@@ -10201,6 +10833,64 @@
             "reviewer": "root",
             "reason": "Spreadsheet numeric seeds and writes were exported as strings, invalidating arithmetic fidelity; model also leaves the new row outside the Total SUM range. Requires numeric export fix and rerun."
           }
+        },
+        {
+          "completedRun": true,
+          "artifact": "ios-android-multi-015-qwen-1c53b8db47",
+          "sourceTask": "multi-015",
+          "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "elapsedSeconds": 44.692262375,
+          "providerRequests": 16,
+          "independentReview": {
+            "passed": false,
+            "reason": "Numeric cell export fixed and expense row now stores 257.3 as a number, but existing Total remains SUM(B2:B7), excluding new row B8. Budget total is stale; task is not accepted despite correct reported arithmetic."
+          }
+        },
+        {
+          "completedRun": true,
+          "artifact": "ios-android-multi-015-qwen-7fab488c2e",
+          "sourceTask": "multi-015",
+          "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "elapsedSeconds": 37.181552,
+          "providerRequests": 19,
+          "independentReview": {
+            "passed": false,
+            "reason": "Correct latest past event and receipt-based arithmetic 225 + 15.79 + 16.50 = 257.29; numeric Actual C8 persisted and B9 formula extended. Still falsely describes same-day rides as trips to/from the event: source routes are Home to Russian Hill and back, not Chase Center. Same-day rides may support an explicitly qualified estimate, but final asserts an unsupported event linkage. Original source data and run cleanup retained."
+          }
         }
       ],
       "officialBenchmarkScore": null,
@@ -10867,7 +11557,7 @@
           "requiredFixtureAndVerifier": "source channels, unread state, threads and owned message cleanup"
         }
       ],
-      "status": "android_adaptation_attempted_not_passed",
+      "status": "android_file_adaptation_passed",
       "canonicalScenario": "iOSWorld/multi-028",
       "relationship": "distinct_source_variant",
       "acceptance": "All source business criteria, preserved inputs, independent persisted-state readback; partial components do not pass the full task.",
@@ -10893,14 +11583,17 @@
           "acceptance": {
             "sourceFilesPreserved": true,
             "semanticReviewRequired": true,
-            "passed": false
+            "passed": true
           },
           "elapsedSeconds": 28.485906542000002,
-          "providerRequests": 7
+          "providerRequests": 7,
+          "independentReview": {
+            "passed": true,
+            "reason": "Only one Nobu order to source Home and one launch-war-room progress message added. Total 77.26 follows source checkout formula. Progress references latest source canary expansion to 10 percent and future staged rollout; general announcement sender/content summary matches source latest messages. No unrelated mutation; owned workspace and reverse removed."
+          }
         }
       ],
-      "officialBenchmarkScore": null,
-      "reviewPending": true
+      "officialBenchmarkScore": null
     },
     {
       "key": "iOSWorld/multi-031",
@@ -11397,6 +12090,35 @@
           "classification": "runtime_failure",
           "providerRequests": 31,
           "completedRun": false
+        },
+        {
+          "completedRun": true,
+          "artifact": "ios-android-multi-035-qwen-6eda806493",
+          "sourceTask": "multi-035",
+          "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "elapsedSeconds": 85.20218429100001,
+          "providerRequests": 26,
+          "independentReview": {
+            "passed": false,
+            "reason": "Correct Saturday 19:00 PST outdoor reservation and Date Night movie list, but unrequested ride dispatch added one trip while goal only asks price comparison. Final total wrongly includes movie ticket despite rubric requesting dinner plus ride only; friend-review linkage unresolved. All owned changes cleaned. Effect-scope fix queued with identical default request budget."
+          }
         }
       ],
       "officialBenchmarkScore": null,
@@ -12412,6 +13134,35 @@
             "reviewer": "root",
             "reason": "Dinner reserved March 5 local for an April 1 UTC show, not a coherent pre-show plan. Missing create-document API led to modification of Untitled document instead of requested new document; claimed full completion is invalid."
           }
+        },
+        {
+          "completedRun": true,
+          "artifact": "ios-android-multi-053-qwen-5be5b150bf",
+          "sourceTask": "multi-053",
+          "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "elapsedSeconds": 53.854099459,
+          "providerRequests": 29,
+          "independentReview": {
+            "passed": false,
+            "reason": "New CloudDocs document creation now works, but pre-show dinner booked March 6 while selected show is March 31. Also created a CityRide request when user only asked to check prices. Cross-artifact outing plan is inconsistent; cleanup does not repair acceptance."
+          }
         }
       ],
       "officialBenchmarkScore": null,
@@ -12726,7 +13477,7 @@
           "requiredFixtureAndVerifier": "source note bodies, folders, append-preservation and deletion verifier"
         }
       ],
-      "status": "android_adaptation_attempted_not_passed",
+      "status": "android_file_adaptation_passed",
       "canonicalScenario": "iOSWorld/multi-068",
       "relationship": "distinct_source_variant",
       "acceptance": "All source business criteria, preserved inputs, independent persisted-state readback; partial components do not pass the full task.",
@@ -12761,10 +13512,38 @@
             "reviewer": "root",
             "reason": "Created a Notes note instead of the requested CloudDocs document and did not star it in CloudDrive. Missing create-document capability is now being tested separately."
           }
+        },
+        {
+          "completedRun": true,
+          "artifact": "ios-android-multi-068-qwen-518e5ba6e3",
+          "sourceTask": "multi-068",
+          "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": true
+          },
+          "elapsedSeconds": 44.920346292,
+          "providerRequests": 20,
+          "independentReview": {
+            "passed": true,
+            "reason": "Original Sunset Sail source listing and upcoming booking match report. New Barcelona Experience Notes text contains matching booking facts, explicitly suggested itinerary and packing items. Exact new document ID registered and starred in Drive, only one reminder appended to existing Travel Packing List preserving its entire original body. All unrelated files preserved; cleanup confirmed."
+          }
         }
       ],
-      "officialBenchmarkScore": null,
-      "reviewPending": false
+      "officialBenchmarkScore": null
     },
     {
       "key": "iOSWorld/multi-069",
@@ -14669,13 +15448,49 @@
           "requiredFixtureAndVerifier": "source note bodies, folders, append-preservation and deletion verifier"
         }
       ],
-      "status": "requires_isolated_source_fixtures",
+      "status": "android_adaptation_attempted_not_passed",
       "canonicalScenario": "iOSWorld/multi-088",
       "relationship": "distinct_source_variant",
       "acceptance": "All source business criteria, preserved inputs, independent persisted-state readback; partial components do not pass the full task.",
       "cleanup": "Remove only run-owned fixture objects and verify their absence; restore any recorded system baseline.",
-      "results": [],
-      "officialBenchmarkScore": null
+      "results": [
+        {
+          "artifact": "ios-android-multi-088-qwen-878d6bfda7",
+          "sourceTask": "multi-088",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "acceptance": {
+            "passed": false
+          },
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "failureType": "RuntimeError",
+          "classification": "runtime_failure",
+          "providerRequests": 31,
+          "completedRun": false
+        },
+        {
+          "artifact": "ios-android-multi-088-qwen-e9c725b619",
+          "sourceTask": "multi-088",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "acceptance": {
+            "passed": false
+          },
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "failureType": "RuntimeError",
+          "classification": "runtime_failure",
+          "providerRequests": 31,
+          "completedRun": false
+        }
+      ],
+      "officialBenchmarkScore": null,
+      "reviewPending": false
     },
     {
       "key": "iOSWorld/multi-089",
@@ -15485,6 +16300,35 @@
           "classification": "runtime_failure",
           "providerRequests": 31,
           "completedRun": false
+        },
+        {
+          "completedRun": true,
+          "artifact": "ios-android-mem-003-qwen-24c12ff9b2",
+          "sourceTask": "mem-003",
+          "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "elapsedSeconds": 21.645117125000002,
+          "providerRequests": 7,
+          "independentReview": {
+            "passed": false,
+            "reason": "Correct most-frequent restaurant and usual Chicken Bowl ordered once with unrelated source state preserved; however final claims Chicken Bowl appeared in 3 of 4 Chipotle orders, while original history contains it in only 2. Correct mutation but inaccurate habitual-frequency report, so not full semantic pass. Cleanup confirmed."
+          }
         }
       ],
       "officialBenchmarkScore": null,
@@ -15790,6 +16634,23 @@
           "classification": "runtime_failure",
           "providerRequests": 31,
           "completedRun": false
+        },
+        {
+          "artifact": "ios-android-mem-006-qwen-34aaff4484",
+          "sourceTask": "mem-006",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "acceptance": {
+            "passed": false
+          },
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "failureType": "RuntimeError",
+          "classification": "runtime_failure",
+          "providerRequests": 31,
+          "completedRun": false
         }
       ],
       "officialBenchmarkScore": null,
@@ -15882,6 +16743,35 @@
             "passed": false,
             "reviewer": "root",
             "reason": "Incomplete enumeration: source has 10 upcoming games for followed teams; final reports 6 and omits March 8/9/10 Lakers and March 9 Yankees records. Pagination completeness not verified."
+          }
+        },
+        {
+          "completedRun": true,
+          "artifact": "ios-android-mem-007-qwen-eb44743e12",
+          "sourceTask": "mem-007",
+          "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "elapsedSeconds": 37.487040666,
+          "providerRequests": 9,
+          "independentReview": {
+            "passed": false,
+            "reason": "Pagination improved: all 10 upcoming favorite-team games now listed, and Yankees TicketBox Mar 21 event found. Still not full pass: final calls Feb 3 Chiefs game NFC Championship unsupported by source Championship Sunday headline, and says no matching TicketBox events immediately before reporting one. No mutations; cleanup verified."
           }
         }
       ],
@@ -16526,6 +17416,35 @@
           "classification": "runtime_failure",
           "providerRequests": 12,
           "completedRun": false
+        },
+        {
+          "completedRun": true,
+          "artifact": "ios-android-mem-018-qwen-cd852d28ae",
+          "sourceTask": "mem-018",
+          "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "elapsedSeconds": 125.442745667,
+          "providerRequests": 29,
+          "independentReview": {
+            "passed": false,
+            "reason": "Completes after 29 requests but recommendations include already-past March 3/4 events relative to March 5 reference date without warning, and counts ride origins as destinations (Work to Home/Airport attributed to Financial District). Therefore neighborhood frequency analysis and upcoming activity suggestions are not reliable."
+          }
         }
       ],
       "officialBenchmarkScore": null,
@@ -17210,6 +18129,35 @@
             "reviewer": "root",
             "reason": "Requested new Travel Log document was not created; existing Untitled document was modified instead. The report also maps Carmel Valley to London based on listing ID and treats airport ride estimates as history. Missing create-document tool is fixed in pending phone version; geography/history claims still require revalidation."
           }
+        },
+        {
+          "completedRun": true,
+          "artifact": "ios-android-mem-025-qwen-dcbd5ce55d",
+          "sourceTask": "mem-025",
+          "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "elapsedSeconds": 124.587359834,
+          "providerRequests": 25,
+          "independentReview": {
+            "passed": false,
+            "reason": "No new Travel Log created: appended to existing Weekend Itinerary instead. Includes upcoming April trips in historical frequency; claims no ride history although fixture state contains trips. Both requested output location and source classification fail. Original unrelated document modified by append; run-owned workspace removed."
+          }
         }
       ],
       "officialBenchmarkScore": null,
@@ -17319,6 +18267,35 @@
             "passed": false,
             "reviewer": "root",
             "reason": "Mail counts are correct, but requested CloudDocs review was replaced with Notes data; no document .txt read is present in tool trace. The saved note conflates Notes with CloudDocs and contradicts itself about latest channel activity. Only partial analysis is established."
+          }
+        },
+        {
+          "completedRun": true,
+          "artifact": "ios-android-mem-026-qwen-fbf0725abc",
+          "sourceTask": "mem-026",
+          "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "elapsedSeconds": 92.230795458,
+          "providerRequests": 30,
+          "independentReview": {
+            "passed": false,
+            "reason": "Created one Work Load Analysis note, but synthesis omits actual work-email volume and misattributes leadership topics as direct launch-channel contributions. Says leadership messages mostly Jordan-authored although own messages are 5 of 20 in current workspace (4 of 18 in other workspace). Ranking may be an estimate, but factual support is inaccurate. Cleanup confirmed."
           }
         }
       ],
@@ -18906,6 +19883,35 @@
             "reviewer": "root",
             "reason": "The saved profile attributes writing own poems to the user, but the source sender is Grace. read_thread previously omitted an explicit current-user indicator; boundary is being improved."
           }
+        },
+        {
+          "completedRun": true,
+          "artifact": "ios-android-mem-041-qwen-f20e361fc7",
+          "sourceTask": "mem-041",
+          "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "elapsedSeconds": 36.080362833,
+          "providerRequests": 11,
+          "independentReview": {
+            "passed": false,
+            "reason": "Still attributes Grace writing a poem to the user despite explicit isFromCurrentUser=false in read_thread; final supplies Jason Mott as the author of Crying in H Mart without supporting source attribution. Saved preferences include unsupported writing claims."
+          }
         }
       ],
       "officialBenchmarkScore": null,
@@ -19001,13 +20007,61 @@
           "requiredFixtureAndVerifier": "source slides; real slide structure and content verifier"
         }
       ],
-      "status": "requires_isolated_source_fixtures",
+      "status": "android_adaptation_attempted_not_passed",
       "canonicalScenario": "iOSWorld/mem-042",
       "relationship": "distinct_source_variant",
       "acceptance": "All source business criteria, preserved inputs, independent persisted-state readback; partial components do not pass the full task.",
       "cleanup": "Remove only run-owned fixture objects and verify their absence; restore any recorded system baseline.",
-      "results": [],
-      "officialBenchmarkScore": null
+      "results": [
+        {
+          "completedRun": true,
+          "artifact": "ios-android-mem-042-qwen-03fbe30797",
+          "sourceTask": "mem-042",
+          "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "elapsedSeconds": 132.23431079099998,
+          "providerRequests": 29,
+          "independentReview": {
+            "passed": false,
+            "reason": "Star-file metadata target fix works: twelve file records change only starred flag, folders and other metadata retained. Full audit not accepted: report claims all presentations/content reviewed while acknowledges eight inaccessible subfolder bodies, spreadsheet content review incomplete, and no new report document (appended existing Untitled document). Creation-contract fix queued separately. Cleanup verified."
+          }
+        },
+        {
+          "artifact": "ios-android-mem-042-qwen-24d4c045a3",
+          "sourceTask": "mem-042",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "acceptance": {
+            "passed": false
+          },
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "failureType": "RuntimeError",
+          "classification": "runtime_failure",
+          "providerRequests": 31,
+          "completedRun": false
+        }
+      ],
+      "officialBenchmarkScore": null,
+      "reviewPending": false
     },
     {
       "key": "iOSWorld/mem-043",
@@ -19879,13 +20933,61 @@
           "requiredFixtureAndVerifier": "source document bodies; saved-file diff; GUI rubric explicitly substituted"
         }
       ],
-      "status": "requires_isolated_source_fixtures",
+      "status": "android_adaptation_attempted_not_passed",
       "canonicalScenario": "iOSWorld/mem-050",
       "relationship": "distinct_source_variant",
       "acceptance": "All source business criteria, preserved inputs, independent persisted-state readback; partial components do not pass the full task.",
       "cleanup": "Remove only run-owned fixture objects and verify their absence; restore any recorded system baseline.",
-      "results": [],
-      "officialBenchmarkScore": null
+      "results": [
+        {
+          "artifact": "ios-android-mem-050-qwen-40ff80a65b",
+          "sourceTask": "mem-050",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "acceptance": {
+            "passed": false
+          },
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "failureType": "RuntimeError",
+          "classification": "runtime_failure",
+          "providerRequests": 31,
+          "completedRun": false
+        },
+        {
+          "completedRun": true,
+          "artifact": "ios-android-mem-050-qwen-e79b5aaa54",
+          "sourceTask": "mem-050",
+          "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "elapsedSeconds": 76.241677584,
+          "providerRequests": 19,
+          "independentReview": {
+            "passed": false,
+            "reason": "Requested new CloudDocs Social Obligations Calendar was not created. After incorrect create_document file arguments, model substituted a Notes object and claimed completion. Source files otherwise preserved; cleanup confirmed. Creation-contract fix covers this failure family."
+          }
+        }
+      ],
+      "officialBenchmarkScore": null,
+      "reviewPending": false
     },
     {
       "key": "iOSWorld/mem-051",
@@ -20149,6 +21251,35 @@
           "independentReview": {
             "passed": false,
             "reason": "Profile and document summary saved, but requested notification signals omitted: adapter lacked notifications despite upstream seeds. Profile profileViewsThisWeek=23 was present, yet report omitted this signal. Partial, requires exporter fix and rerun."
+          }
+        },
+        {
+          "completedRun": true,
+          "artifact": "ios-android-mem-052-qwen-d998b5d762",
+          "sourceTask": "mem-052",
+          "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "elapsedSeconds": 69.793356333,
+          "providerRequests": 16,
+          "independentReview": {
+            "passed": false,
+            "reason": "Notification export fix exercised: reads all ten notifications and correctly reports three profile views; summary note created. Full task still fails factual attribution: Agent Systems Review says Jordan started desktop sandbox compatibility, but note says finalized it; browser automation instrumentation belongs to Sam Lee yet is presented as Jordan expertise evidence. No other files modified; cleanup verified."
           }
         }
       ],

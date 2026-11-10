@@ -1173,7 +1173,11 @@
         "passed": false
       },
       "elapsedSeconds": 26.372937125,
-      "providerRequests": 7
+      "providerRequests": 7,
+      "independentReview": {
+        "passed": false,
+        "reason": "Source event timestamp 2026-03-17T07:30:00Z is 00:30 PDT, but final reports 19:30 local or 15:30 local. Venue/prices correct and source unchanged; time conversion fails full acceptance."
+      }
     },
     {
       "completedRun": true,
@@ -1202,7 +1206,11 @@
         "passed": false
       },
       "elapsedSeconds": 22.798150167,
-      "providerRequests": 6
+      "providerRequests": 6,
+      "independentReview": {
+        "passed": false,
+        "reason": "Source event timestamp 2026-03-17T07:30:00Z is 00:30 PDT, but final reports 19:30 local or 15:30 local. Venue/prices correct and source unchanged; time conversion fails full acceptance."
+      }
     },
     {
       "completedRun": true,
@@ -2563,10 +2571,14 @@
       "acceptance": {
         "sourceFilesPreserved": true,
         "semanticReviewRequired": true,
-        "passed": false
+        "passed": true
       },
       "elapsedSeconds": 28.485906542000002,
-      "providerRequests": 7
+      "providerRequests": 7,
+      "independentReview": {
+        "passed": true,
+        "reason": "Only one Nobu order to source Home and one launch-war-room progress message added. Total 77.26 follows source checkout formula. Progress references latest source canary expansion to 10 percent and future staged rollout; general announcement sender/content summary matches source latest messages. No unrelated mutation; owned workspace and reverse removed."
+      }
     },
     {
       "artifact": "ios-android-multi-035-qwen-c5971b89f0",
@@ -2948,6 +2960,497 @@
         "passed": true,
         "reason": "Exactly one source Chipotle Chicken Bowl delivery to source Home address 410 Brannan; price 20.70 matches source fee arithmetic; final confirmation explicitly states isolated fixture only; no unrelated state mutation; workspace absent and reverse removed."
       }
+    },
+    {
+      "completedRun": true,
+      "artifact": "ios-android-mem-003-qwen-24c12ff9b2",
+      "sourceTask": "mem-003",
+      "provider": "35a3",
+      "model": "qwen3.6-35b-a3b-q4_k_m",
+      "officialBenchmarkScore": null,
+      "transport": "mcp",
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "rawAcceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "acceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "elapsedSeconds": 21.645117125000002,
+      "providerRequests": 7,
+      "independentReview": {
+        "passed": false,
+        "reason": "Correct most-frequent restaurant and usual Chicken Bowl ordered once with unrelated source state preserved; however final claims Chicken Bowl appeared in 3 of 4 Chipotle orders, while original history contains it in only 2. Correct mutation but inaccurate habitual-frequency report, so not full semantic pass. Cleanup confirmed."
+      }
+    },
+    {
+      "artifact": "ios-android-mem-006-qwen-34aaff4484",
+      "sourceTask": "mem-006",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "acceptance": {
+        "passed": false
+      },
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "failureType": "RuntimeError",
+      "classification": "runtime_failure",
+      "providerRequests": 31,
+      "completedRun": false
+    },
+    {
+      "completedRun": true,
+      "artifact": "ios-android-mem-007-qwen-eb44743e12",
+      "sourceTask": "mem-007",
+      "provider": "35a3",
+      "model": "qwen3.6-35b-a3b-q4_k_m",
+      "officialBenchmarkScore": null,
+      "transport": "mcp",
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "rawAcceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "acceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "elapsedSeconds": 37.487040666,
+      "providerRequests": 9,
+      "independentReview": {
+        "passed": false,
+        "reason": "Pagination improved: all 10 upcoming favorite-team games now listed, and Yankees TicketBox Mar 21 event found. Still not full pass: final calls Feb 3 Chiefs game NFC Championship unsupported by source Championship Sunday headline, and says no matching TicketBox events immediately before reporting one. No mutations; cleanup verified."
+      }
+    },
+    {
+      "completedRun": true,
+      "artifact": "ios-android-mem-018-qwen-cd852d28ae",
+      "sourceTask": "mem-018",
+      "provider": "35a3",
+      "model": "qwen3.6-35b-a3b-q4_k_m",
+      "officialBenchmarkScore": null,
+      "transport": "mcp",
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "rawAcceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "acceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "elapsedSeconds": 125.442745667,
+      "providerRequests": 29,
+      "independentReview": {
+        "passed": false,
+        "reason": "Completes after 29 requests but recommendations include already-past March 3/4 events relative to March 5 reference date without warning, and counts ride origins as destinations (Work to Home/Airport attributed to Financial District). Therefore neighborhood frequency analysis and upcoming activity suggestions are not reliable."
+      }
+    },
+    {
+      "completedRun": true,
+      "artifact": "ios-android-mem-025-qwen-dcbd5ce55d",
+      "sourceTask": "mem-025",
+      "provider": "35a3",
+      "model": "qwen3.6-35b-a3b-q4_k_m",
+      "officialBenchmarkScore": null,
+      "transport": "mcp",
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "rawAcceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "acceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "elapsedSeconds": 124.587359834,
+      "providerRequests": 25,
+      "independentReview": {
+        "passed": false,
+        "reason": "No new Travel Log created: appended to existing Weekend Itinerary instead. Includes upcoming April trips in historical frequency; claims no ride history although fixture state contains trips. Both requested output location and source classification fail. Original unrelated document modified by append; run-owned workspace removed."
+      }
+    },
+    {
+      "completedRun": true,
+      "artifact": "ios-android-mem-026-qwen-fbf0725abc",
+      "sourceTask": "mem-026",
+      "provider": "35a3",
+      "model": "qwen3.6-35b-a3b-q4_k_m",
+      "officialBenchmarkScore": null,
+      "transport": "mcp",
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "rawAcceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "acceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "elapsedSeconds": 92.230795458,
+      "providerRequests": 30,
+      "independentReview": {
+        "passed": false,
+        "reason": "Created one Work Load Analysis note, but synthesis omits actual work-email volume and misattributes leadership topics as direct launch-channel contributions. Says leadership messages mostly Jordan-authored although own messages are 5 of 20 in current workspace (4 of 18 in other workspace). Ranking may be an estimate, but factual support is inaccurate. Cleanup confirmed."
+      }
+    },
+    {
+      "completedRun": true,
+      "artifact": "ios-android-mem-041-qwen-f20e361fc7",
+      "sourceTask": "mem-041",
+      "provider": "35a3",
+      "model": "qwen3.6-35b-a3b-q4_k_m",
+      "officialBenchmarkScore": null,
+      "transport": "mcp",
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "rawAcceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "acceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "elapsedSeconds": 36.080362833,
+      "providerRequests": 11,
+      "independentReview": {
+        "passed": false,
+        "reason": "Still attributes Grace writing a poem to the user despite explicit isFromCurrentUser=false in read_thread; final supplies Jason Mott as the author of Crying in H Mart without supporting source attribution. Saved preferences include unsupported writing claims."
+      }
+    },
+    {
+      "completedRun": true,
+      "artifact": "ios-android-mem-042-qwen-03fbe30797",
+      "sourceTask": "mem-042",
+      "provider": "35a3",
+      "model": "qwen3.6-35b-a3b-q4_k_m",
+      "officialBenchmarkScore": null,
+      "transport": "mcp",
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "rawAcceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "acceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "elapsedSeconds": 132.23431079099998,
+      "providerRequests": 29,
+      "independentReview": {
+        "passed": false,
+        "reason": "Star-file metadata target fix works: twelve file records change only starred flag, folders and other metadata retained. Full audit not accepted: report claims all presentations/content reviewed while acknowledges eight inaccessible subfolder bodies, spreadsheet content review incomplete, and no new report document (appended existing Untitled document). Creation-contract fix queued separately. Cleanup verified."
+      }
+    },
+    {
+      "artifact": "ios-android-mem-042-qwen-24d4c045a3",
+      "sourceTask": "mem-042",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "acceptance": {
+        "passed": false
+      },
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "failureType": "RuntimeError",
+      "classification": "runtime_failure",
+      "providerRequests": 31,
+      "completedRun": false
+    },
+    {
+      "artifact": "ios-android-mem-050-qwen-40ff80a65b",
+      "sourceTask": "mem-050",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "acceptance": {
+        "passed": false
+      },
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "failureType": "RuntimeError",
+      "classification": "runtime_failure",
+      "providerRequests": 31,
+      "completedRun": false
+    },
+    {
+      "completedRun": true,
+      "artifact": "ios-android-mem-050-qwen-e79b5aaa54",
+      "sourceTask": "mem-050",
+      "provider": "35a3",
+      "model": "qwen3.6-35b-a3b-q4_k_m",
+      "officialBenchmarkScore": null,
+      "transport": "mcp",
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "rawAcceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "acceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "elapsedSeconds": 76.241677584,
+      "providerRequests": 19,
+      "independentReview": {
+        "passed": false,
+        "reason": "Requested new CloudDocs Social Obligations Calendar was not created. After incorrect create_document file arguments, model substituted a Notes object and claimed completion. Source files otherwise preserved; cleanup confirmed. Creation-contract fix covers this failure family."
+      }
+    },
+    {
+      "completedRun": true,
+      "artifact": "ios-android-mem-052-qwen-d998b5d762",
+      "sourceTask": "mem-052",
+      "provider": "35a3",
+      "model": "qwen3.6-35b-a3b-q4_k_m",
+      "officialBenchmarkScore": null,
+      "transport": "mcp",
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "rawAcceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "acceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "elapsedSeconds": 69.793356333,
+      "providerRequests": 16,
+      "independentReview": {
+        "passed": false,
+        "reason": "Notification export fix exercised: reads all ten notifications and correctly reports three profile views; summary note created. Full task still fails factual attribution: Agent Systems Review says Jordan started desktop sandbox compatibility, but note says finalized it; browser automation instrumentation belongs to Sam Lee yet is presented as Jordan expertise evidence. No other files modified; cleanup verified."
+      }
+    },
+    {
+      "completedRun": true,
+      "artifact": "ios-android-multi-015-qwen-1c53b8db47",
+      "sourceTask": "multi-015",
+      "provider": "35a3",
+      "model": "qwen3.6-35b-a3b-q4_k_m",
+      "officialBenchmarkScore": null,
+      "transport": "mcp",
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "rawAcceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "acceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "elapsedSeconds": 44.692262375,
+      "providerRequests": 16,
+      "independentReview": {
+        "passed": false,
+        "reason": "Numeric cell export fixed and expense row now stores 257.3 as a number, but existing Total remains SUM(B2:B7), excluding new row B8. Budget total is stale; task is not accepted despite correct reported arithmetic."
+      }
+    },
+    {
+      "completedRun": true,
+      "artifact": "ios-android-multi-015-qwen-7fab488c2e",
+      "sourceTask": "multi-015",
+      "provider": "35a3",
+      "model": "qwen3.6-35b-a3b-q4_k_m",
+      "officialBenchmarkScore": null,
+      "transport": "mcp",
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "rawAcceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "acceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "elapsedSeconds": 37.181552,
+      "providerRequests": 19,
+      "independentReview": {
+        "passed": false,
+        "reason": "Correct latest past event and receipt-based arithmetic 225 + 15.79 + 16.50 = 257.29; numeric Actual C8 persisted and B9 formula extended. Still falsely describes same-day rides as trips to/from the event: source routes are Home to Russian Hill and back, not Chase Center. Same-day rides may support an explicitly qualified estimate, but final asserts an unsupported event linkage. Original source data and run cleanup retained."
+      }
+    },
+    {
+      "completedRun": true,
+      "artifact": "ios-android-multi-035-qwen-6eda806493",
+      "sourceTask": "multi-035",
+      "provider": "35a3",
+      "model": "qwen3.6-35b-a3b-q4_k_m",
+      "officialBenchmarkScore": null,
+      "transport": "mcp",
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "rawAcceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "acceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "elapsedSeconds": 85.20218429100001,
+      "providerRequests": 26,
+      "independentReview": {
+        "passed": false,
+        "reason": "Correct Saturday 19:00 PST outdoor reservation and Date Night movie list, but unrequested ride dispatch added one trip while goal only asks price comparison. Final total wrongly includes movie ticket despite rubric requesting dinner plus ride only; friend-review linkage unresolved. All owned changes cleaned. Effect-scope fix queued with identical default request budget."
+      }
+    },
+    {
+      "completedRun": true,
+      "artifact": "ios-android-multi-053-qwen-5be5b150bf",
+      "sourceTask": "multi-053",
+      "provider": "35a3",
+      "model": "qwen3.6-35b-a3b-q4_k_m",
+      "officialBenchmarkScore": null,
+      "transport": "mcp",
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "rawAcceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "acceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "elapsedSeconds": 53.854099459,
+      "providerRequests": 29,
+      "independentReview": {
+        "passed": false,
+        "reason": "New CloudDocs document creation now works, but pre-show dinner booked March 6 while selected show is March 31. Also created a CityRide request when user only asked to check prices. Cross-artifact outing plan is inconsistent; cleanup does not repair acceptance."
+      }
+    },
+    {
+      "completedRun": true,
+      "artifact": "ios-android-multi-068-qwen-518e5ba6e3",
+      "sourceTask": "multi-068",
+      "provider": "35a3",
+      "model": "qwen3.6-35b-a3b-q4_k_m",
+      "officialBenchmarkScore": null,
+      "transport": "mcp",
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "rawAcceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "acceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": true
+      },
+      "elapsedSeconds": 44.920346292,
+      "providerRequests": 20,
+      "independentReview": {
+        "passed": true,
+        "reason": "Original Sunset Sail source listing and upcoming booking match report. New Barcelona Experience Notes text contains matching booking facts, explicitly suggested itinerary and packing items. Exact new document ID registered and starred in Drive, only one reminder appended to existing Travel Packing List preserving its entire original body. All unrelated files preserved; cleanup confirmed."
+      }
+    },
+    {
+      "artifact": "ios-android-multi-088-qwen-878d6bfda7",
+      "sourceTask": "multi-088",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "acceptance": {
+        "passed": false
+      },
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "failureType": "RuntimeError",
+      "classification": "runtime_failure",
+      "providerRequests": 31,
+      "completedRun": false
+    },
+    {
+      "artifact": "ios-android-multi-088-qwen-e9c725b619",
+      "sourceTask": "multi-088",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "acceptance": {
+        "passed": false
+      },
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "failureType": "RuntimeError",
+      "classification": "runtime_failure",
+      "providerRequests": 31,
+      "completedRun": false
     }
   ]
 }
