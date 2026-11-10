@@ -383,3 +383,53 @@ as another positive message; Terra did not make that claim. DeepSeek posted the
 channel confirmation before sending the digest, though the final independent
 state passed. These observations are retained separately from business-effect
 acceptance. No product fix or general speedup is claimed from this batch.
+
+
+### MattermostIncidentEscalationTask: critical ticket to coordinated response
+
+The complete 27-message source fixture was preserved, with synthetic Harry as
+author and unique source/incident channel prefixes. All models had to discover
+the critical ticket, create its channel, locate Sam by email and add him, send
+the description through offline Mail, and schedule tomorrow's discussion. The
+fixture adapter now exposes the synthetic team users' existing email field;
+previously it returned names without the identity field required by this task.
+Calendar times are explicitly UTC in this adaptation; this is not an official
+benchmark score. No ongoing monitoring service is created by this one-shot run.
+
+| Outer model | Seconds | GUI steps | Independent adapted outcome |
+| --- | ---: | ---: | --- |
+| 35a3 | 52.02 | 7 | fail: scheduled 01:00 UTC instead of explicit 09:00 UTC |
+| DeepSeek Flash | 54.98 | 8 | pass |
+| Terra | 58.68 | 5 | pass |
+
+All three correctly created the incident channel, added the requested identity,
+and sent the correct local email. Each made one GUI call for Mail; other actions
+used interfaces. Membership, email and calendar state were read independently;
+all unique source/incident channels, posts, events and Mail fixtures were cleaned.
+35a3 verified that its submitted timestamp persisted, but that timestamp already
+contained its timezone interpretation mistake. Its 01:00 UTC equals 09:00 Shanghai;
+this is failure to honor this request's explicit UTC constraint, not evidence
+that ordinary unzoned requests should default to UTC.
+
+An earlier 35a3 attempt was invalid as a model comparison: it supplied the
+channel name as an ID, and the host permission handler performed an unguarded
+lookup that raised 404 and aborted the run. The corrected handler compares the
+argument with known owned channel IDs and rejects unknown IDs without lookup.
+The valid rerun recovered from the same initial wrong argument by listing
+channels. Invalid-run evidence and successful cleanup are retained separately.
+
+The reminder skill now explicitly gives a requested time zone precedence over
+the device zone and requires comparing readback to the requested wall-clock
+meaning, not merely to submitted arguments. The asset APK built successfully;
+installed APK and seeded skill hashes matched. A separately labelled 35a3 control
+explicitly requested reading this skill, and the read completed. It passed all
+independent checks in 60.13 seconds with 5 GUI steps,
+including 09:00 UTC. All owned effects were cleaned. This is one successful
+explicit-skill control, not a repeatability claim or proof of automatic selection.
+The original baseline failure remains in the comparison.
+
+After the asset install, the native service selected a new ephemeral port. The
+host's stale forwarding was updated to the observed service port and authenticated
+health checked before the control. This infrastructure interruption is excluded
+from model results. APK SHA-256:
+`ad615ef890c2e3e902bdfc92535184af727360bc0fdfdc91397038aba0efef32`.
