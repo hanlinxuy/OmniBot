@@ -13,6 +13,7 @@ import { type LaunchConfig, PROVIDER_ID } from "./config.js";
 import { promptContent, toolDescription } from "./content.js";
 import { sessionMcpConfig } from "./mcp.js";
 import { PiProjection } from "./projection.js";
+import { phoneBashTool } from "./shell.js";
 
 interface PromptOperation {
   abort: AbortController;
@@ -55,7 +56,11 @@ export class PiAcpSession {
       cwd: manager.getCwd(), agentDir: config.agentDir, settingsManager: settings,
       noExtensions: true,
       additionalSkillPaths: config.skillPaths,
-      extensionFactories: [owned.permissions(), createMcpExtension({ loadConfig: () => mcpConfig })],
+      extensionFactories: [
+        (pi) => { pi.registerTool(phoneBashTool(manager.getCwd())); },
+        owned.permissions(),
+        createMcpExtension({ loadConfig: () => mcpConfig }),
+      ],
     });
     await resources.reload();
     const storedModel = manager.buildSessionContext().model;

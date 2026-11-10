@@ -61,6 +61,10 @@ action after updating the app; checking for updates does not replace the launche
   same request. Agent-level and provider-level transport retries are disabled.
 - Every tool passes through ACP `session/request_permission`. OmniBot's existing
   selected permission policy decides whether to prompt or allow automatically.
+- The phone's bash tool uses Pi's own shell backend with a 120-second default
+  when the model omits `timeout`. Longer commands can provide an explicit
+  timeout. Pi still owns process-group termination, cancellation, output and
+  tool failure reporting; this does not end or replay the ACP prompt.
 - Closing aborts active work, emits Pi's `session_shutdown` extension hook,
   closes MCP connections and disposes the session. It retains the session file.
 
@@ -115,6 +119,12 @@ the same fixture-driven checks inside its PRoot:
 node --import tsx scripts/verify-device.mjs emulator-5554 alpine
 node --import tsx scripts/verify-device.mjs emulator-5554 ubuntu
 ```
+
+For an explicitly authorized physical device, pass its serial and
+`--allow-physical`. Add `--check-default-timeout` to exercise the real
+120-second omitted-timeout path, verify its child process stopped, and confirm
+the same ACP session can continue afterward. This fixture uses temporary local
+Provider/MCP endpoints and does not read personal phone data.
 
 The device script uses temporary session/workspace files, adb reverse for its
 local Provider/MCP fixtures, and the app's existing `init-host` launcher. It

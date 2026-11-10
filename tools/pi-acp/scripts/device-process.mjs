@@ -4,8 +4,10 @@ import { pathToFileURL } from "node:url";
 const quote = (value) => `'${value.replaceAll("'", "'\\''")}'`;
 
 /** Start the same app-owned PRoot launcher used by LocalAcpRuntime. */
-export function deviceProcess(serial, distribution, command) {
-  if (!/^emulator-\d+$/.test(serial || "")) throw new Error("An explicit disposable emulator is required.");
+export function deviceProcess(serial, distribution, command, { allowPhysical = false } = {}) {
+  if (!/^emulator-\d+$/.test(serial || "") && !(allowPhysical && /^[A-Za-z0-9]+$/.test(serial || ""))) {
+    throw new Error("An explicit emulator, or an authorized physical serial with allowPhysical, is required.");
+  }
   if (!["alpine", "ubuntu"].includes(distribution)) throw new Error("Expected alpine or ubuntu.");
   const adb = process.env.ADB || "adb";
   const pkg = "cn.com.omnimind.bot";

@@ -9,8 +9,11 @@ import { client, methods, ndJsonStream } from "@agentclientprotocol/sdk/unstable
 import { configFor, httpFixture, stream } from "../test/fixtures.ts";
 import { deviceProcess } from "./device-process.mjs";
 
-const [serial, distribution] = process.argv.slice(2);
-assert(/^emulator-\d+$/.test(serial || "") && ["alpine", "ubuntu"].includes(distribution));
+const [serial, distribution, ...flags] = process.argv.slice(2);
+assert(flags.every(flag => ["--allow-physical", "--check-default-timeout"].includes(flag)));
+const allowPhysical = flags.includes("--allow-physical");
+const checkDefaultTimeout = flags.includes("--check-default-timeout");
+assert((/^emulator-\d+$/.test(serial || "") || allowPhysical && /^[A-Za-z0-9]+$/.test(serial || "")) && ["alpine", "ubuntu"].includes(distribution));
 const adb = (...args) => execFileSync(process.env.ADB || "adb", ["-s", serial, ...args], { encoding: "utf8", timeout: 30000 });
 const quote = value => `'${value.replaceAll("'", "'\\''")}'`;
 const home = `/tmp/omnibot-pi-acceptance-${randomUUID()}`;
@@ -20,10 +23,10 @@ const deadline = setTimeout(() => {
   for (const child of processes) child.kill();
   console.error("Android Pi verification exceeded its observation deadline.");
   process.exit(1);
-}, 120000);
+}, checkDefaultTimeout ? 240000 : 120000);
 
 async function shell(command, input = "") {
-  const child = deviceProcess(serial, distribution, command);
+  const child = deviceProcess(serial, distribution, command, { allowPhysical });
   processes.add(child);
   let output = "";
   child.stdout.on("data", data => { output += data; });
@@ -47,6 +50,7 @@ const provider = await httpFixture((body, response) => {
   }
   const tool = text.includes("write-fixture") ? { name: "write", arguments: { path: "proof.txt", content: "device-file-proof" } }
     : text.includes("read-fixture") ? { name: "read", arguments: { path: "proof.txt" } }
+    : text.includes("timeout-shell-fixture") ? { name: "bash", arguments: { command: "sleep 180 & pi_test_sleep_pid=$!; printf '%s' \"$pi_test_sleep_pid\" > timeout.pid; printf 'device-timeout-running\\n'; wait \"$pi_test_sleep_pid\"" } }
     : text.includes("long-shell-fixture") ? { name: "bash", arguments: { command: "sleep 30 & pi_test_sleep_pid=$!; printf '%s' \"$pi_test_sleep_pid\" > sleep.pid; printf 'device-shell-running\\n'; wait \"$pi_test_sleep_pid\"" } }
     : text.includes("shell-fixture") ? { name: "bash", arguments: { command: "printf 'device-shell-proof'" } }
     : text.includes("mcp-fixture") ? { name: "mcp__fixture__ping", arguments: {} } : undefined;
@@ -65,7 +69,7 @@ let partial = Promise.withResolvers();
 const shellStarted = Promise.withResolvers();
 async function start() {
   const child = deviceProcess(serial, distribution,
-    `export PI_CODING_AGENT_DIR=${quote(home)} OMNIBOT_PI_MODELS_PATH=${quote(`${home}/models.json`)} OMNIBOT_PI_MODEL=fixture OMNIBOT_PI_API_KEY=test-key OMNIBOT_PI_HEADERS='{}'; exec omnibot-pi-acp`);
+    `export PI_CODING_AGENT_DIR=${quote(home)} OMNIBOT_PI_MODELS_PATH=${quote(`${home}/models.json`)} OMNIBOT_PI_MODEL=fixture OMNIBOT_PI_API_KEY=test-key OMNIBOT_PI_HEADERS='{}'; exec omnibot-pi-acp`, { allowPhysical });
   processes.add(child);
   let diagnostics = "";
   child.stderr.on("data", data => { diagnostics += data; });
@@ -132,10 +136,17 @@ try {
   assert.equal((await longShell).stopReason, "cancelled");
   assert.ok(Date.now() - cancelStarted < 10000, "Bash cancellation did not stop promptly");
   await shell(`! kill -0 "$(cat ${quote(`${home}/work/sleep.pid`)})" 2>/dev/null`);
+  if (checkDefaultTimeout) {
+    const offset = updates.length;
+    assert.equal((await prompt("timeout-shell-fixture")).stopReason, "end_turn");
+    assert.ok(updates.slice(offset).some(({ update }) => update.sessionUpdate === "tool_call_update" && update.status === "failed" && JSON.stringify(update).includes("Command timed out after 120 seconds")));
+    await shell(`! kill -0 "$(cat ${quote(`${home}/work/timeout.pid`)})" 2>/dev/null`);
+    assert.equal((await prompt("after timeout")).stopReason, "end_turn");
+  }
   await running.remote.request(methods.agent.session.close, { sessionId: session.sessionId });
   await running.close();
   running = undefined;
-  console.log(JSON.stringify({ serial, distribution, pi: "1.4.0", protocol: 1, provider: "local fixture", fileReadWrite: true, bash: true, mcp: true, restoredIdentity: true, cancellation: true, shellChildStopped: true, closedCleanly: true }));
+  console.log(JSON.stringify({ serial, distribution, pi: "1.4.0", protocol: 1, provider: "local fixture", fileReadWrite: true, bash: true, mcp: true, restoredIdentity: true, cancellation: true, shellChildStopped: true, defaultTimeoutVerified: checkDefaultTimeout, closedCleanly: true }));
 } finally {
   clearTimeout(deadline);
   if (running) await running.close().catch(() => {});
