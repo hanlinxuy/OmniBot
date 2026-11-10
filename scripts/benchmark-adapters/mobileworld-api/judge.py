@@ -54,7 +54,7 @@ def judge(source, task_file, ssh, compose):
     helper_file=source/'src/mobile_world/runtime/app_helpers/mastodon.py'
     helper_ast=ast.parse(helper_file.read_text())
     helper_functions=[node for node in helper_ast.body if isinstance(node,(ast.FunctionDef,ast.AsyncFunctionDef)) or isinstance(node,ast.Assign) and isinstance(node.value,ast.Constant)]
-    namespace={'datetime':datetime.datetime,'json':json,'logger':types.SimpleNamespace(error=judge_error,info=lambda *_:None)}
+    namespace={'datetime':datetime.datetime,'json':json,'logger':types.SimpleNamespace(error=judge_error,info=lambda *_:None,warning=lambda *_:None,debug=lambda *_:None)}
     module=ast.Module(body=[ast.ImportFrom(module='__future__',names=[ast.alias(name='annotations')],level=0),*helper_functions],type_ignores=[])
     exec(compile(ast.fix_missing_locations(module),str(helper_file),'exec'),namespace)
     queries=[]
