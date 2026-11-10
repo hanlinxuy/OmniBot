@@ -546,3 +546,22 @@ post ID absent, archived the owned channel and removed remaining run resources.
 Future cleanup deletes replies before roots. Mail baseline, calendar, channel,
 posts and guest workspace cleanup were verified for all runs. These are fixture/API
 adaptations, not original emulator scores or external email-delivery tests.
+
+
+### Dependency and final-answer audit checkpoint
+
+CountFileLinesTask, SumFileLinesTask, LocalFileManagementTask and
+LocalFileManagementTask2 depend on a preloaded Downloads baseline. Their source
+initializers do not construct it, and the current source checkout did not yield
+the matching archive fixtures. They are recorded as fixture-not-located, not run
+or failed model attempts. Expected line counts and deletion filename lists are
+not used to fabricate supposedly original fixtures. This does not prove that the
+upstream emulator image lacks those files.
+
+All 15 earlier selected-paper answers were rechecked against the final raw
+provider SSE response. Each exactly matches the answer used for scoring. The
+runner already groups ACP text by message ID and selects the last message;
+intermediate tool-call narration did not cause these format failures. 35a3's
+final responses themselves include explanations/tables or alternative numbers.
+The previous baseline counts therefore remain unchanged. No model rerun or
+product improvement is claimed by this evidence audit.
