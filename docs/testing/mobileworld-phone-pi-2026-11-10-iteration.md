@@ -938,3 +938,36 @@ workspaces and the temporary provider reverse are absent. Evidence:
 `delete-confirm-matrix-audit.json`, per-run clarification, permission, acceptance
 and finally-readback records. This is adapted source-task coverage, not an
 official benchmark score.
+
+
+## Product repair: read calendar descriptions through the native interface
+
+The missing description was not only a grader assumption: native create/update
+accept notes, but event listing omitted them and no event-detail tool exposed
+those notes. `AgentCalendarToolService.listEvents` now projects the provider's
+DESCRIPTION and returns `description` alongside the existing fields. Both
+Chinese and English tool descriptions document the result. Filtering and the
+single ACP lifecycle are unchanged.
+
+Six targeted Android tests pass, including a provider-backed test for multiline
+Unicode notes, null-to-empty notes and unchanged times. The APK builds and the
+final installed bytes match SHA-256
+`cf9c9f557eccaffc8408c4a5b922a4c9f3978abd89311088e0ae845874ac6fb2`.
+Native MCP create/list/delete verification reads multiline Chinese/emoji and
+empty descriptions exactly, preserves the supplied UTC times and verifies zero
+remaining owned events. A 35a3 resource-conflict regression with description
+preservation included passes in 71.47 seconds / 8 provider requests, with Mail,
+calendar, DM and owned-channel cleanup verified. That full scenario used the
+same functional change before the final English tool-description wording update;
+the final APK also receives a fresh native field readback.
+
+On both installs the old forwarded MCP connection initially closed without a
+response. Opening the guarded local-service settings and rebinding the forward
+restored authenticated calls. This recovery is observed; its lifecycle root
+cause has not been isolated and is not claimed fixed by the description change.
+
+A separate DeepSeek file-cleanup control after admitting read-only pipelines
+passes in 18.33 seconds / 7 requests, retaining one unsupported-loop denial.
+This is a single observation, not a stable speedup estimate. Earlier matrix
+results and denials remain unchanged. The description change is a product fix;
+the file command policy is a harness improvement.

@@ -233,7 +233,8 @@ class AgentCalendarToolService(
             CalendarContract.Instances.END,
             CalendarContract.Instances.EVENT_LOCATION,
             CalendarContract.Instances.ALL_DAY,
-            CalendarContract.Instances.EVENT_TIMEZONE
+            CalendarContract.Instances.EVENT_TIMEZONE,
+            CalendarContract.Instances.DESCRIPTION
         )
 
         val selectionParts = mutableListOf<String>()
@@ -284,6 +285,7 @@ class AgentCalendarToolService(
                     "eventId" to eventId.toString(),
                     "calendarId" to calendarId.toString(),
                     "title" to title,
+                    "description" to it.getString(8).orEmpty(),
                     "startAt" to Instant.ofEpochMilli(beginMillis).atZone(zone)
                         .format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
                     "endAt" to Instant.ofEpochMilli(endMillis).atZone(zone)

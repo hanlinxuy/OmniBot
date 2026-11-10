@@ -380,8 +380,8 @@ object AgentToolDefinitions {
         "可选，目标日历 ID。" to "Optional target calendar ID.",
         "提醒分钟列表，例如 [10, 30]。" to
             "Reminder minute offsets, for example [10, 30].",
-        "按时间范围、关键字、calendarId 查询日历事件。省略时间时仅查当前日期前30天至后180天；查询历史或远期日程需明确传 startAt 和 endAt，关键词不会取消时间范围。" to
-            "Query calendar events by time range, keyword, and calendarId. Omitted dates default to 30 days before now through 180 days after now. For historical or distant events, pass explicit startAt and endAt; a keyword does not remove this time window.",
+        "按时间范围、关键字、calendarId 查询日历事件，结果包含 description 备注。省略时间时仅查当前日期前30天至后180天；查询历史或远期日程需明确传 startAt 和 endAt，关键词不会取消时间范围。" to
+            "Query calendar events by time range, keyword, and calendarId, including description notes in each result. Omitted dates default to 30 days before now through 180 days after now. For historical or distant events, pass explicit startAt and endAt; a keyword does not remove this time window.",
         "可选日历 ID；未传时查询所有可访问的日历。用户指定日历时应传该日历 ID。" to
             "Optional calendar ID; omission queries all accessible calendars. When the user specifies a calendar, pass its ID.",
         "查看结果后再决定是否更新或删除。" to
@@ -1908,7 +1908,7 @@ object AgentToolDefinitions {
             put("name", "calendar_event_list")
             put("displayName", "查询日程")
             put("toolType", "calendar")
-            put("description", "按时间范围、关键字、calendarId 查询日历事件。省略时间时仅查当前日期前30天至后180天；查询历史或远期日程需明确传 startAt 和 endAt，关键词不会取消时间范围。")
+            put("description", "按时间范围、关键字、calendarId 查询日历事件，结果包含 description 备注。省略时间时仅查当前日期前30天至后180天；查询历史或远期日程需明确传 startAt 和 endAt，关键词不会取消时间范围。")
             put("postToolRule", "查看结果后再决定是否更新或删除。")
             putJsonObject("parameters") {
                 put("type", "object")
