@@ -3,6 +3,7 @@ package cn.com.omnimind.baselib.privileged
 import android.content.Context
 import android.media.AudioManager
 import android.provider.Settings
+import android.view.Display
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonPrimitive
@@ -16,6 +17,8 @@ internal class PrivilegedDisplaySoundControls(private val context: Context) {
     suspend fun execute(execution: DeviceActionExecution): PrivilegedResult = when (execution.request.action) {
         PrivilegedActionPolicy.ACTION_DEVICE_GET_DISPLAY -> execution.query(buildJsonObject {
             put("brightnessPercent", brightness(execution)?.let(::JsonPrimitive) ?: JsonNull)
+            put("brightnessSettingRaw", Settings.System.getInt(context.contentResolver, Settings.System.SCREEN_BRIGHTNESS, -1)
+                .takeIf { it >= 0 }?.let(::JsonPrimitive) ?: JsonNull)
             put("autoBrightness", booleanSetting(Settings.System.SCREEN_BRIGHTNESS_MODE))
             put("autoRotate", booleanSetting(Settings.System.ACCELEROMETER_ROTATION))
             put("screenTimeoutSeconds", timeout()?.let(::JsonPrimitive) ?: JsonNull)
@@ -46,7 +49,7 @@ internal class PrivilegedDisplaySoundControls(private val context: Context) {
 
     private suspend fun brightness(execution: DeviceActionExecution): Double? {
         // AOSP 的接口单位为 0..1，不把厂商私有整数范围猜成 0..255。
-        val result = execution.run("cmd", "display", "get-brightness")
+        val result = execution.run("cmd", "display", "get-brightness", Display.DEFAULT_DISPLAY.toString())
         return if (result.success && result.data["truncated"] != "true") {
             result.stdout.trim().toDoubleOrNull()?.takeIf { it.isFinite() && it in 0.0..1.0 }?.times(100)
         } else null

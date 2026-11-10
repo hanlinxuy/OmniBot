@@ -692,3 +692,50 @@ selection or turn the original attachment failure into a pass.
 
 The iOS simulator branch is stopped. A fresh `simctl list devices booted` check
 reported zero running devices; remaining evaluation stays on vivo/Android.
+
+## Display settings: native readback and vivo contract mismatch
+
+`AdjustBrightnessMaximumTask` was run with all three outer models using phone Pi,
+one GUI delegation (at most 15 steps), and independent Android setting readback.
+Every run settled and restored its original `screen_brightness` and automatic
+brightness mode. Automatic mode can subsequently change the level with ambient
+light, so baselines are captured separately for each run.
+
+| Model | Seconds | Source predicate `screen_brightness >= 255` | Automatic brightness after run |
+| --- | ---: | --- | --- |
+| 35a3 | 70.84 | pass | still enabled, contradicting the success report |
+| DeepSeek | 59.96 | pass | disabled |
+| Terra | 35.64 | pass | disabled |
+
+The normalized display API remained at its preceding value while the integer
+setting reached 255 in all three runs. This is an observed disagreement between
+system interfaces, not proof of the physical panel luminance. `normalizedMaximum`
+in the private runner records only the normalized API predicate; it is not an
+overall failure verdict. DeepSeek tried an additional GUI verification, which the
+one-delegation budget denied, and accurately disclosed that limitation.
+
+Two product changes address the missing independent evidence path:
+
+- `cmd display get-brightness` failed on vivo with `no display id specified`.
+  Passing `Display.DEFAULT_DISPLAY` returns the normalized reading. The existing
+  typed brightness controller now uses that argument before and after writes.
+- New read-only MCP `context_display_get` exposes the existing privileged display
+  query to phone Pi. It reports normalized percent, raw vendor setting,
+  auto-brightness, rotation and screen timeout; description explicitly warns
+  against equating disagreeing readings with physical luminance. It neither
+  grants backend access nor exposes shell/mutation operations.
+
+The 10 device-controller and 6 MCP contract tests passed, and the APK built and
+installed with matching hash
+`d17761ba9cf8a0a205e9fb6cf77cf55006ccf0bf0d5188469816315bb217c17d`.
+Before restoring the development Shizuku service, live MCP correctly returned
+`privileged_access_changed`, provider NONE, no observation. After the authorized
+Shizuku start, the same actual OmniBot MCP call returned provider SHIZUKU/backend
+ADB with valid display readings. This separately establishes service availability,
+app authorization and the integrated query. Host ADB forwarding needed rebinding
+after reinstall; no extra server or ACP lifecycle was introduced.
+
+Private evidence: `brightness-baseline-audit.json`, `display-mcp-preflight.json`,
+`display-mcp-shizuku-preflight.json`, `display-mcp-installed.json`, and build/test
+logs. An explicit before/after-readback model control is tracked separately from
+the original baseline.

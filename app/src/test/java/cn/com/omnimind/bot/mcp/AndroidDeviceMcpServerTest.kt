@@ -17,6 +17,7 @@ class AndroidDeviceMcpServerTest {
                     "list_functions",
                     "register_function",
                     "context_apps_query",
+                    "context_display_get",
                     "file_transfer",
                     "schedule_task_create",
                     "schedule_task_list",

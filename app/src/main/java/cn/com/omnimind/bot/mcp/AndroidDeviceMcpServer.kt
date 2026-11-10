@@ -1,6 +1,8 @@
 package cn.com.omnimind.bot.mcp
 
 import android.content.Context
+import cn.com.omnimind.baselib.privileged.PrivilegedCapabilityManager
+import cn.com.omnimind.baselib.privileged.PrivilegedActionPolicy
 import cn.com.omnimind.baselib.i18n.PromptLocale
 import cn.com.omnimind.bot.agent.personal.PersonalContextTools
 import cn.com.omnimind.bot.agent.personal.PersonalContextService
@@ -60,6 +62,17 @@ internal object AndroidDeviceMcpServer {
     // The app's private plugin-project protocol is intentionally not advertised
     // here: DSH and other ACP Agents must use their own native plugin schema.
     private val omniFlowTools = listOf(
+        DeviceTool(
+            name = "context_display_get",
+            operation = "context_display_get",
+            description = "Read Android display brightness percent, raw brightness setting, automatic-brightness state, " +
+                "rotation and screen timeout through an already authorized Root or Shizuku backend. " +
+                "Read-only; does not request or grant backend access. Use this to verify display-setting " +
+                "changes instead of inferring state from a slider or toggle image. A null brightness " +
+                "value means it could not be read, not zero percent. The normalized display API and raw " +
+                "vendor setting may disagree; report the discrepancy rather than claiming physical luminance.",
+            properties = emptyMap(),
+        ),
         DeviceTool(
             name = "run_gui",
             operation = "run_gui",
@@ -387,6 +400,10 @@ internal object AndroidDeviceMcpServer {
         modelClient: cn.com.omnimind.bot.omniflow.OmniFlowModelClient,
         onProgress: suspend (String, Map<String, Any?>) -> Unit = { _, _ -> },
     ): Map<String, Any?> = when (tool.operation) {
+        "context_display_get" -> PrivilegedCapabilityManager.get(context)
+            .reserve("mcp-display-query")
+            .executeAgentAction(PrivilegedActionPolicy.ACTION_DEVICE_GET_DISPLAY, emptyMap(), false)
+            .toMap()
         "personal_context" -> PersonalContextService(context).execute(tool.name, JsonObject(arguments.toJson()))
         "run_gui" -> {
             val goal = arguments["goal"]?.toString().orEmpty().trim()

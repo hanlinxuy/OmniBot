@@ -17,6 +17,28 @@ import org.robolectric.annotation.Config
 class PrivilegedDeviceControllerTest {
     private val context: Context get() = RuntimeEnvironment.getApplication()
 
+    @Test fun brightnessReadsDefaultDisplayBeforeAndAfterOneWrite() = runBlocking {
+        var brightness = "0.5"
+        val calls = mutableListOf<String>()
+        val result = PrivilegedDeviceController(context, 0).execute(
+            PrivilegedRequest("brightness", PrivilegedActionPolicy.ACTION_DEVICE_SET_BRIGHTNESS,
+                mapOf("percent" to "100")),
+            PrivilegedBackend.ROOT, { true },
+        ) { command ->
+            calls += command
+            val output = when (command) {
+                "'cmd' 'display' 'help'" -> "Display manager commands:\n  set-brightness BRIGHTNESS\n"
+                "'cmd' 'display' 'get-brightness' '0'" -> brightness
+                "'cmd' 'display' 'set-brightness' '1.0'" -> { brightness = "1.0"; "" }
+                else -> error("Unexpected display command: $command")
+            }
+            PrivilegedResult("brightness", "", true, "ok", "", stdout = output, exitCode = 0)
+        }
+        assertTrue(result.message, result.success)
+        assertEquals(1, calls.count { it.contains("'set-brightness'") })
+        assertEquals("1.0", brightness)
+    }
+
     @Test fun settingsReadsAndWritesUseTheSameAndroidUserAndQuoteValues() = runBlocking {
         val calls = mutableListOf<String>()
         var value = "old"
