@@ -3451,6 +3451,118 @@
       "classification": "runtime_failure",
       "providerRequests": 31,
       "completedRun": false
+    },
+    {
+      "completedRun": true,
+      "artifact": "ios-android-mem-025-qwen-bcba2d4943",
+      "sourceTask": "mem-025",
+      "provider": "35a3",
+      "model": "qwen3.6-35b-a3b-q4_k_m",
+      "officialBenchmarkScore": null,
+      "transport": "mcp",
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "rawAcceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "acceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "elapsedSeconds": 116.329584583,
+      "providerRequests": 19,
+      "requestBudget": 60,
+      "taskTimeoutSeconds": 480,
+      "independentReview": {
+        "passed": false,
+        "reason": "Document creation contract fix verified: one new Travel Log file and metadata entry; all existing documents and other source files unchanged. Full synthesis still fails: airport price estimates substituted for actual historical rides, upcoming lodging/mail confirmations included in visited-destination history. Budget 60/480 configured, 19 requests used; not a same-budget speed comparison. Cleanup confirmed."
+      }
+    },
+    {
+      "artifact": "ios-android-multi-035-qwen-0c4f98ccc1",
+      "sourceTask": "multi-035",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "acceptance": {
+        "passed": false
+      },
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "failureType": "RuntimeError",
+      "classification": "runtime_failure",
+      "providerRequests": 31,
+      "completedRun": false,
+      "requestBudget": 30,
+      "taskTimeoutSeconds": 240
+    },
+    {
+      "completedRun": true,
+      "artifact": "ios-android-multi-088-qwen-ae40cf2f03",
+      "sourceTask": "multi-088",
+      "provider": "35a3",
+      "model": "qwen3.6-35b-a3b-q4_k_m",
+      "officialBenchmarkScore": null,
+      "transport": "mcp",
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "rawAcceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "acceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "elapsedSeconds": 66.75280612499999,
+      "providerRequests": 15,
+      "requestBudget": 30,
+      "taskTimeoutSeconds": 240,
+      "independentReview": {
+        "passed": false,
+        "reason": "Nutrition tool exercised on phone, source CalTrack unchanged, exact intake/covered-day denominators returned. Model selected an eight-day interval and called it a week, then reported all 34 historical runs/399.3 km as this week without date filtering. Wrong statistics propagated to message/note despite correct tool arithmetic. Meal and writes are only partial success; full task fails. Default 30/240 budget, 15 requests. Cleanup confirmed."
+      }
+    },
+    {
+      "completedRun": true,
+      "artifact": "ios-android-multi-088-qwen-c9ead63072",
+      "sourceTask": "multi-088",
+      "provider": "35a3",
+      "model": "qwen3.6-35b-a3b-q4_k_m",
+      "officialBenchmarkScore": null,
+      "transport": "mcp",
+      "cleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "rawAcceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "acceptance": {
+        "sourceFilesPreserved": true,
+        "semanticReviewRequired": true,
+        "passed": false
+      },
+      "elapsedSeconds": 91.79916150000001,
+      "providerRequests": 16,
+      "requestBudget": 60,
+      "taskTimeoutSeconds": 480,
+      "independentReview": {
+        "passed": false,
+        "reason": "Completed requested fixture actions, but six days of intake (Feb 28-Mar 5) compared with seven-day calorie/protein targets, producing wrong deficits propagated to message and note. Also mixes historical activity date with live November weather. 60/480 budget configured; only 16 requests used, so this run does not establish a budget-cap benefit. Cleanup confirmed."
+      }
     }
   ]
 }

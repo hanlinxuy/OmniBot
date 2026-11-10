@@ -44,8 +44,8 @@
     "adapted_phone_pi_three_model_configuration_pass": 2,
     "adapted_phone_pi_three_model_business_pass": 4,
     "adapted_three_model_source_predicate_failed": 1,
-    "android_api_adaptation_passed": 15,
-    "android_api_adaptation_attempted_not_passed": 3,
+    "android_api_adaptation_passed": 16,
+    "android_api_adaptation_attempted_not_passed": 2,
     "adapted_phone_pi_three_model_pass": 2,
     "adapted_phone_pi_matrix_source_ambiguity": 1
   },
@@ -3334,7 +3334,7 @@
         "Mastodon"
       ],
       "sourceSubset": "gui-only",
-      "status": "android_api_adaptation_attempted_not_passed",
+      "status": "android_api_adaptation_passed",
       "adaptation": null,
       "results": [],
       "key": "MobileWorld/MastodonReportTask",
@@ -3343,6 +3343,24 @@
       "resultScope": "Original isolated backend API adaptation; prior results retained separately; not official GUI scores",
       "originalJudge": "pinned MobileWorld task definition; sourceSha256 retained",
       "apiAdaptationResults": [
+        {
+          "artifact": "ios-android-mw-report-qwen-2c4cd6cf66",
+          "sourceTask": "mw-report",
+          "sourceClass": "MastodonReportTask",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "sourcePredicateScore": 1.0,
+          "terminalCompleted": true,
+          "providerRequests": 19,
+          "phoneCleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "backendRestored": true,
+          "reviewed": true,
+          "passed": true,
+          "reviewReason": "Exactly one source-copy report action on the original gas-leak status with spam category, followed by one block of its author. Other calls read-only. Original SQL judge confirms exact stored reason including Unicode punctuation; copied text bypasses model retyping. Terminal and both cleanups verified. Search route guessing still wastes requests; not claimed as a speedup."
+        },
         {
           "artifact": "ios-android-mw-report-qwen-71e07b6294",
           "sourceTask": "mw-report",
@@ -12119,6 +12137,25 @@
             "passed": false,
             "reason": "Correct Saturday 19:00 PST outdoor reservation and Date Night movie list, but unrequested ride dispatch added one trip while goal only asks price comparison. Final total wrongly includes movie ticket despite rubric requesting dinner plus ride only; friend-review linkage unresolved. All owned changes cleaned. Effect-scope fix queued with identical default request budget."
           }
+        },
+        {
+          "artifact": "ios-android-multi-035-qwen-0c4f98ccc1",
+          "sourceTask": "multi-035",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "acceptance": {
+            "passed": false
+          },
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "failureType": "RuntimeError",
+          "classification": "runtime_failure",
+          "providerRequests": 31,
+          "completedRun": false,
+          "requestBudget": 30,
+          "taskTimeoutSeconds": 240
         }
       ],
       "officialBenchmarkScore": null,
@@ -15487,6 +15524,68 @@
           "classification": "runtime_failure",
           "providerRequests": 31,
           "completedRun": false
+        },
+        {
+          "completedRun": true,
+          "artifact": "ios-android-multi-088-qwen-ae40cf2f03",
+          "sourceTask": "multi-088",
+          "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "elapsedSeconds": 66.75280612499999,
+          "providerRequests": 15,
+          "requestBudget": 30,
+          "taskTimeoutSeconds": 240,
+          "independentReview": {
+            "passed": false,
+            "reason": "Nutrition tool exercised on phone, source CalTrack unchanged, exact intake/covered-day denominators returned. Model selected an eight-day interval and called it a week, then reported all 34 historical runs/399.3 km as this week without date filtering. Wrong statistics propagated to message/note despite correct tool arithmetic. Meal and writes are only partial success; full task fails. Default 30/240 budget, 15 requests. Cleanup confirmed."
+          }
+        },
+        {
+          "completedRun": true,
+          "artifact": "ios-android-multi-088-qwen-c9ead63072",
+          "sourceTask": "multi-088",
+          "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "elapsedSeconds": 91.79916150000001,
+          "providerRequests": 16,
+          "requestBudget": 60,
+          "taskTimeoutSeconds": 480,
+          "independentReview": {
+            "passed": false,
+            "reason": "Completed requested fixture actions, but six days of intake (Feb 28-Mar 5) compared with seven-day calorie/protein targets, producing wrong deficits propagated to message and note. Also mixes historical activity date with live November weather. 60/480 budget configured; only 16 requests used, so this run does not establish a budget-cap benefit. Cleanup confirmed."
+          }
         }
       ],
       "officialBenchmarkScore": null,
@@ -18157,6 +18256,37 @@
           "independentReview": {
             "passed": false,
             "reason": "No new Travel Log created: appended to existing Weekend Itinerary instead. Includes upcoming April trips in historical frequency; claims no ride history although fixture state contains trips. Both requested output location and source classification fail. Original unrelated document modified by append; run-owned workspace removed."
+          }
+        },
+        {
+          "completedRun": true,
+          "artifact": "ios-android-mem-025-qwen-bcba2d4943",
+          "sourceTask": "mem-025",
+          "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "elapsedSeconds": 116.329584583,
+          "providerRequests": 19,
+          "requestBudget": 60,
+          "taskTimeoutSeconds": 480,
+          "independentReview": {
+            "passed": false,
+            "reason": "Document creation contract fix verified: one new Travel Log file and metadata entry; all existing documents and other source files unchanged. Full synthesis still fails: airport price estimates substituted for actual historical rides, upcoming lodging/mail confirmations included in visited-destination history. Budget 60/480 configured, 19 requests used; not a same-budget speed comparison. Cleanup confirmed."
           }
         }
       ],

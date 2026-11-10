@@ -1,7 +1,7 @@
 {
   "scope": "Original MobileWorld isolated backend, Android phone Pi API adaptation; not official GUI scores",
   "attemptedTasks": 18,
-  "tasksWithAnyPass": 15,
+  "tasksWithAnyPass": 16,
   "runs": [
     {
       "artifact": "ios-android-mw-add-bookmark-qwen-4001f8dee0",
@@ -398,6 +398,24 @@
       "reviewed": true,
       "passed": true,
       "reviewReason": "Exactly one reply to the source gourmet Moussaka post, exact requested content and in_reply_to_id; original predicate 1. Phone cleanup and complete backend hash restoration confirmed; API adaptation only."
+    },
+    {
+      "artifact": "ios-android-mw-report-qwen-2c4cd6cf66",
+      "sourceTask": "mw-report",
+      "sourceClass": "MastodonReportTask",
+      "provider": "35a3",
+      "officialBenchmarkScore": null,
+      "sourcePredicateScore": 1.0,
+      "terminalCompleted": true,
+      "providerRequests": 19,
+      "phoneCleanup": {
+        "workspaceAbsent": true,
+        "reverseRemoved": true
+      },
+      "backendRestored": true,
+      "reviewed": true,
+      "passed": true,
+      "reviewReason": "Exactly one source-copy report action on the original gas-leak status with spam category, followed by one block of its author. Other calls read-only. Original SQL judge confirms exact stored reason including Unicode punctuation; copied text bypasses model retyping. Terminal and both cleanups verified. Search route guessing still wastes requests; not claimed as a speedup."
     },
     {
       "artifact": "ios-android-mw-report-qwen-71e07b6294",
