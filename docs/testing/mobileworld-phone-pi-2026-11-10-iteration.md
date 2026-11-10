@@ -433,3 +433,29 @@ host's stale forwarding was updated to the observed service port and authenticat
 health checked before the control. This infrastructure interruption is excluded
 from model results. APK SHA-256:
 `ad615ef890c2e3e902bdfc92535184af727360bc0fdfdc91397038aba0efef32`.
+
+
+### MattermostBudgetApprovalPipelineTask: structured source aggregation
+
+All eight source messages were recreated in a uniquely named synthetic channel,
+with Harry as fixture author. Phone Pi used only the Mattermost interface: zero
+GUI actions, no bank/payment apps, no real approval or payment. All three models
+posted exactly one summary and read it back. Host acceptance separately checked
+all five departments, exact amounts and ROI figures, executive versus standard
+status, and identification of Engineering as highest ROI. This is stronger than
+the source content predicate, which allows partial tables and ROI tolerance.
+
+| Outer model | Seconds | Provider requests | Source content predicate | Full adapted acceptance |
+| --- | ---: | ---: | --- | --- |
+| 35a3 | 20.59 | 5 | pass | pass |
+| DeepSeek Flash | 17.48 | 5 | pass | pass |
+| Terra | 26.39 | 5 | pass | pass |
+
+All owned posts were removed with independent readback, the channels archived,
+and per-run phone workspaces removed. This is an API adaptation, not the original
+GUI benchmark score. Source messages already contain computed ROI values, so
+success does not isolate mathematical reasoning from extraction. Terra retained
+the task's calculation while explicitly noting that the channel's NPV definition
+already subtracts investment and its subsequent ROI formula subtracts investment
+again; underlying cash flows are not available to resolve that source ambiguity.
+This useful source critique is recorded separately from execution acceptance.
