@@ -31,9 +31,9 @@
     "rule": "Unreviewed candidates remain distinct; shared components do not imply equivalent complete tasks."
   },
   "iosStatusCounts": {
-    "requires_isolated_source_fixtures": 93,
-    "native_adapter_candidate": 4,
-    "android_file_adaptation_passed": 2,
+    "android_file_adaptation_passed": 19,
+    "native_adapter_candidate": 2,
+    "requires_isolated_source_fixtures": 78,
     "excluded_user_scope": 34
   },
   "variants": [
@@ -5465,12 +5465,40 @@
           "requiredFixtureAndVerifier": "source food/serving/macros history and log mutation verifier"
         }
       ],
-      "status": "requires_isolated_source_fixtures",
+      "status": "android_file_adaptation_passed",
       "canonicalScenario": "iOSWorld/caltrack-001",
       "relationship": "distinct_source_variant",
       "acceptance": "All source business criteria, preserved inputs, independent persisted-state readback; partial components do not pass the full task.",
       "cleanup": "Remove only run-owned fixture objects and verify their absence; restore any recorded system baseline.",
-      "results": [],
+      "results": [
+        {
+          "artifact": "ios-android-caltrack-001-qwen-d5e33d5918",
+          "sourceTask": "caltrack-001",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "breakfastToday": true,
+            "oatmealServing": true,
+            "expectedMutationOnly": true,
+            "macrosReported": true,
+            "passed": true
+          },
+          "acceptance": {
+            "breakfastToday": true,
+            "oatmealServing": true,
+            "expectedMutationOnly": true,
+            "macrosReported": true,
+            "passed": true
+          },
+          "elapsedSeconds": 25.538704958,
+          "providerRequests": 10
+        }
+      ],
       "officialBenchmarkScore": null
     },
     {
@@ -5525,12 +5553,38 @@
           "requiredFixtureAndVerifier": "source films, ratings, wishlist and persisted wishlist verifier"
         }
       ],
-      "status": "requires_isolated_source_fixtures",
+      "status": "android_file_adaptation_passed",
       "canonicalScenario": "iOSWorld/cinephile-001",
       "relationship": "distinct_source_variant",
       "acceptance": "All source business criteria, preserved inputs, independent persisted-state readback; partial components do not pass the full task.",
       "cleanup": "Remove only run-owned fixture objects and verify their absence; restore any recorded system baseline.",
-      "results": [],
+      "results": [
+        {
+          "artifact": "ios-android-cinephile-001-qwen-e374893447",
+          "sourceTask": "cinephile-001",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "wishlistOnlyChanged": true,
+            "yearReported": true,
+            "ratingReported": true,
+            "passed": true
+          },
+          "acceptance": {
+            "wishlistOnlyChanged": true,
+            "yearReported": true,
+            "ratingReported": true,
+            "passed": true
+          },
+          "elapsedSeconds": 19.512338749999998,
+          "providerRequests": 5
+        }
+      ],
       "officialBenchmarkScore": null
     },
     {
@@ -5590,12 +5644,42 @@
           "requiredFixtureAndVerifier": "source locations/history/fares; sandbox booking only, no real rides"
         }
       ],
-      "status": "requires_isolated_source_fixtures",
+      "status": "android_file_adaptation_passed",
       "canonicalScenario": "iOSWorld/cityride-001",
       "relationship": "distinct_source_variant",
       "acceptance": "All source business criteria, preserved inputs, independent persisted-state readback; partial components do not pass the full task.",
       "cleanup": "Remove only run-owned fixture objects and verify their absence; restore any recorded system baseline.",
-      "results": [],
+      "results": [
+        {
+          "artifact": "ios-android-cityride-001-qwen-f38e6745b8",
+          "sourceTask": "cityride-001",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "fixtureChanged": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "fixtureChanged": true,
+            "semanticReviewRequired": true,
+            "passed": true
+          },
+          "elapsedSeconds": 17.9491005,
+          "providerRequests": 5,
+          "independentReview": {
+            "passed": true,
+            "reason": "Only one request added; Home to Oracle Park CityRideX fare 9.80 and ETA 14 match source. Isolated request-record adaptation excludes driver lifecycle and real dispatch.",
+            "reviewer": "root",
+            "scope": "Android source-backed adaptation; not official benchmark score"
+          }
+        }
+      ],
       "officialBenchmarkScore": null
     },
     {
@@ -5721,8 +5805,16 @@
           "sourceTask": "clouddocs-004",
           "provider": "35a3",
           "officialBenchmarkScore": null,
+          "transport": "shell",
           "cleanup": {
-            "workspaceAbsent": true
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "originalBodyPreserved": true,
+            "Q2NoteAppended": true,
+            "savedReported": true,
+            "passed": true
           },
           "acceptance": {
             "originalBodyPreserved": true,
@@ -5731,16 +5823,23 @@
             "passed": true
           },
           "elapsedSeconds": 21.733331208,
-          "providerRequests": 7,
-          "permissionDenials": 2
+          "providerRequests": 7
         },
         {
           "artifact": "ios-android-clouddocs-004-qwen-e7e5fd76f4",
           "sourceTask": "clouddocs-004",
           "provider": "35a3",
           "officialBenchmarkScore": null,
+          "transport": "shell",
           "cleanup": {
-            "workspaceAbsent": true
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "originalBodyPreserved": true,
+            "Q2NoteAppended": true,
+            "savedReported": true,
+            "passed": true
           },
           "acceptance": {
             "originalBodyPreserved": true,
@@ -5749,8 +5848,7 @@
             "passed": true
           },
           "elapsedSeconds": 20.329505625,
-          "providerRequests": 5,
-          "permissionDenials": 0
+          "providerRequests": 5
         }
       ],
       "officialBenchmarkScore": null
@@ -5807,12 +5905,38 @@
           "requiredFixtureAndVerifier": "source hierarchy, modified times, stars and links; filesystem alone cannot represent stars"
         }
       ],
-      "status": "requires_isolated_source_fixtures",
+      "status": "android_file_adaptation_passed",
       "canonicalScenario": "iOSWorld/clouddrive-001",
       "relationship": "distinct_source_variant",
       "acceptance": "All source business criteria, preserved inputs, independent persisted-state readback; partial components do not pass the full task.",
       "cleanup": "Remove only run-owned fixture objects and verify their absence; restore any recorded system baseline.",
-      "results": [],
+      "results": [
+        {
+          "artifact": "ios-android-clouddrive-001-qwen-f38a15bb7e",
+          "sourceTask": "clouddrive-001",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "transport": "shell",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "onlyExpectedStarChanged": true,
+            "fileNamed": true,
+            "modifiedDateReported": true,
+            "passed": true
+          },
+          "acceptance": {
+            "onlyExpectedStarChanged": true,
+            "fileNamed": true,
+            "modifiedDateReported": true,
+            "passed": true
+          },
+          "elapsedSeconds": 43.684183334000004,
+          "providerRequests": 13
+        }
+      ],
       "officialBenchmarkScore": null
     },
     {
@@ -5883,8 +6007,16 @@
           "sourceTask": "cloudsheets-003",
           "provider": "35a3",
           "officialBenchmarkScore": null,
+          "transport": "shell",
           "cleanup": {
-            "workspaceAbsent": true
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "exactlyOneEligibleStatusChanged": true,
+            "otherCellsPreserved": true,
+            "volunteerReported": true,
+            "passed": true
           },
           "acceptance": {
             "exactlyOneEligibleStatusChanged": true,
@@ -5893,8 +6025,7 @@
             "passed": true
           },
           "elapsedSeconds": 23.703297292,
-          "providerRequests": 5,
-          "permissionDenials": 0
+          "providerRequests": 5
         },
         {
           "artifact": "ios-android-cloudsheets-003-qwen-632ffcc7ab",
@@ -5912,8 +6043,16 @@
           "sourceTask": "cloudsheets-003",
           "provider": "35a3",
           "officialBenchmarkScore": null,
+          "transport": "shell",
           "cleanup": {
-            "workspaceAbsent": true
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "exactlyOneEligibleStatusChanged": true,
+            "otherCellsPreserved": true,
+            "volunteerReported": true,
+            "passed": true
           },
           "acceptance": {
             "exactlyOneEligibleStatusChanged": true,
@@ -5922,8 +6061,7 @@
             "passed": true
           },
           "elapsedSeconds": 24.320809917,
-          "providerRequests": 5,
-          "permissionDenials": 0
+          "providerRequests": 5
         }
       ],
       "officialBenchmarkScore": null
@@ -5985,12 +6123,42 @@
           "requiredFixtureAndVerifier": "source slides; real slide structure and content verifier"
         }
       ],
-      "status": "native_adapter_candidate",
+      "status": "android_file_adaptation_passed",
       "canonicalScenario": "iOSWorld/cloudslides-002",
       "relationship": "distinct_source_variant",
       "acceptance": "All source business criteria, preserved inputs, independent persisted-state readback; partial components do not pass the full task.",
       "cleanup": "Remove only run-owned fixture objects and verify their absence; restore any recorded system baseline.",
-      "results": [],
+      "results": [
+        {
+          "artifact": "ios-android-cloudslides-002-qwen-4125baeb35",
+          "sourceTask": "cloudslides-002",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "transport": "shell",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "slideCountPreserved": true,
+            "firstSlidePreserved": true,
+            "agendaPreserved": true,
+            "safetyAdded": true,
+            "agendaReported": true,
+            "passed": true
+          },
+          "acceptance": {
+            "slideCountPreserved": true,
+            "firstSlidePreserved": true,
+            "agendaPreserved": true,
+            "safetyAdded": true,
+            "agendaReported": true,
+            "passed": true
+          },
+          "elapsedSeconds": 39.92788925,
+          "providerRequests": 5
+        }
+      ],
       "officialBenchmarkScore": null
     },
     {
@@ -6065,7 +6233,37 @@
       "relationship": "distinct_source_variant",
       "acceptance": "All source business criteria, preserved inputs, independent persisted-state readback; partial components do not pass the full task.",
       "cleanup": "Remove only run-owned fixture objects and verify their absence; restore any recorded system baseline.",
-      "results": [],
+      "results": [
+        {
+          "artifact": "ios-android-dinespot-001-qwen-34bf608cc3",
+          "sourceTask": "dinespot-001",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "fixtureChanged": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "fixtureChanged": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "elapsedSeconds": 30.441995875,
+          "providerRequests": 9,
+          "independentReview": {
+            "passed": false,
+            "reason": "Saved correct restaurant and source slot, but model reasoning misconverted time and guessed local time from ID. Source exporter inherited host timezone; defer acceptance pending explicit timezone export and re-run.",
+            "reviewer": "root",
+            "scope": "Android source-backed adaptation; not official benchmark score"
+          }
+        }
+      ],
       "officialBenchmarkScore": null
     },
     {
@@ -6130,12 +6328,42 @@
           "requiredFixtureAndVerifier": "source products/prices/history and reversible cart; no checkout"
         }
       ],
-      "status": "requires_isolated_source_fixtures",
+      "status": "android_file_adaptation_passed",
       "canonicalScenario": "iOSWorld/freshcart-001",
       "relationship": "distinct_source_variant",
       "acceptance": "All source business criteria, preserved inputs, independent persisted-state readback; partial components do not pass the full task.",
       "cleanup": "Remove only run-owned fixture objects and verify their absence; restore any recorded system baseline.",
-      "results": [],
+      "results": [
+        {
+          "artifact": "ios-android-freshcart-001-qwen-04bf2a2fda",
+          "sourceTask": "freshcart-001",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "fixtureChanged": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "fixtureChanged": true,
+            "semanticReviewRequired": true,
+            "passed": true
+          },
+          "elapsedSeconds": 26.950018583000002,
+          "providerRequests": 15,
+          "independentReview": {
+            "passed": true,
+            "scope": "Android phone Pi source-backed isolated adaptation; not official GUI score",
+            "reviewer": "root",
+            "reason": "Saved Natural Foods cart contains salmon and avocados with one additional unit each; original Costco cart retained; independent catalog-price sum equals reported 70.51. Isolated cart only, no checkout."
+          }
+        }
+      ],
       "officialBenchmarkScore": null
     },
     {
@@ -6200,12 +6428,42 @@
           "requiredFixtureAndVerifier": "source posts/profile/DM/jobs; no external contact or posting"
         }
       ],
-      "status": "requires_isolated_source_fixtures",
+      "status": "android_file_adaptation_passed",
       "canonicalScenario": "iOSWorld/lockedin-003",
       "relationship": "distinct_source_variant",
       "acceptance": "All source business criteria, preserved inputs, independent persisted-state readback; partial components do not pass the full task.",
       "cleanup": "Remove only run-owned fixture objects and verify their absence; restore any recorded system baseline.",
-      "results": [],
+      "results": [
+        {
+          "artifact": "ios-android-lockedin-003-qwen-9300de600a",
+          "sourceTask": "lockedin-003",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "fixtureChanged": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "fixtureChanged": true,
+            "semanticReviewRequired": true,
+            "passed": true
+          },
+          "elapsedSeconds": 17.588849167,
+          "providerRequests": 6,
+          "independentReview": {
+            "passed": true,
+            "scope": "Android phone Pi source-backed isolated adaptation; not official GUI score",
+            "reviewer": "root",
+            "reason": "Only one new conversation to source platform engineer Aiden Cross; saved message expresses admiration and desire to connect; final identifies same recipient. Isolated message only."
+          }
+        }
+      ],
       "officialBenchmarkScore": null
     },
     {
@@ -6290,12 +6548,42 @@
           "requiredFixtureAndVerifier": "source posts/profile/DM/jobs; no external contact or posting"
         }
       ],
-      "status": "requires_isolated_source_fixtures",
+      "status": "android_file_adaptation_passed",
       "canonicalScenario": "iOSWorld/lockedin-004",
       "relationship": "distinct_source_variant",
       "acceptance": "All source business criteria, preserved inputs, independent persisted-state readback; partial components do not pass the full task.",
       "cleanup": "Remove only run-owned fixture objects and verify their absence; restore any recorded system baseline.",
-      "results": [],
+      "results": [
+        {
+          "artifact": "ios-android-lockedin-004-qwen-5b26499b3d",
+          "sourceTask": "lockedin-004",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "fixtureChanged": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "fixtureChanged": true,
+            "semanticReviewRequired": true,
+            "passed": true
+          },
+          "elapsedSeconds": 26.767637792000002,
+          "providerRequests": 10,
+          "independentReview": {
+            "passed": true,
+            "scope": "Android phone Pi source-backed isolated adaptation; not official GUI score",
+            "reviewer": "root",
+            "reason": "Saved Rachel reply contains more than five sentences and three concrete team/stack/scope questions; only job_5 saved and Netflix followed. Report matches source 250-400K, Los Gatos on-site, team of eight. Isolated data only."
+          }
+        }
+      ],
       "officialBenchmarkScore": null
     },
     {
@@ -6345,12 +6633,36 @@
           "requiredFixtureAndVerifier": "source threads, categories, contacts and owned send/archive verifier"
         }
       ],
-      "status": "requires_isolated_source_fixtures",
+      "status": "android_file_adaptation_passed",
       "canonicalScenario": "iOSWorld/mail-002",
       "relationship": "distinct_source_variant",
       "acceptance": "All source business criteria, preserved inputs, independent persisted-state readback; partial components do not pass the full task.",
       "cleanup": "Remove only run-owned fixture objects and verify their absence; restore any recorded system baseline.",
-      "results": [],
+      "results": [
+        {
+          "artifact": "ios-android-mail-002-qwen-ce82099426",
+          "sourceTask": "mail-002",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "quickBiteTransactionFromInbox": true,
+            "archiveOnlyChanged": true,
+            "passed": true
+          },
+          "acceptance": {
+            "quickBiteTransactionFromInbox": true,
+            "archiveOnlyChanged": true,
+            "passed": true
+          },
+          "elapsedSeconds": 28.411861667,
+          "providerRequests": 16
+        }
+      ],
       "officialBenchmarkScore": null
     },
     {
@@ -6405,12 +6717,58 @@
           "requiredFixtureAndVerifier": "source products/prices/history and reversible cart; no checkout"
         }
       ],
-      "status": "requires_isolated_source_fixtures",
+      "status": "android_file_adaptation_passed",
       "canonicalScenario": "iOSWorld/megamart-001",
       "relationship": "distinct_source_variant",
       "acceptance": "All source business criteria, preserved inputs, independent persisted-state readback; partial components do not pass the full task.",
       "cleanup": "Remove only run-owned fixture objects and verify their absence; restore any recorded system baseline.",
-      "results": [],
+      "results": [
+        {
+          "artifact": "ios-android-megamart-001-qwen-fba3ef01aa",
+          "sourceTask": "megamart-001",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "oneUnitAdded": true,
+            "actualController": false,
+            "originalCartPreserved": true,
+            "otherStatePreserved": true,
+            "priceReported": true,
+            "productReported": true,
+            "passed": false
+          },
+          "acceptance": {
+            "oneUnitAdded": true,
+            "actualController": false,
+            "originalCartPreserved": true,
+            "otherStatePreserved": true,
+            "priceReported": true,
+            "productReported": true,
+            "passed": true
+          },
+          "elapsedSeconds": 19.792274625,
+          "providerRequests": 6,
+          "independentReview": {
+            "passed": true,
+            "reviewer": "root",
+            "reason": "Independent verifier corrected false substring match of station inside PlayStation; actual product is a controller, quantity increment is one and 69.99 price matches.",
+            "checks": {
+              "oneUnitAdded": true,
+              "actualController": true,
+              "originalCartPreserved": true,
+              "otherStatePreserved": true,
+              "priceReported": true,
+              "productReported": true
+            },
+            "scope": "isolated Android adaptation, not official UI score"
+          }
+        }
+      ],
       "officialBenchmarkScore": null
     },
     {
@@ -6530,7 +6888,107 @@
       "relationship": "distinct_source_variant",
       "acceptance": "All source business criteria, preserved inputs, independent persisted-state readback; partial components do not pass the full task.",
       "cleanup": "Remove only run-owned fixture objects and verify their absence; restore any recorded system baseline.",
-      "results": [],
+      "results": [
+        {
+          "artifact": "ios-android-notes-001-qwen-7803dcdef9",
+          "sourceTask": "notes-001",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "originalBodyPreserved": true,
+            "bugFixBullet": false,
+            "onlyTargetNoteChanged": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "originalBodyPreserved": true,
+            "bugFixBullet": false,
+            "onlyTargetNoteChanged": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "elapsedSeconds": 20.255767792,
+          "providerRequests": 6,
+          "independentReview": {
+            "passed": false,
+            "scope": "Android phone Pi source-backed isolated adaptation; not official GUI score",
+            "reviewer": "root",
+            "reason": "No actual bullet appended; login bug details invented."
+          }
+        },
+        {
+          "artifact": "ios-android-notes-001-qwen-7bc59f1227",
+          "sourceTask": "notes-001",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "originalBodyPreserved": true,
+            "bugFixBullet": true,
+            "onlyTargetNoteChanged": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "originalBodyPreserved": true,
+            "bugFixBullet": true,
+            "onlyTargetNoteChanged": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "elapsedSeconds": 19.471510167,
+          "providerRequests": 6,
+          "independentReview": {
+            "passed": false,
+            "scope": "Android phone Pi source-backed isolated adaptation; not official GUI score",
+            "reviewer": "root",
+            "reason": "Invented issue number 1203 rather than generic unspecified bug-fix completion."
+          }
+        },
+        {
+          "artifact": "ios-android-notes-001-qwen-f0ad2bd81e",
+          "sourceTask": "notes-001",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "originalBodyPreserved": true,
+            "bugFixBullet": true,
+            "onlyTargetNoteChanged": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "originalBodyPreserved": true,
+            "bugFixBullet": true,
+            "onlyTargetNoteChanged": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "elapsedSeconds": 16.920735792,
+          "providerRequests": 5,
+          "independentReview": {
+            "passed": false,
+            "scope": "Android phone Pi source-backed isolated adaptation; not official GUI score",
+            "reviewer": "root",
+            "reason": "Real bullet appended and other data preserved, but login redirect issue is invented; source and request supply no specific bug details."
+          }
+        }
+      ],
       "officialBenchmarkScore": null
     },
     {
@@ -6665,7 +7123,37 @@
       "relationship": "distinct_source_variant",
       "acceptance": "All source business criteria, preserved inputs, independent persisted-state readback; partial components do not pass the full task.",
       "cleanup": "Remove only run-owned fixture objects and verify their absence; restore any recorded system baseline.",
-      "results": [],
+      "results": [
+        {
+          "artifact": "ios-android-quickchat-003-qwen-dd6185092a",
+          "sourceTask": "quickchat-003",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "fixtureChanged": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "fixtureChanged": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "elapsedSeconds": 25.380257874999998,
+          "providerRequests": 7,
+          "independentReview": {
+            "passed": false,
+            "scope": "Android phone Pi source-backed isolated adaptation; not official GUI score",
+            "reviewer": "root",
+            "reason": "Selected Priya corral conversation instead of Elena thread containing the explicit Brooklyn Half registration question. Sent message persists but target selection is not established."
+          }
+        }
+      ],
       "officialBenchmarkScore": null
     },
     {
@@ -6740,7 +7228,37 @@
       "relationship": "distinct_source_variant",
       "acceptance": "All source business criteria, preserved inputs, independent persisted-state readback; partial components do not pass the full task.",
       "cleanup": "Remove only run-owned fixture objects and verify their absence; restore any recorded system baseline.",
-      "results": [],
+      "results": [
+        {
+          "artifact": "ios-android-scorezone-003-qwen-8764c12853",
+          "sourceTask": "scorezone-003",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "sourceStateUnchanged": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "sourceStateUnchanged": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "elapsedSeconds": 26.481880458,
+          "providerRequests": 9,
+          "independentReview": {
+            "passed": false,
+            "scope": "Android phone Pi source-backed isolated adaptation; not official GUI score",
+            "reviewer": "root",
+            "reason": "Headline/team identified, but today comparison uses UTC date; SF game timestamp March 5 03:30Z is March 4 local. No local-day acceptance established."
+          }
+        }
+      ],
       "officialBenchmarkScore": null
     },
     {
@@ -6810,7 +7328,147 @@
       "relationship": "distinct_source_variant",
       "acceptance": "All source business criteria, preserved inputs, independent persisted-state readback; partial components do not pass the full task.",
       "cleanup": "Remove only run-owned fixture objects and verify their absence; restore any recorded system baseline.",
-      "results": [],
+      "results": [
+        {
+          "artifact": "ios-android-skytrip-002-qwen-bc1bfba853",
+          "sourceTask": "skytrip-002",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "sourceStateUnchanged": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "sourceStateUnchanged": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "elapsedSeconds": 33.58884575,
+          "providerRequests": 11,
+          "independentReview": {
+            "passed": false,
+            "scope": "Android phone Pi source-backed isolated adaptation; not official GUI score",
+            "reviewer": "root",
+            "reason": "No completed answer; max-token termination."
+          }
+        },
+        {
+          "artifact": "ios-android-skytrip-002-qwen-c04473c4e6",
+          "sourceTask": "skytrip-002",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "sourceStateUnchanged": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "sourceStateUnchanged": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "elapsedSeconds": 20.119012708,
+          "providerRequests": 4
+        },
+        {
+          "artifact": "ios-android-skytrip-002-qwen-c81d98eaed",
+          "sourceTask": "skytrip-002",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "sourceStateUnchanged": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "sourceStateUnchanged": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "elapsedSeconds": 23.340057125,
+          "providerRequests": 3,
+          "independentReview": {
+            "passed": false,
+            "scope": "Android phone Pi source-backed isolated adaptation; not official GUI score",
+            "reviewer": "root",
+            "reason": "Price/time pairs correct, but extra duration claim is approximately eight hours instead of actual five hours."
+          }
+        },
+        {
+          "artifact": "ios-android-skytrip-002-qwen-cd971ba98f",
+          "sourceTask": "skytrip-002",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "sourceStateUnchanged": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "sourceStateUnchanged": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "elapsedSeconds": 25.039358042,
+          "providerRequests": 7,
+          "independentReview": {
+            "passed": false,
+            "scope": "Android phone Pi source-backed isolated adaptation; not official GUI score",
+            "reviewer": "root",
+            "reason": "Prices assigned to wrong flights and UTC mislabeled as local."
+          }
+        },
+        {
+          "artifact": "ios-android-skytrip-002-qwen-f34bab6821",
+          "sourceTask": "skytrip-002",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "sourceStateUnchanged": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "sourceStateUnchanged": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "elapsedSeconds": 42.1083895,
+          "providerRequests": 10,
+          "independentReview": {
+            "passed": false,
+            "scope": "Android phone Pi source-backed isolated adaptation; not official GUI score",
+            "reviewer": "root",
+            "reason": "Extra comparison table contains incorrect local times."
+          }
+        }
+      ],
       "officialBenchmarkScore": null
     },
     {
@@ -6935,12 +7593,46 @@
           "requiredFixtureAndVerifier": "source trips/listing details; no live purchase"
         }
       ],
-      "status": "requires_isolated_source_fixtures",
+      "status": "android_file_adaptation_passed",
       "canonicalScenario": "iOSWorld/stayfinder-001",
       "relationship": "distinct_source_variant",
       "acceptance": "All source business criteria, preserved inputs, independent persisted-state readback; partial components do not pass the full task.",
       "cleanup": "Remove only run-owned fixture objects and verify their absence; restore any recorded system baseline.",
-      "results": [],
+      "results": [
+        {
+          "artifact": "ios-android-stayfinder-001-qwen-070c748a79",
+          "sourceTask": "stayfinder-001",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "sourceStateUnchanged": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "sourceStateUnchanged": true,
+            "semanticReviewRequired": true,
+            "passed": true
+          },
+          "elapsedSeconds": 21.379459542,
+          "providerRequests": 6,
+          "independentReview": {
+            "passed": true,
+            "reviewer": "root",
+            "reason": "Booking references stay-beach; listing matches reported title, 327 nightly, 5 beds, 3 baths and all additional amenities/rating.",
+            "checks": {
+              "sourceStateUnchanged": true,
+              "semanticReviewRequired": true
+            },
+            "scope": "isolated Android adaptation, not official UI score"
+          }
+        }
+      ],
       "officialBenchmarkScore": null
     },
     {
@@ -7000,12 +7692,38 @@
           "requiredFixtureAndVerifier": "source reviews/cuisines/scores and saved-list verifier"
         }
       ],
-      "status": "requires_isolated_source_fixtures",
+      "status": "android_file_adaptation_passed",
       "canonicalScenario": "iOSWorld/tasterank-001",
       "relationship": "distinct_source_variant",
       "acceptance": "All source business criteria, preserved inputs, independent persisted-state readback; partial components do not pass the full task.",
       "cleanup": "Remove only run-owned fixture objects and verify their absence; restore any recorded system baseline.",
-      "results": [],
+      "results": [
+        {
+          "artifact": "ios-android-tasterank-001-qwen-f24cfc5ca3",
+          "sourceTask": "tasterank-001",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "expectedListMutationOnly": true,
+            "scoreReported": true,
+            "cuisineReported": true,
+            "passed": true
+          },
+          "acceptance": {
+            "expectedListMutationOnly": true,
+            "scoreReported": true,
+            "cuisineReported": true,
+            "passed": true
+          },
+          "elapsedSeconds": 19.233464958,
+          "providerRequests": 6
+        }
+      ],
       "officialBenchmarkScore": null
     },
     {
@@ -7065,12 +7783,71 @@
           "requiredFixtureAndVerifier": "source channels, unread state, threads and owned message cleanup"
         }
       ],
-      "status": "requires_isolated_source_fixtures",
+      "status": "android_file_adaptation_passed",
       "canonicalScenario": "iOSWorld/teamchat-003",
       "relationship": "distinct_source_variant",
       "acceptance": "All source business criteria, preserved inputs, independent persisted-state readback; partial components do not pass the full task.",
       "cleanup": "Remove only run-owned fixture objects and verify their absence; restore any recorded system baseline.",
-      "results": [],
+      "results": [
+        {
+          "artifact": "ios-android-teamchat-003-qwen-492ad0282a",
+          "sourceTask": "teamchat-003",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "fixtureChanged": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "fixtureChanged": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "elapsedSeconds": 21.407378541,
+          "providerRequests": 11,
+          "independentReview": {
+            "passed": false,
+            "scope": "Android phone Pi source-backed isolated adaptation; not official GUI score",
+            "reviewer": "root",
+            "reason": "Correct latest unread DM selected, but generic reply does not reference original support metrics message; original rubric requires contextual reply."
+          }
+        },
+        {
+          "artifact": "ios-android-teamchat-003-qwen-e6abf64f18",
+          "sourceTask": "teamchat-003",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "fixtureChanged": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "fixtureChanged": true,
+            "semanticReviewRequired": true,
+            "passed": true
+          },
+          "elapsedSeconds": 19.711076332999998,
+          "providerRequests": 7,
+          "independentReview": {
+            "passed": true,
+            "scope": "Android phone Pi source-backed isolated adaptation; not official GUI score",
+            "reviewer": "root",
+            "reason": "Independent saved thread appends one reply to Lena Ortiz referencing the 40 percent response-time improvement in her latest incoming unread message. No other state changed. Isolated message only."
+          }
+        }
+      ],
       "officialBenchmarkScore": null
     },
     {
@@ -7125,12 +7902,106 @@
           "requiredFixtureAndVerifier": "source dates/prices/tickets; no live purchase"
         }
       ],
-      "status": "requires_isolated_source_fixtures",
+      "status": "android_file_adaptation_passed",
       "canonicalScenario": "iOSWorld/ticketbox-004",
       "relationship": "distinct_source_variant",
       "acceptance": "All source business criteria, preserved inputs, independent persisted-state readback; partial components do not pass the full task.",
       "cleanup": "Remove only run-owned fixture objects and verify their absence; restore any recorded system baseline.",
-      "results": [],
+      "results": [
+        {
+          "artifact": "ios-android-ticketbox-004-qwen-0d490fc1f2",
+          "sourceTask": "ticketbox-004",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "noMutation": true,
+            "venueReported": true,
+            "priceRangeReported": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "noMutation": true,
+            "venueReported": true,
+            "priceRangeReported": true,
+            "semanticReviewRequired": true,
+            "passed": true
+          },
+          "elapsedSeconds": 22.35601425,
+          "providerRequests": 5,
+          "independentReview": {
+            "passed": true,
+            "reviewer": "root",
+            "reason": "Saved source unchanged; March 17 00:30 PDT is correct conversion of 07:30Z, venue/address and 101-280 base prices with separate fees match source.",
+            "checks": {
+              "noMutation": true,
+              "venueReported": true,
+              "priceRangeReported": true,
+              "semanticReviewRequired": true
+            },
+            "scope": "isolated Android adaptation, not official UI score"
+          }
+        },
+        {
+          "artifact": "ios-android-ticketbox-004-qwen-45487df95c",
+          "sourceTask": "ticketbox-004",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "noMutation": true,
+            "venueReported": true,
+            "priceRangeReported": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "noMutation": true,
+            "venueReported": true,
+            "priceRangeReported": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "elapsedSeconds": 26.372937125,
+          "providerRequests": 7
+        },
+        {
+          "artifact": "ios-android-ticketbox-004-qwen-d5fb166a71",
+          "sourceTask": "ticketbox-004",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "noMutation": true,
+            "venueReported": true,
+            "priceRangeReported": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "noMutation": true,
+            "venueReported": true,
+            "priceRangeReported": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "elapsedSeconds": 22.798150167,
+          "providerRequests": 6
+        }
+      ],
       "officialBenchmarkScore": null
     },
     {
@@ -7180,12 +8051,40 @@
           "requiredFixtureAndVerifier": "source routes/times/laps/social history and owned interaction verifier"
         }
       ],
-      "status": "requires_isolated_source_fixtures",
+      "status": "android_file_adaptation_passed",
       "canonicalScenario": "iOSWorld/trailblaze-004",
       "relationship": "distinct_source_variant",
       "acceptance": "All source business criteria, preserved inputs, independent persisted-state readback; partial components do not pass the full task.",
       "cleanup": "Remove only run-owned fixture objects and verify their absence; restore any recorded system baseline.",
-      "results": [],
+      "results": [
+        {
+          "artifact": "ios-android-trailblaze-004-qwen-8dd2104e49",
+          "sourceTask": "trailblaze-004",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "eligibleFriendActivity": true,
+            "expectedMutationOnly": true,
+            "friendNamed": true,
+            "typeReported": true,
+            "passed": true
+          },
+          "acceptance": {
+            "eligibleFriendActivity": true,
+            "expectedMutationOnly": true,
+            "friendNamed": true,
+            "typeReported": true,
+            "passed": true
+          },
+          "elapsedSeconds": 21.735882167,
+          "providerRequests": 6
+        }
+      ],
       "officialBenchmarkScore": null
     },
     {
@@ -7255,12 +8154,42 @@
           "requiredFixtureAndVerifier": "source city/date forecasts; do not replace historical fixture with current weather"
         }
       ],
-      "status": "requires_isolated_source_fixtures",
+      "status": "android_file_adaptation_passed",
       "canonicalScenario": "iOSWorld/weather-004",
       "relationship": "distinct_source_variant",
       "acceptance": "All source business criteria, preserved inputs, independent persisted-state readback; partial components do not pass the full task.",
       "cleanup": "Remove only run-owned fixture objects and verify their absence; restore any recorded system baseline.",
-      "results": [],
+      "results": [
+        {
+          "artifact": "ios-android-weather-004-qwen-13d28d2b25",
+          "sourceTask": "weather-004",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "sourceStateUnchanged": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "sourceStateUnchanged": true,
+            "semanticReviewRequired": true,
+            "passed": true
+          },
+          "elapsedSeconds": 18.025777625,
+          "providerRequests": 5,
+          "independentReview": {
+            "passed": true,
+            "reason": "Read-only NWS snapshot; Nov 14/15 highs SF 64/62 F and Dallas 72/68 F independently match source periods; date adaptation explicitly reported.",
+            "reviewer": "root",
+            "scope": "Android source-backed adaptation; not official benchmark score"
+          }
+        }
+      ],
       "officialBenchmarkScore": null
     },
     {
@@ -8355,7 +9284,31 @@
       "relationship": "distinct_source_variant",
       "acceptance": "All source business criteria, preserved inputs, independent persisted-state readback; partial components do not pass the full task.",
       "cleanup": "Remove only run-owned fixture objects and verify their absence; restore any recorded system baseline.",
-      "results": [],
+      "results": [
+        {
+          "artifact": "ios-android-multi-012-qwen-98b8821cbe",
+          "sourceTask": "multi-012",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "elapsedSeconds": 33.264240375,
+          "providerRequests": 12
+        }
+      ],
       "officialBenchmarkScore": null
     },
     {
@@ -8437,12 +9390,169 @@
           "requiredFixtureAndVerifier": "source cells/formulas; persisted workbook and untouched-cell verifier"
         }
       ],
-      "status": "native_adapter_candidate",
+      "status": "android_file_adaptation_passed",
       "canonicalScenario": "iOSWorld/multi-013",
       "relationship": "distinct_source_variant",
       "acceptance": "All source business criteria, preserved inputs, independent persisted-state readback; partial components do not pass the full task.",
       "cleanup": "Remove only run-owned fixture objects and verify their absence; restore any recorded system baseline.",
-      "results": [],
+      "results": [
+        {
+          "artifact": "ios-android-multi-013-qwen-2295e4d4d5",
+          "sourceTask": "multi-013",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "originalDocumentPreserved": true,
+            "sectionAdded": true,
+            "originalSlidesPreserved": true,
+            "oneSlideAdded": true,
+            "sheetChanged": true,
+            "originalCellsNotDeleted": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "originalDocumentPreserved": true,
+            "sectionAdded": true,
+            "originalSlidesPreserved": true,
+            "oneSlideAdded": true,
+            "sheetChanged": true,
+            "originalCellsNotDeleted": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "elapsedSeconds": 36.786058042,
+          "providerRequests": 8,
+          "independentReview": {
+            "passed": false,
+            "scope": "Android phone Pi source-backed isolated adaptation; not official GUI score",
+            "reviewer": "root",
+            "reason": "Tracker row uses generic BUG215/Medium/Sam/Open without identifying the plan added to the document and slides."
+          }
+        },
+        {
+          "artifact": "ios-android-multi-013-qwen-584dc0a64c",
+          "sourceTask": "multi-013",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "originalDocumentPreserved": true,
+            "sectionAdded": true,
+            "originalSlidesPreserved": true,
+            "oneSlideAdded": true,
+            "sheetChanged": true,
+            "originalCellsNotDeleted": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "originalDocumentPreserved": true,
+            "sectionAdded": true,
+            "originalSlidesPreserved": true,
+            "oneSlideAdded": true,
+            "sheetChanged": true,
+            "originalCellsNotDeleted": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "elapsedSeconds": 72.730674333,
+          "providerRequests": 24,
+          "independentReview": {
+            "reviewer": "root",
+            "passed": false,
+            "basis": "Independent ADB file readbacks; all source business rubric criteria; GUI navigation substituted",
+            "reason": "Tracker row says only Open without linking the new sync-layer plan; document/slide consistency alone does not verify the tracker criterion."
+          }
+        },
+        {
+          "artifact": "ios-android-multi-013-qwen-aff8869b31",
+          "sourceTask": "multi-013",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "originalDocumentPreserved": true,
+            "sectionAdded": true,
+            "originalSlidesPreserved": true,
+            "oneSlideAdded": true,
+            "sheetChanged": true,
+            "originalCellsNotDeleted": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "originalDocumentPreserved": true,
+            "sectionAdded": true,
+            "originalSlidesPreserved": true,
+            "oneSlideAdded": true,
+            "sheetChanged": true,
+            "originalCellsNotDeleted": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "elapsedSeconds": 29.528303375,
+          "providerRequests": 5,
+          "independentReview": {
+            "reviewer": "root",
+            "passed": false,
+            "basis": "Independent ADB file readbacks; all source business rubric criteria; GUI navigation substituted",
+            "reason": "Dangling D7 New plan has no row identity or concrete connection to the roadmap; do not award complete task success."
+          }
+        },
+        {
+          "artifact": "ios-android-multi-013-qwen-cfe8ca174c",
+          "sourceTask": "multi-013",
+          "provider": "35a3",
+          "officialBenchmarkScore": null,
+          "transport": "shell",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "originalDocumentPreserved": true,
+            "sectionAdded": true,
+            "originalSlidesPreserved": true,
+            "oneSlideAdded": true,
+            "sheetChanged": true,
+            "originalCellsNotDeleted": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "originalDocumentPreserved": true,
+            "sectionAdded": true,
+            "originalSlidesPreserved": true,
+            "oneSlideAdded": true,
+            "sheetChanged": true,
+            "originalCellsNotDeleted": true,
+            "semanticReviewRequired": true,
+            "passed": true
+          },
+          "elapsedSeconds": 49.008514583,
+          "providerRequests": 20,
+          "independentReview": {
+            "reviewer": "root",
+            "passed": true,
+            "basis": "Independent ADB file readbacks; all source business rubric criteria; GUI navigation substituted",
+            "reason": "Document new Android section, new slide summarizes the same four points, and a fully identified tracker row explicitly names Android adaptation; source content preserved."
+          }
+        }
+      ],
       "officialBenchmarkScore": null
     },
     {

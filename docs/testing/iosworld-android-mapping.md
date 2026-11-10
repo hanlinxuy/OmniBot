@@ -8,20 +8,20 @@
 
 | 来源 ID | Android 能力对应 | 当前迁移状态 |
 |---|---|---|
-| caltrack-001 | caltrack → isolated nutrition store | requires_isolated_source_fixtures |
-| cinephile-001 | cinephile → isolated movie catalog | requires_isolated_source_fixtures |
-| cityride-001 | cityride → isolated ride service | requires_isolated_source_fixtures |
+| caltrack-001 | caltrack → isolated nutrition store | android_file_adaptation_passed |
+| cinephile-001 | cinephile → isolated movie catalog | android_file_adaptation_passed |
+| cityride-001 | cityride → isolated ride service | android_file_adaptation_passed |
 | clock-001 | clock → Android Clock Intent / scoped clock controls | native_adapter_candidate |
 | clouddocs-004 | clouddocs → phone Pi document files | android_file_adaptation_passed |
-| clouddrive-001 | clouddrive → scoped document metadata service | requires_isolated_source_fixtures |
+| clouddrive-001 | clouddrive → scoped document metadata service | android_file_adaptation_passed |
 | cloudsheets-003 | cloudsheets → phone Pi XLSX files | android_file_adaptation_passed |
-| cloudslides-002 | cloudslides → phone Pi PPTX files | native_adapter_candidate |
+| cloudslides-002 | cloudslides → phone Pi PPTX files | android_file_adaptation_passed |
 | dinespot-001 | dinespot → isolated restaurant service | requires_isolated_source_fixtures |
-| freshcart-001 | freshcart → isolated grocery catalog/cart | requires_isolated_source_fixtures |
-| lockedin-003 | lockedin → isolated professional-network fixture | requires_isolated_source_fixtures |
-| lockedin-004 | lockedin → isolated professional-network fixture | requires_isolated_source_fixtures |
-| mail-002 | mail → Android mock Mail / scoped mail fixture | requires_isolated_source_fixtures |
-| megamart-001 | megamart → isolated shopping catalog/cart | requires_isolated_source_fixtures |
+| freshcart-001 | freshcart → isolated grocery catalog/cart | android_file_adaptation_passed |
+| lockedin-003 | lockedin → isolated professional-network fixture | android_file_adaptation_passed |
+| lockedin-004 | lockedin → isolated professional-network fixture | android_file_adaptation_passed |
+| mail-002 | mail → Android mock Mail / scoped mail fixture | android_file_adaptation_passed |
+| megamart-001 | megamart → isolated shopping catalog/cart | android_file_adaptation_passed |
 | mybank-003 | mybank → EXCLUDED | excluded_user_scope |
 | notes-001 | notes → vivo Notes controls or isolated note store | native_adapter_candidate |
 | quickbite-001 | quickbite → isolated food-order service | requires_isolated_source_fixtures |
@@ -29,12 +29,12 @@
 | scorezone-003 | scorezone → isolated sports feed | requires_isolated_source_fixtures |
 | skytrip-002 | skytrip → isolated flight search/history | requires_isolated_source_fixtures |
 | splitpay-001 | splitpay → EXCLUDED | excluded_user_scope |
-| stayfinder-001 | stayfinder → isolated lodging search/history | requires_isolated_source_fixtures |
-| tasterank-001 | tasterank → isolated restaurant list | requires_isolated_source_fixtures |
-| teamchat-003 | teamchat → isolated Mattermost fixture | requires_isolated_source_fixtures |
-| ticketbox-004 | ticketbox → isolated event catalog/history | requires_isolated_source_fixtures |
-| trailblaze-004 | trailblaze → isolated activity store | requires_isolated_source_fixtures |
-| weather-004 | weather → fixed-date weather service or Android weather controls | requires_isolated_source_fixtures |
+| stayfinder-001 | stayfinder → isolated lodging search/history | android_file_adaptation_passed |
+| tasterank-001 | tasterank → isolated restaurant list | android_file_adaptation_passed |
+| teamchat-003 | teamchat → isolated Mattermost fixture | android_file_adaptation_passed |
+| ticketbox-004 | ticketbox → isolated event catalog/history | android_file_adaptation_passed |
+| trailblaze-004 | trailblaze → isolated activity store | android_file_adaptation_passed |
+| weather-004 | weather → fixed-date weather service or Android weather controls | android_file_adaptation_passed |
 | lockedin-001 | lockedin → isolated professional-network fixture; clouddocs → phone Pi document files; mail → Android mock Mail / scoped mail fixture | requires_isolated_source_fixtures |
 | lockedin-002 | lockedin → isolated professional-network fixture; dinespot → isolated restaurant service; quickchat → isolated messaging fixture | requires_isolated_source_fixtures |
 | multi-001 | dinespot → isolated restaurant service; teamchat → isolated Mattermost fixture | requires_isolated_source_fixtures |
@@ -48,7 +48,7 @@
 | multi-010 | megamart → isolated shopping catalog/cart; mybank → EXCLUDED; clouddocs → phone Pi document files | excluded_user_scope |
 | multi-011 | stayfinder → isolated lodging search/history; weather → fixed-date weather service or Android weather controls; tasterank → isolated restaurant list; notes → vivo Notes controls or isolated note store | requires_isolated_source_fixtures |
 | multi-012 | trailblaze → isolated activity store; quickchat → isolated messaging fixture | requires_isolated_source_fixtures |
-| multi-013 | clouddocs → phone Pi document files; cloudslides → phone Pi PPTX files; cloudsheets → phone Pi XLSX files | native_adapter_candidate |
+| multi-013 | clouddocs → phone Pi document files; cloudslides → phone Pi PPTX files; cloudsheets → phone Pi XLSX files | android_file_adaptation_passed |
 | multi-014 | cinephile → isolated movie catalog; quickbite → isolated food-order service; quickchat → isolated messaging fixture | requires_isolated_source_fixtures |
 | multi-015 | ticketbox → isolated event catalog/history; cityride → isolated ride service; cloudsheets → phone Pi XLSX files | requires_isolated_source_fixtures |
 | multi-016 | splitpay → EXCLUDED; quickchat → isolated messaging fixture | excluded_user_scope |

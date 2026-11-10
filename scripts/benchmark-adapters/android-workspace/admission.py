@@ -11,4 +11,4 @@ def admit_workspace_command(command, script):
     tokens = shlex.split(command)
     if len(tokens) < 3 or tokens[:2] != ['python3', script]:
         return False
-    return len(tokens) == {'list': 3, 'read': 4, 'set': 7, 'append': 5}.get(tokens[2], 0)
+    return len(tokens) == {'list': 3, 'read': 4, 'set': 7, 'append': 5, 'bullet': 6, 'add-slide': 6, 'star': 5}.get(tokens[2], 0)

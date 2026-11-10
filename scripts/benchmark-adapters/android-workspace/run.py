@@ -16,7 +16,8 @@ import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 parser = argparse.ArgumentParser(description='Run source-backed iOSWorld file adaptations through Android phone Pi ACP')
-parser.add_argument('--case', choices=['cloudsheets-003', 'clouddocs-004'], required=True)
+parser.add_argument('--case', required=True)
+parser.add_argument('--transport', choices=['mcp','shell'], default='mcp')
 parser.add_argument('--runtime-root', type=pathlib.Path, required=True)
 parser.add_argument('--ios-source', type=pathlib.Path, required=True)
 parser.add_argument('--output', type=pathlib.Path, required=True)
@@ -58,7 +59,7 @@ class Provider(BaseHTTPRequestHandler):
     def do_POST(self):
         body = json.loads(self.rfile.read(int(self.headers['Content-Length'])))
         requests.append(body)
-        if len(requests) > 12:
+        if len(requests) > 30:
             self.send_error(429, 'bounded task request budget exceeded')
             return
         body['model'] = MODEL
@@ -107,23 +108,36 @@ if args.case == 'cloudsheets-003':
     book = openpyxl.Workbook(); sheet=book.active; sheet.title='Volunteers'
     for address,value in fixtures.items(): sheet[address]=value
     filename='2026 Open House Volunteers.xlsx'; book.save(local_work/filename)
-else:
+elif args.case == 'clouddocs-004':
     block=source.split('title: "Mobile Launch Plan",')[1].split('"""')[1]
     fixtures=textwrap.dedent(block).strip()+'\n'
     filename='Mobile Launch Plan.txt'; (local_work/filename).write_text(fixtures)
+else:
+    from fixtures import build_fixture
+    build_fixture(ios,local_work,args.case)
+filenames=sorted(p.name for p in local_work.iterdir())
 # Ship pure Python dependencies and the capability into the run-owned directory.
-import openpyxl, et_xmlfile
+import openpyxl, et_xmlfile, tzdata
 archive=io.BytesIO()
 with tarfile.open(fileobj=archive, mode='w') as tar:
-    tar.add(local_work/filename,arcname='work/'+filename)
+    for filename in filenames:
+        tar.add(local_work/filename,arcname='work/'+filename)
     tar.add(ADAPTER/'workspace.py',arcname='workspace.py')
-    for module in (openpyxl,et_xmlfile):
+    tar.add(ADAPTER/'presentations.py',arcname='presentations.py')
+    tar.add(ADAPTER/'workspace_mcp.py',arcname='workspace_mcp.py')
+    tar.add(ADAPTER/'records.py',arcname='records.py')
+    for module in (openpyxl,et_xmlfile,tzdata):
         tar.add(pathlib.Path(module.__file__).parent,arcname=module.__name__,filter=lambda info: None if '__pycache__' in info.name else info)
 subprocess.run(BASE+['shell','-T','run-as',PKG,'sh','-c',shlex.quote('tar -xf - -C '+HOST)],input=archive.getvalue(),check=True,capture_output=True)
-PROMPT=task['goal']+'\nAndroid adaptation: your owned workspace is '+GUEST+'/work. Use the available system file capability via bash: python3 '+GUEST+'/workspace.py list; python3 '+GUEST+'/workspace.py read FILE; python3 '+GUEST+'/workspace.py set FILE SHEET CELL VALUE; python3 '+GUEST+'/workspace.py append FILE TEXT. Quote arguments with spaces. Only these four commands are available, one per call. Spreadsheet files are real XLSX and document text is a plain-text export. Operate only these test files. Read back saved state before reporting completion. No CloudSheets/CloudDocs GUI is installed, so do not attempt UI navigation.'
+PROMPT=task['goal']+'\nAndroid adaptation: your owned workspace is '+GUEST+'/work. Use the available system file capability via bash: python3 '+GUEST+'/workspace.py list; python3 '+GUEST+'/workspace.py read FILE; python3 '+GUEST+'/workspace.py set FILE SHEET CELL VALUE; python3 '+GUEST+'/workspace.py append FILE TEXT. Quote arguments with spaces. Also available: python3 '+GUEST+'/workspace.py bullet FILE SLIDE_NUMBER TEXT; python3 '+GUEST+'/workspace.py add-slide FILE TITLE BODY; python3 '+GUEST+'/workspace.py star FILE FILE_ID. One command per call. Spreadsheet files are real XLSX and document text is a plain-text export. Operate only these test files. Read back saved state before reporting completion. No iOS GUI is installed, so do not attempt UI navigation.'
+if args.transport == 'mcp':
+    PROMPT=task['goal']+'\nEvaluation environment: operate only the run-owned files through the available structured workspace tools. The spreadsheet and slide files are real XLSX/PPTX; documents are text exports. Read the actual data, make the requested changes and confirm saved state. These tools replace source-app navigation for this Android adaptation. For dated source data, the fixture reference date is 2026-03-05. Use source-backed facts; do not invent issue numbers, names, or completed work details. When content is unspecified, keep wording generic. Report only requested results accurately, using structured time/price fields without mental conversion. Changes across artifacts must convey the same concrete plan; avoid dangling tracker cells and placeholder text. Do not infer the business content of your changes from these environment instructions.'
+if args.case=='weather-004':
+    PROMPT += '\nThis case uses the live NWS forecast snapshot. Use capturedAt and the forecast startTime fields as the date reference instead of the March fixture date. State the weekend dates and temperature units.'
 (RUN/'task.json').write_text(json.dumps({'sourceTask':args.case,'sourceCommit':'c59287b6ec9a9d0d7269613ad873f6aa9db0f42c','prompt':PROMPT,'rubric':task['rubric'],'fixtureSeedSha256':hashlib.sha256(seed.read_bytes()).hexdigest(),'adaptation':'Original seed data in phone-owned files; native file capability replaces iOS GUI; not official score'},indent=2))
 apk = subprocess.check_output(BASE + ['shell', 'pm', 'path', PKG], text=True).strip()[8:]
-selected_tools=shlex.quote(json.dumps(['bash','read']))
+from workspace_mcp import TOOLS, RECORD_TOOLS
+selected_tools=shlex.quote(json.dumps(['mcp__workspace__'+name for name in [*TOOLS,*RECORD_TOOLS]] if args.transport=='mcp' else ['bash','read']))
 command = f'export OMNIBOT_PI_TOOL_EXECUTION=sequential OMNIBOT_PI_TOOLS_JSON={selected_tools} HOME=/root PATH=/root/.npm-global/bin:$PATH PI_CODING_AGENT_DIR={GUEST} OMNIBOT_PI_MODELS_PATH={GUEST}/models.json OMNIBOT_PI_MODEL={MODEL} OMNIBOT_PI_API_KEY=fixture; exec omnibot-pi-acp'
 script = f'''cd {PREFIX}
 export PREFIX={PREFIX} LINKER=/system/bin/linker64
@@ -175,7 +189,7 @@ def rpc(method, params):
             if msg.get('method') == 'session/request_permission':
                 choices = msg['params']['options']
                 tc=msg['params']['toolCall'];title=tc.get('title','').split(':',1)[0];arg=tc.get('rawInput',{})
-                allowed=False
+                allowed=args.transport=='mcp'
                 if title in ['bash','Bash']:
                     sys.path.insert(0,str(ADAPTER))
                     from admission import admit_workspace_command
@@ -192,12 +206,14 @@ def rpc(method, params):
 
 try:
     initialized = rpc('initialize', {'protocolVersion': 1, 'clientCapabilities': {}, 'clientInfo': {'name': 'phone-pi-preflight', 'version': '1'}})
-    session = rpc('session/new', {'cwd': GUEST + '/work', 'mcpServers': []})
+    session = rpc('session/new', {'cwd': GUEST + '/work', 'mcpServers': [{'name':'workspace','command':'/usr/bin/python3','args':[GUEST+'/workspace_mcp.py'],'env':[]}] if args.transport=='mcp' else []})
     result = rpc('session/prompt', {'sessionId': session['sessionId'], 'prompt': [{'type': 'text', 'text': PROMPT}]})
     rpc('session/close', {'sessionId': session['sessionId']})
     names = [t['function']['name'] for t in requests[0].get('tools', [])]
-    saved=subprocess.check_output(BASE+['shell','-T','run-as',PKG,'cat',shlex.quote(HOST+'/work/'+filename)])
-    saved_path=RUN/('saved-output'+pathlib.Path(filename).suffix); saved_path.write_bytes(saved)
+    saved_dir=RUN/'saved'; saved_dir.mkdir()
+    for filename in filenames:
+        saved=subprocess.check_output(BASE+['shell','-T','run-as',PKG,'cat',shlex.quote(HOST+'/work/'+filename)])
+        (saved_dir/filename).write_bytes(saved)
     final=''.join(u.get('update',{}).get('content',{}).get('text','') for u in updates if u.get('update',{}).get('sessionUpdate')=='agent_message_chunk')
     if args.case == 'cloudsheets-003':
         sheet=openpyxl.load_workbook(io.BytesIO(saved)).active
@@ -206,11 +222,14 @@ try:
         valid=[k for k,(a,b) in changes.items() if k in ['D2','D3'] and a!='Pending' and b=='Pending']
         name=fixtures['A'+valid[0][1:]] if len(valid)==1 else ''
         acceptance={'exactlyOneEligibleStatusChanged':len(changes)==1 and len(valid)==1,'otherCellsPreserved':all(actual.get(k)==v for k,v in fixtures.items() if k not in valid),'volunteerReported':bool(name) and name in final and 'Pending' in final}
-    else:
+    elif args.case == 'clouddocs-004':
         actual=saved.decode()
         acceptance={'originalBodyPreserved':actual.startswith(fixtures),'Q2NoteAppended':'Q2' in actual[len(fixtures):] and len(actual)>len(fixtures),'savedReported':any(w in final.lower() for w in ['saved','保存'])}
-    acceptance['passed']=all(acceptance.values())
-    report={'classification':'iOSWorld Android native-file adaptation; GUI rubric not scored','sourceTask':args.case,'provider':args.provider,'model':MODEL,'elapsedSeconds':time.monotonic()-START,'acceptance':acceptance,'initialize':initialized,'promptResult':result,'toolNames':names,'final':final,'providerRequests':len(requests)}
+    else:
+        from fixtures import verify_fixture
+        acceptance=verify_fixture(args.case,local_work,saved_dir,final)
+    acceptance['passed']=all(acceptance.values()) and not acceptance.get('semanticReviewRequired',False)
+    report={'classification':'iOSWorld Android native-file adaptation; GUI rubric not scored','sourceTask':args.case,'provider':args.provider,'transport':args.transport,'model':MODEL,'elapsedSeconds':time.monotonic()-START,'acceptance':acceptance,'initialize':initialized,'promptResult':result,'toolNames':names,'final':final,'providerRequests':len(requests)}
     (RUN / 'result.json').write_text(json.dumps(report, ensure_ascii=False, indent=2))
     print(json.dumps({'stopReason': result.get('stopReason'), 'acceptance': acceptance, 'providerRequests': len(requests), 'artifact': str(RUN)}, ensure_ascii=False), flush=True)
 finally:
