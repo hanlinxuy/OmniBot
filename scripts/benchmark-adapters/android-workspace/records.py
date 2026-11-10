@@ -27,7 +27,13 @@ def records(action, args):
     data=json.loads(path.read_text())
     if action=='mastodon_request' and path.name=='mastodon.json':
         import urllib.request
-        request=urllib.request.Request(data['relay'],data=json.dumps({key:args[key] for key in ('method','path','params') if key in args}).encode(),headers={'Content-Type':'application/json'})
+        payload={key:args[key] for key in ('method','path','params') if key in args}
+        if payload['method'].upper()=='GET':
+            # Ten source statuses exceeded Pi's 20 KiB MCP output limit and
+            # produced an unreadable spill-file reference in this scoped harness.
+            payload['params']=dict(payload.get('params',{}))
+            payload['params']['limit']=max(1,min(int(payload['params'].get('limit',5)),5))
+        request=urllib.request.Request(data['relay'],data=json.dumps(payload).encode(),headers={'Content-Type':'application/json'})
         with urllib.request.urlopen(request,timeout=35) as response: return json.load(response)
     if action=='create_document' and path.name=='documents.json':
         title=args['title'].strip()
