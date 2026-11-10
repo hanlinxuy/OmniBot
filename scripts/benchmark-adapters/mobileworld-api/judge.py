@@ -16,6 +16,16 @@ import time
 import types
 
 
+class JsonRow(dict):
+    def __init__(self, pairs):
+        super().__init__(pairs)
+        self.columns=pairs
+
+
+def judge_error(message):
+    raise RuntimeError('Source SQL helper failed: '+str(message))
+
+
 class Database:
     def __init__(self, ssh, compose, queries):
         self.ssh=ssh;self.compose=compose;self.rows=[];self.queries=queries
@@ -30,7 +40,7 @@ class Database:
         query="SELECT COALESCE(json_agg(row_to_json(q)), '[]'::json) FROM ("+query.strip().rstrip(';')+") q;"
         command='docker compose -f '+shlex.quote(self.compose)+' exec -T db psql -X -U postgres -d mastodon -At -v ON_ERROR_STOP=1'
         output=subprocess.check_output(self.ssh+[command],input=query,text=True,timeout=30)
-        self.rows=[tuple(datetime.datetime.fromisoformat(re.sub(r'\.(\d{1,6})(?=$|[+-])',lambda m:'.'+m[1].ljust(6,'0'),v)) if k.endswith('_at') and isinstance(v,str) else v for k,v in row.items()) for row in json.loads(output)]
+        self.rows=[tuple(datetime.datetime.fromisoformat(re.sub(r'\.(\d{1,6})(?=$|[+-])',lambda m:'.'+m[1].ljust(6,'0'),v)) if k.endswith('_at') and isinstance(v,str) else v for k,v in row.columns) for row in json.loads(output,object_pairs_hook=JsonRow)]
 
         proof['completed']=True
 
@@ -44,7 +54,7 @@ def judge(source, task_file, ssh, compose):
     helper_file=source/'src/mobile_world/runtime/app_helpers/mastodon.py'
     helper_ast=ast.parse(helper_file.read_text())
     helper_functions=[node for node in helper_ast.body if isinstance(node,(ast.FunctionDef,ast.AsyncFunctionDef)) or isinstance(node,ast.Assign) and isinstance(node.value,ast.Constant)]
-    namespace={'datetime':datetime.datetime,'json':json,'logger':logging.getLogger('source-judge')}
+    namespace={'datetime':datetime.datetime,'json':json,'logger':types.SimpleNamespace(error=judge_error,info=lambda *_:None)}
     module=ast.Module(body=[ast.ImportFrom(module='__future__',names=[ast.alias(name='annotations')],level=0),*helper_functions],type_ignores=[])
     exec(compile(ast.fix_missing_locations(module),str(helper_file),'exec'),namespace)
     queries=[]
