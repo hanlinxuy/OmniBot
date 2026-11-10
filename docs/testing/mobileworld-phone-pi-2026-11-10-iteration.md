@@ -353,3 +353,33 @@ An earlier probe omitted the existing `OMNIBOT_HOST_WORKSPACE` bind and therefor
 had no skill catalog; it is invalid for discovery assessment and was corrected
 before this result. The valid explanation still overgeneralized same-time alarm
 identity, so guidance interpretation is not assumed perfect.
+
+
+### MattermostCustomerFeedbackAnalysisTask: feedback to digest and meeting
+
+All three phone Pi outer models completed this new adapted scenario. The source's
+16 feedback messages were preserved (three negative, thirteen positive), with a
+unique fixture channel and calendar title. Fixture messages share Harry as author;
+times are explicitly UTC, so Friday 14:00 means 22:00 on the vivo's Shanghai clock.
+These adaptations are not an official benchmark score. All three share the same
+DeepSeek GUI executor; this is not a comparison of three GUI models.
+
+| Outer model | Seconds | Provider requests | GUI calls / steps | Independent outcome |
+| --- | ---: | ---: | ---: | --- |
+| 35a3 | 50.02 | 7 | 1 / 5 | pass |
+| DeepSeek Flash | 41.62 | 8 | 1 / 5 | pass |
+| Terra | 60.21 | 7 | 1 / 5 | pass |
+
+Only the offline Mail send used GUI. Channel reads/reply and calendar creation
+used MCP/system interfaces. Independent readback required the exact recipient
+and subject, all three negative items with no positive-item leakage, exactly one
+Friday 14:00 event, and the requested channel confirmation. Each run passed those
+checks. GUI terminal RunLogs were confirmed before restoring mail state byte for
+byte; all unique calendar events and posts were removed and channels archived.
+External email delivery is not exercised.
+
+Two narrative caveats remain: 35a3 and DeepSeek counted the system join notice
+as another positive message; Terra did not make that claim. DeepSeek posted the
+channel confirmation before sending the digest, though the final independent
+state passed. These observations are retained separately from business-effect
+acceptance. No product fix or general speedup is claimed from this batch.
