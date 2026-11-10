@@ -55,7 +55,14 @@ try:
     # Keep transport diagnostics private beside the run, not in published reports.
     (work/'runner.log').write_text(run.stdout+'\n'+run.stderr)
 finally:
+    # Preserve execution and judgment even when cleanup transport fails.
+    report['backendRestored']=False
+    (work/'report.json').write_text(json.dumps(report,indent=2)+'\n')
+    for artifact in report.get('artifacts',[]):
+        (out/artifact/'backend-report.json').write_text(json.dumps(report,indent=2)+'\n')
     subprocess.run([a.adb,'-s',a.serial,'reverse','--remove','tcp:18301'],capture_output=True)
     reset();report['restoredHash']=state_hash();report['backendRestored']=report['restoredHash']==before_hash
     (work/'report.json').write_text(json.dumps(report,indent=2)+'\n')
+    for artifact in report.get('artifacts',[]):
+        (out/artifact/'backend-report.json').write_text(json.dumps(report,indent=2)+'\n')
 print(json.dumps(report),flush=True)
