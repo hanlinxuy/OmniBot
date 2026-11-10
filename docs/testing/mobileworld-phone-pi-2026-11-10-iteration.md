@@ -280,3 +280,25 @@ A new CheckEventTimeTask phone Pi run produced two complete GUI receipts of
 1,141 and 1,755 bytes with their finished content intact, without Pi truncation.
 The underlying full RunLogs remained available. Business acceptance is recorded
 separately below; this does not establish general latency improvement.
+
+### CheckEventTimeTask: email content to native Clock
+
+The original synthetic Mail fixture says the Christmas party starts at 19:00.
+Each model read it through GUI, computed one hour earlier itself, created an
+18:00 system Clock alarm through the native API, then used GUI to verify it.
+The harness supplied the unique title and actual-device-day interpretation, not
+the party time or expected answer. This is an adapted task on vivo, not the
+original emulator score. The same compact-receipt APK, reminder skill and
+shared GUI executor were used for all three outer Pi models.
+
+| Outer model | Elapsed seconds | GUI calls | GUI steps | Independent readback |
+| --- | ---: | ---: | ---: | --- |
+| 35a3 | 50.13 | 2 | 7 | today, 18:00, once, enabled |
+| DeepSeek Flash | 48.80 | 2 | 9 | today, 18:00, once, enabled |
+| Terra | 71.45 | 2 | 11 | today, 18:00, once, enabled |
+
+The two GUI calls are different operations: mail reading and Clock verification.
+All six returned complete completion reports without truncation, and their full
+RunLogs were retained. Synthetic mail state/sent-record files were restored
+byte-for-byte (or removed when originally absent). All three unique alarms were
+independently deleted with visible baseline preservation. Actual ringing was not tested.
