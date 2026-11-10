@@ -17,6 +17,8 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 parser = argparse.ArgumentParser(description='Run source-backed iOSWorld file adaptations through Android phone Pi ACP')
 parser.add_argument('--case', required=True)
+parser.add_argument('--task-file',type=pathlib.Path)
+parser.add_argument('--fixture-dir',type=pathlib.Path)
 parser.add_argument('--transport', choices=['mcp','shell'], default='mcp')
 parser.add_argument('--runtime-root', type=pathlib.Path, required=True)
 parser.add_argument('--ios-source', type=pathlib.Path, required=True)
@@ -98,11 +100,15 @@ class Provider(BaseHTTPRequestHandler):
 
 import re, io, tarfile, textwrap, fcntl
 ios = args.ios_source.resolve()
-task = next(t for t in json.loads((ios/'tasks.json').read_text()) if t['name'] == args.case)
+task = json.loads(args.task_file.read_text()) if args.task_file else next(t for t in json.loads((ios/'tasks.json').read_text()) if t['name'] == args.case)
 seed = ios/'iphone/apps/cloudsheets/xproj/CloudSheets/Persistence/SeedDataFactory.swift'
 source = seed.read_text()
 local_work = RUN/'fixture'; local_work.mkdir()
-if args.case == 'cloudsheets-003':
+if args.fixture_dir:
+    import shutil
+    for p in args.fixture_dir.iterdir():
+        if p.is_file(): shutil.copyfile(p,local_work/p.name)
+elif args.case == 'cloudsheets-003':
     import openpyxl
     block = source.split('title: "2026 Open House Volunteers",')[1].split('// file_sheet_task_tracker')[0]
     fixtures = dict(re.findall(r'"([A-Z]+[0-9]+)": "([^"\n]*)"', block))
@@ -149,7 +155,7 @@ if args.transport == 'mcp':
     PROMPT=task['goal']+'\nEvaluation environment: operate only the run-owned files through the available structured workspace tools. The spreadsheet and slide files are real XLSX/PPTX; documents are text exports. Read the actual data, make the requested changes and confirm saved state. These tools replace source-app navigation for this Android adaptation. For dated source data, the fixture reference date is 2026-03-05. Use source-backed facts; do not invent issue numbers, names, or completed work details. When content is unspecified, keep wording generic. Report only requested results accurately, using structured time/price fields without mental conversion. Changes across artifacts must convey the same concrete plan; avoid dangling tracker cells and placeholder text. Do not infer the business content of your changes from these environment instructions. Follow pagination when the request requires a complete list. Attribute statements to their actual sender; another person's preferences are not the user's preferences. Distinguish past, upcoming and cancelled records using their explicit status and date. If a required source fact is unavailable, report the gap instead of inventing it.'
 if args.case=='weather-004':
     PROMPT += '\nThis case uses the live NWS forecast snapshot. Use capturedAt and the forecast startTime fields as the date reference instead of the March fixture date. State the weekend dates and temperature units.'
-(RUN/'task.json').write_text(json.dumps({'sourceTask':args.case,'sourceCommit':'c59287b6ec9a9d0d7269613ad873f6aa9db0f42c','prompt':PROMPT,'rubric':task['rubric'],'fixtureSeedSha256':hashlib.sha256(seed.read_bytes()).hexdigest(),'adapterSha256':{p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in ADAPTER.glob('*.py')},'adaptation':'Original seed data in phone-owned files; native file capability replaces iOS GUI; not official score'},indent=2))
+(RUN/'task.json').write_text(json.dumps({'sourceTask':args.case,'sourceCommit':task.get('sourceCommit','c59287b6ec9a9d0d7269613ad873f6aa9db0f42c'),'prompt':PROMPT,'rubric':task['rubric'],'fixtureSeedSha256':hashlib.sha256(seed.read_bytes()).hexdigest() if not args.fixture_dir else None,'fixtureFileSha256':{p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in local_work.iterdir() if p.is_file()},'adapterSha256':{p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in ADAPTER.glob('*.py')},'adaptation':task.get('classification','Original seed data in phone-owned files; native file capability replaces iOS GUI; not official score')},indent=2))
 apk = subprocess.check_output(BASE + ['shell', 'pm', 'path', PKG], text=True).strip()[8:]
 from workspace_mcp import TOOLS, RECORD_TOOLS
 selected_tools=shlex.quote(json.dumps(['mcp__workspace__'+name for name in [*TOOLS,*RECORD_TOOLS]] if args.transport=='mcp' else ['bash','read']))
@@ -232,7 +238,9 @@ try:
         saved=subprocess.check_output(BASE+['shell','-T','run-as',PKG,'cat',shlex.quote(HOST+'/work/'+filename)])
         (saved_dir/filename).write_bytes(saved)
     final=''.join(u.get('update',{}).get('content',{}).get('text','') for u in updates if u.get('update',{}).get('sessionUpdate')=='agent_message_chunk')
-    if args.case == 'cloudsheets-003':
+    if args.fixture_dir:
+        acceptance={'externalBackendReviewRequired':True,'semanticReviewRequired':True,'passed':False}
+    elif args.case == 'cloudsheets-003':
         sheet=openpyxl.load_workbook(io.BytesIO(saved)).active
         actual={c.coordinate:c.value for row in sheet for c in row if c.value is not None}
         changes={k:(fixtures.get(k),v) for k,v in actual.items() if fixtures.get(k)!=v}
@@ -246,7 +254,7 @@ try:
         from fixtures import verify_fixture
         acceptance=verify_fixture(args.case,local_work,saved_dir,final)
     acceptance['passed']=all(acceptance.values()) and not acceptance.get('semanticReviewRequired',False)
-    report={'classification':'iOSWorld Android native-file adaptation; GUI rubric not scored','sourceTask':args.case,'provider':args.provider,'transport':args.transport,'model':MODEL,'elapsedSeconds':time.monotonic()-START,'acceptance':acceptance,'initialize':initialized,'promptResult':result,'toolNames':names,'final':final,'providerRequests':len(requests)}
+    report={'classification':task.get('classification','iOSWorld Android native-file adaptation; GUI rubric not scored'),'sourceTask':args.case,'provider':args.provider,'transport':args.transport,'model':MODEL,'elapsedSeconds':time.monotonic()-START,'acceptance':acceptance,'initialize':initialized,'promptResult':result,'toolNames':names,'final':final,'providerRequests':len(requests)}
     (RUN / 'result.json').write_text(json.dumps(report, ensure_ascii=False, indent=2))
     print(json.dumps({'stopReason': result.get('stopReason'), 'acceptance': acceptance, 'providerRequests': len(requests), 'artifact': str(RUN)}, ensure_ascii=False), flush=True)
 finally:

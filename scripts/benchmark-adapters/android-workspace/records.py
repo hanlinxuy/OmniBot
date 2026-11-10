@@ -4,6 +4,14 @@ import pathlib
 import uuid
 
 
+def record_field(item, key):
+    for part in key.split('.'):
+        if isinstance(item,dict):item=item.get(part)
+        elif isinstance(item,list) and part.isdigit() and int(part)<len(item):item=item[int(part)]
+        else:return None
+    return item
+
+
 def records(action, args):
     if action=='convert_time':
         from datetime import datetime
@@ -17,6 +25,10 @@ def records(action, args):
     if path.parent!=root.resolve() or path.suffix!='.json' or not path.is_file():
         raise ValueError('Use an existing owned JSON fixture')
     data=json.loads(path.read_text())
+    if action=='mastodon_request' and path.name=='mastodon.json':
+        import urllib.request
+        request=urllib.request.Request(data['relay'],data=json.dumps({key:args[key] for key in ('method','path','params') if key in args}).encode(),headers={'Content-Type':'application/json'})
+        with urllib.request.urlopen(request,timeout=35) as response: return json.load(response)
     if action=='create_document' and path.name=='documents.json':
         title=args['title'].strip()
         if not title or '/' in title or '\\' in title or title in ('.','..'): raise ValueError('Use a nonempty document title without path separators')
@@ -69,7 +81,7 @@ def records(action, args):
             incoming=[m for m in messages if (m.get('senderId')!=data['workspaces'][0]['currentUserId'] if path.name=='teamchat.json' else m.get('senderID')!=data['currentUserID'] if path.name=='quickchat.json' else not m.get('isFromCurrentUser'))]
             rows.append({'id':thread['id'],'name':thread.get('name',thread.get('title',thread.get('participantName'))),'unreadCount':thread.get('unreadCount',0),'lastTimestamp':last.get('timestamp',last.get('sentAt')),'lastIncomingTimestamp':incoming[-1].get('timestamp',incoming[-1].get('sentAt')) if incoming else None,'messageCount':len(messages)})
         return {'threads':rows,'scope':'current workspace only' if path.name=='teamchat.json' else 'all conversations'}
-    if action=='query_records':
+    if action in ('query_records','aggregate_records'):
         value=data
         traversed=[]
         for part in args.get('collection','').split('.'):
@@ -93,7 +105,7 @@ def records(action, args):
             for key,child in item.items():
                 path_key=prefix+key;available.add(path_key)
                 if isinstance(child,dict): pending.append((path_key+'.',child))
-        invalid_fields=[key for key in args.get('fields',[]) if value and not any(key in item for item in value)]
+        invalid_fields=[key for key in args.get('fields',[]) if available and key not in available]
         if invalid_fields: return {'error':'unknown_projection_field','invalidFields':invalid_fields,'availableFields':sorted({key for item in value for key in item})}
         invalid=[key for key,_ in filters if available and key not in available]
         if invalid: return {'error':'unknown_filter_field','invalidFields':invalid,'availableFields':sorted(available)}
@@ -106,6 +118,24 @@ def records(action, args):
                 for part in key.split('.'): actual=actual.get(part) if isinstance(actual,dict) else None
                 if actual!=expected: match=False
             if match: found.append(item)
+        if action=='aggregate_records':
+            group_key=args.get('group_by','');numeric=args.get('numeric_fields',[])
+            unknown=[key for key in ([group_key] if group_key else [])+numeric if available and key not in available]
+            if unknown:return {'error':'unknown_aggregate_field','invalidFields':unknown,'availableFields':sorted(available)}
+            groups={}
+            for item in found:
+                label=record_field(item,group_key) if group_key else 'all'
+                if isinstance(label,(list,dict)):return {'error':'group_field_must_be_scalar'}
+                group=groups.setdefault(str(label),{'group':label,'count':0,'metrics':{key:{'count':0,'sum':0,'min':None,'max':None} for key in numeric}});group['count']+=1
+                for key in numeric:
+                    number=record_field(item,key)
+                    if not isinstance(number,(int,float)) or isinstance(number,bool):continue
+                    metric=group['metrics'][key];metric['count']+=1;metric['sum']+=number
+                    metric['min']=number if metric['min'] is None else min(metric['min'],number)
+                    metric['max']=number if metric['max'] is None else max(metric['max'],number)
+            for group in groups.values():
+                for metric in group['metrics'].values():metric['mean']=metric['sum']/metric['count'] if metric['count'] else None
+            return {'totalMatches':len(found),'groups':sorted(groups.values(),key=lambda x:-x['count']),'scope':'All matched source rows, not only one page. Non-numeric values excluded from metric count.'}
         if args.get('sort_by'):
             def sort_value(item):
                 for part in args['sort_by'].split('.'): item=item[part]
@@ -122,7 +152,7 @@ def records(action, args):
                     row['eventLocalTime']=datetime.fromisoformat(row['date'].replace('Z','+00:00')).astimezone(ZoneInfo(row['eventTimeZone'])).strftime('%Y-%m-%d %H:%M %Z')
         bounded=[]; size=0
         for source_row in rows:
-            row={key:source_row.get(key) for key in args['fields']} if args.get('fields') else source_row
+            row={key:record_field(source_row,key) for key in args['fields']} if args.get('fields') else source_row
             row_size=len(json.dumps(row,ensure_ascii=False))
             if row_size>3000:
                 source_path=args.get('collection','')+'.'+str(value.index(source_row))

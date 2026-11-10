@@ -15,6 +15,8 @@ TOOLS = {
 }
 
 RECORD_TOOLS = {
+ 'aggregate_records': ('Compute exact counts and numeric sum/mean/min/max over all source records, optionally grouped by one scalar dot-path field. Avoid estimating frequencies from one page. Filters match query_records.', {'file':'string','collection':'string','group_by':'string','numeric_fields':'array','filters':'object'}, ['file','collection']),
+ 'mastodon_request': ('Call the isolated original Mastodon REST API. file=mastodon.json. Use GET /api/v1/accounts/verify_credentials for own account; GET /api/v1/accounts/:id/statuses for posts; GET /api/v1/bookmarks, /favourites, /lists, /filters, /featured_tags; GET /api/v2/search with q and type; POST /api/v1/statuses/:id/pin, /unpin, /bookmark, /unbookmark, /favourite, /unfavourite; POST /api/v1/statuses for a post/reply (status and in_reply_to_id); PATCH /api/v1/accounts/update_credentials for profile; GET /api/v1/instance. params contains query parameters for GET, JSON body otherwise. Follow paginationLink by copying its path/query, never the host. Only fixture account test; no external federation.', {'file':'string','method':'string','path':'string','params':'object'}, ['file','method','path']),
  'place_food_order': ('Create an isolated delivery order from source restaurant/menu/address IDs. items maps menu item IDs to quantities. Source fees and default tip apply. No real payment, order, delivery or external account.', {'file':'string','restaurant_id':'string','address_id':'string','items':'object'}, ['file','restaurant_id','address_id','items']),
  'interact_with_post': ('Like, comment or repost an existing source post in the isolated fixture; comment requires text. No external social interaction.', {'file':'string','record_id':'string','interaction':'string','text':'string'}, ['file','record_id','interaction']),
  'create_document': ('Create a new text document with a fixture-only sharing reference. No public cloud link or real sharing.', {'file':'string','title':'string','text':'string'}, ['file','title','text']),
@@ -46,11 +48,11 @@ RECORD_TOOLS = {
 
 def main():
     files={p.name for p in pathlib.Path(__file__).with_name('work').iterdir()}
-    allowed={'list_files','read_file','query_records','convert_time'}
+    allowed={'list_files','read_file','query_records','aggregate_records','convert_time'}
     for extension,names in {'.xlsx':['set_cell'],'.pptx':['add_bullet','add_slide'],'.txt':['append_text']}.items():
         if any(p.endswith(extension) for p in files): allowed.update(names)
     capability_files={
-        'documents.json':['create_document'], 'drive.json':['star_file'], 'notes.json':['create_note','append_note','append_note_bullet'],
+        'mastodon.json':['mastodon_request'], 'documents.json':['create_document'], 'drive.json':['star_file'], 'notes.json':['create_note','append_note','append_note_bullet'],
         'teamchat.json':['list_channels','list_threads','read_thread','send_message'],
         'quickchat.json':['list_threads','read_thread','send_message'],
         'quickbite.json':['place_food_order'], 'lockedin.json':['interact_with_post','list_threads','read_thread','send_message','send_direct_message','save_job','follow_company'],

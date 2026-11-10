@@ -14,6 +14,19 @@ class OwnedActionsTest(unittest.TestCase):
         self.assertEqual(spreadsheet_value('=SUM(B2:B8)'),'=SUM(B2:B8)')
         self.assertEqual(spreadsheet_value('Pending'),'Pending')
 
+    def test_aggregate_counts_all_rows_and_reports_missing_numeric_values(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=pathlib.Path(directory);(root/'work').mkdir()
+            rows=[{'restaurant':{'name':'A'},'price':2} for _ in range(24)]+[{'restaurant':{'name':'B'},'price':None}]
+            (root/'work/orders.json').write_text(json.dumps({'orders':rows}))
+            with patch.object(records,'__file__',str(root/'records.py')):
+                result=records.records('aggregate_records',{'file':'orders.json','collection':'orders','group_by':'restaurant.name','numeric_fields':['price']})
+                self.assertEqual(result['totalMatches'],25)
+                self.assertEqual(result['groups'][0]['metrics']['price']['sum'],48)
+                self.assertEqual(result['groups'][1]['metrics']['price']['count'],0)
+                result=records.records('query_records',{'file':'orders.json','collection':'orders','fields':['restaurant.name','price'],'limit':1})
+                self.assertEqual(result['items'],[{'restaurant.name':'A','price':2}])
+
     def test_order_preserves_history_and_uses_source_fees(self):
         with tempfile.TemporaryDirectory() as directory:
             root=pathlib.Path(directory);(root/'work').mkdir()
