@@ -45,9 +45,22 @@ export class PiAcpSession {
   static async create(manager: SessionManager, config: LaunchConfig, models: ModelRuntime, client: AgentContext, servers: McpServer[]): Promise<PiAcpSession> {
     const owned = new PiAcpSession(manager, config, models, client);
     const mcpConfig = sessionMcpConfig(servers, manager.getCwd());
+    // A 20K retained tail can exceed the estimated history of a 32K model,
+    // leaving nothing for Pi's native overflow recovery to summarize.
+    const defaults = SettingsManager.inMemory();
     const settings = SettingsManager.inMemory({
       retry: { enabled: false, provider: { maxRetries: 0 } },
       cacheWarming: "off",
+      compaction: { modelOverrides: Object.fromEntries(
+        models.getModels(PROVIDER_ID).map((model) => {
+          const budget = defaults.getCompactionSettings(model);
+          const quarterWindow = Math.floor(model.contextWindow / 4);
+          return [`${model.provider}/${model.id}`, {
+            keepRecentTokens: Math.min(budget.keepRecentTokens, quarterWindow),
+            reserveTokens: Math.min(budget.reserveTokens, quarterWindow),
+          }];
+        }),
+      ) },
     });
     // Credentials, tools and MCP definitions are supplied by this host. Skills
     // and context files still use Pi's standard discovery. Third-party executable
