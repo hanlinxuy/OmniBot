@@ -1765,6 +1765,14 @@ object AgentToolDefinitions {
                         put("type", "boolean")
                         put("description", "仅 clock_app：默认 true，请求直接创建，避免打开编辑页；仅用户希望先编辑时设 false。设备仍可能要求确认。")
                     }
+                    putJsonObject("vibrate") {
+                        put("type", "boolean")
+                        put("description", "仅 clock_app：是否振动；省略则沿用系统默认。创建后需读回确认。")
+                    }
+                    putJsonObject("ringtoneUri") {
+                        put("type", "string")
+                        put("description", "仅 clock_app：设备上已存在的铃声 content URI，或 silent；不可根据名称猜 URI。省略沿用默认，需读回确认。")
+                    }
                     putJsonObject("repeatDays") {
                         put("type", "array")
                         put("description", "仅 clock_app：ISO 星期，1=周一，7=周日；每日为 [1,2,3,4,5,6,7]。")

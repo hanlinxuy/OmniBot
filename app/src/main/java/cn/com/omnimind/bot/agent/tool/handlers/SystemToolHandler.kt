@@ -146,7 +146,7 @@ class SystemToolHandler(
                         val granted = alarmToolService.requestNotificationPermission()
                         if (!granted) { return helper.permissionRequiredResult(callback, listOf("通知权限(POST_NOTIFICATIONS)")) }
                     }
-                    val payload = alarmToolService.createReminder(AgentAlarmCreateRequest(mode = mode, title = title, triggerAt = triggerAt, message = message, timezone = timezone, allowWhileIdle = allowWhileIdle, skipUi = skipUi, repeatDays = repeatDays))
+                    val payload = alarmToolService.createReminder(AgentAlarmCreateRequest(mode = mode, title = title, triggerAt = triggerAt, message = message, timezone = timezone, allowWhileIdle = allowWhileIdle, skipUi = skipUi, repeatDays = repeatDays, vibrate = args["vibrate"]?.jsonPrimitive?.booleanOrNull, ringtoneUri = args["ringtoneUri"]?.jsonPrimitive?.contentOrNull))
                     val payloadJson = helper.encodeLocalizedPayload(payload)
                     ToolExecutionResult.ContextResult(
                         toolName = toolName,

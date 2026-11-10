@@ -192,6 +192,8 @@ internal object AndroidDeviceMcpServer {
                 "timezone" to schema("string", "Optional IANA timezone."),
                 "allowWhileIdle" to schema("boolean", "Allow delivery while idle."),
                 "skipUi" to schema("boolean", "Default true: ask the clock app to create directly. Set false only when the user wants to edit before saving. Device confirmation may still be required."),
+                "vibrate" to schema("boolean", "clock_app only: request vibration on or off; omission keeps the clock default. Verify in the clock app."),
+                "ringtoneUri" to schema("string", "clock_app only: existing device content URI for the alarm sound, or silent. Do not invent a URI from a title. Omission keeps the default; verify in the clock app."),
                 "repeatDays" to JsonObject(mapOf("type" to JsonPrimitive("array"), "description" to JsonPrimitive("ISO weekdays: 1=Monday through 7=Sunday; clock_app only."), "items" to JsonObject(mapOf("type" to JsonPrimitive("integer"), "minimum" to JsonPrimitive(1), "maximum" to JsonPrimitive(7))), "uniqueItems" to JsonPrimitive(true))),
             ),
             required = listOf("mode", "title", "triggerAt"),
@@ -199,7 +201,7 @@ internal object AndroidDeviceMcpServer {
         DeviceTool(
             name = "alarm_reminder_list",
             operation = "alarm_reminder_list",
-            description = "List persistent reminder alarms on this device.",
+            description = "List only exact_alarm reminders managed by OmniBot. Does not list or verify clock_app alarms; use the system Clock UI for those.",
         ),
         DeviceTool(
             name = "alarm_reminder_delete",
@@ -453,6 +455,8 @@ internal object AndroidDeviceMcpServer {
                 allowWhileIdle = arguments["allowWhileIdle"] as? Boolean ?: true,
                 skipUi = arguments["skipUi"] as? Boolean ?: true,
                 repeatDays = parseAlarmRepeatDays(arguments["repeatDays"]),
+                vibrate = arguments["vibrate"] as? Boolean,
+                ringtoneUri = arguments["ringtoneUri"] as? String,
             )
         )
         "alarm_reminder_list" -> {

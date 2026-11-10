@@ -35,18 +35,33 @@ class AgentAlarmRepeatDaysTest {
         assertThrows(IllegalArgumentException::class.java) { AgentAlarmToolService(context).createReminder(request) }
     }
 
+    @Test fun rejectsUnsupportedSoundOptionsBeforeScheduling() {
+        val context = RuntimeEnvironment.getApplication()
+        val request = AgentAlarmCreateRequest("exact_alarm", "test", "2030-01-01T07:00:00", null, null, true, false)
+        assertThrows(IllegalArgumentException::class.java) { AgentAlarmToolService(context).createReminder(request.copy(vibrate = false)) }
+        assertThrows(IllegalArgumentException::class.java) { AgentAlarmToolService(context).createReminder(request.copy(ringtoneUri = "silent")) }
+        assertThrows(IllegalArgumentException::class.java) { AgentAlarmToolService(context).createReminder(request.copy(mode = "clock_app", ringtoneUri = "BeeBeep")) }
+    }
+
     @Test fun clockIntentUsesAndroidWeekdaysAndDoesNotClaimCreation() {
         val context = Mockito.mock(Context::class.java)
         val packageManager = Mockito.mock(PackageManager::class.java)
         val resolved = ResolveInfo().apply { activityInfo = android.content.pm.ActivityInfo().apply { packageName = "clock.test"; name = "ClockActivity"; applicationInfo = android.content.pm.ApplicationInfo().apply { packageName = "clock.test" } } }
         Mockito.`when`(context.packageManager).thenReturn(packageManager)
         Mockito.`when`(packageManager.resolveActivity(Mockito.any(Intent::class.java), Mockito.anyInt())).thenReturn(resolved)
-        val request = AgentAlarmCreateRequest("clock_app", "test", "2030-01-01T07:00:00", null, null, true, false, listOf(1, 7))
+        val request = AgentAlarmCreateRequest("clock_app", "test", "2030-01-01T07:00:00", null, null, true, false, listOf(1, 7), vibrate = false, ringtoneUri = "content://media/external/audio/media/42")
         val result = AgentAlarmToolService(context).createReminder(request)
         val captor = ArgumentCaptor.forClass(Intent::class.java)
         Mockito.verify(context).startActivity(captor.capture())
         val intent = captor.value
         assertEquals(arrayListOf(Calendar.MONDAY, Calendar.SUNDAY), intent.getIntegerArrayListExtra(AlarmClock.EXTRA_DAYS))
+        assertFalse(intent.getBooleanExtra(AlarmClock.EXTRA_VIBRATE, true))
+        assertEquals("content://media/external/audio/media/42", intent.getStringExtra(AlarmClock.EXTRA_RINGTONE))
         assertFalse(result["creationVerified"] as Boolean)
+        val defaultCaptor = ArgumentCaptor.forClass(Intent::class.java)
+        AgentAlarmToolService(context).createReminder(request.copy(vibrate = null, ringtoneUri = null))
+        Mockito.verify(context, Mockito.times(2)).startActivity(defaultCaptor.capture())
+        assertFalse(defaultCaptor.value.hasExtra(AlarmClock.EXTRA_VIBRATE))
+        assertFalse(defaultCaptor.value.hasExtra(AlarmClock.EXTRA_RINGTONE))
     }
 }

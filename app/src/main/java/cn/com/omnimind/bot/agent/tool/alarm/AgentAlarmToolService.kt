@@ -40,7 +40,9 @@ data class AgentAlarmCreateRequest(
     val timezone: String?,
     val allowWhileIdle: Boolean,
     val skipUi: Boolean,
-    val repeatDays: List<Int> = emptyList()
+    val repeatDays: List<Int> = emptyList(),
+    val vibrate: Boolean? = null,
+    val ringtoneUri: String? = null
 )
 
 fun parseTimerDuration(value: Any?): Int {
@@ -188,6 +190,8 @@ class AgentAlarmToolService(
     }
 
     fun createReminder(request: AgentAlarmCreateRequest): Map<String, Any?> {
+        require(request.mode != MODE_EXACT_ALARM || (request.vibrate == null && request.ringtoneUri == null)) { "vibrate and ringtoneUri are supported only for clock_app" }
+        require(request.ringtoneUri == null || request.ringtoneUri == "silent" || Uri.parse(request.ringtoneUri).scheme == "content") { "ringtoneUri must be a device content URI or silent" }
         require(request.mode != MODE_EXACT_ALARM || request.repeatDays.isEmpty()) { "repeatDays is unsupported for exact_alarm" }
         return when (request.mode) {
             MODE_EXACT_ALARM -> createExactAlarm(request)
@@ -455,6 +459,8 @@ class AgentAlarmToolService(
             putExtra(AlarmClock.EXTRA_MINUTES, localTrigger.minute)
             putExtra(AlarmClock.EXTRA_MESSAGE, request.title.trim())
             putExtra(AlarmClock.EXTRA_SKIP_UI, request.skipUi)
+            request.vibrate?.let { putExtra(AlarmClock.EXTRA_VIBRATE, it) }
+            request.ringtoneUri?.let { putExtra(AlarmClock.EXTRA_RINGTONE, it) }
             if (request.repeatDays.isNotEmpty()) {
                 putIntegerArrayListExtra(AlarmClock.EXTRA_DAYS, ArrayList(request.repeatDays.map { if (it == 7) Calendar.SUNDAY else it + 1 }))
             }
@@ -472,6 +478,9 @@ class AgentAlarmToolService(
             "mode" to MODE_CLOCK_APP,
             "creationVerified" to false,
             "repeatDays" to request.repeatDays,
+            "requestedVibrate" to request.vibrate,
+            "requestedRingtoneUri" to request.ringtoneUri,
+            "verificationHint" to "Verify time, repeat days, ringtone and vibration in the Clock UI. OEM clocks may ignore intent extras. alarm_reminder_list lists only OmniBot exact_alarm reminders.",
             "title" to request.title.trim(),
             "triggerAt" to localTrigger.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
             "timezone" to ZoneId.systemDefault().id,
