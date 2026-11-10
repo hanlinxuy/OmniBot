@@ -35,6 +35,9 @@ def records(action, args):
             rows.append({'id':flight['id'],'tripType':flight['tripType'],'cabin':flight['fare']['cabin'],'price':flight['fare']['price'],'currency':flight['fare']['currency'],'departureLocal':local(start['departureTime'],args['origin']),'arrivalLocal':local(end['arrivalTime'],args['destination']),'departureUTC':start['departureTime'],'arrivalUTC':end['arrivalTime'],'durationMinutes':int((datetime.fromisoformat(end['arrivalTime'].replace('Z','+00:00'))-datetime.fromisoformat(start['departureTime'].replace('Z','+00:00'))).total_seconds()/60),'flightNumbers':[s['carrierCode']+s['flightNumber'] for s in segments]})
         rows.sort(key=lambda x:x['price'])
         return {'count':len(rows),'sortedBy':'price ascending','flights':rows,'cheapest':rows[0] if rows else None,'mostExpensive':rows[-1] if rows else None,'note':'One-way and round-trip prices are distinct products; disclose tripType when comparing.'}
+    if action=='list_channels' and path.name=='teamchat.json':
+        workspace=data['workspaces'][0]
+        return {'workspaceId':workspace['id'],'channels':[{k:c[k] for k in ('id','channelName','descriptionTopic','unreadCount','lastMessageAt') if k in c} for c in workspace['channels']],'hint':'Read a channel with read_thread using its exact id; send_message accepts the same id.'}
     if action in ('list_threads','read_thread') and path.name in ('quickchat.json','teamchat.json','lockedin.json'):
         threads=data['chats'] if path.name=='quickchat.json' else data['conversations'] if path.name=='lockedin.json' else data['workspaces'][0]['dmConversations']+(data['workspaces'][0]['channels'] if action=='read_thread' else [])
         if action=='read_thread':
@@ -91,15 +94,20 @@ def records(action, args):
                 if row.get('city')=='San Francisco':
                     row['eventTimeZone']='America/Los_Angeles'
                     row['eventLocalTime']=datetime.fromisoformat(row['date'].replace('Z','+00:00')).astimezone(ZoneInfo(row['eventTimeZone'])).strftime('%Y-%m-%d %H:%M %Z')
-        if args.get('fields'):
-            rows=[{key:item.get(key) for key in args['fields']} for item in rows]
         bounded=[]; size=0
-        for row in rows:
+        for source_row in rows:
+            row={key:source_row.get(key) for key in args['fields']} if args.get('fields') else source_row
             row_size=len(json.dumps(row,ensure_ascii=False))
-            if bounded and size+row_size>12000: break
+            if row_size>3000:
+                source_path=args.get('collection','')+'.'+str(value.index(source_row))
+                row={k:({'count':len(v),'collectionPath':source_path+'.'+k} if isinstance(v,(list,dict)) else v) for k,v in row.items()}
+                row['_summaryOnly']=True
+                row['_readHint']='Nested data summarized to avoid context overflow. Query the provided collectionPath or use read_thread for messages.'
+                row_size=len(json.dumps(row,ensure_ascii=False))
+            if bounded and size+row_size>6000: break
             bounded.append(row);size+=row_size
         next_offset=offset+len(bounded)
-        return {'totalMatches':len(found),'offset':offset,'returnedCount':len(bounded),'nextOffset':next_offset if next_offset<len(found) else None,'effectiveLimit':limit,'availableFields':sorted(available),'items':bounded,'hasMore':next_offset<len(found)}
+        return {'totalMatches':len(found),'offset':offset,'returnedCount':len(bounded),'nextOffset':next_offset if next_offset<len(found) else None,'effectiveLimit':limit,'items':bounded,'hasMore':next_offset<len(found)}
     if action=='request_ride' and path.name=='cityride.json':
         estimate=next(x for x in data['estimates'] if x['id']==args['estimate_id'])
         state=data['state']; method=state['selectedPaymentMethodId']

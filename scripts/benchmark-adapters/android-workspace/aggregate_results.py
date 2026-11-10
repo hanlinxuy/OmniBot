@@ -8,7 +8,7 @@ for d in sorted(a.artifacts.glob('ios-android-*')):
  acceptance=dict(raw['acceptance'])
  if review is not None: acceptance['passed']=bool(review['passed'])
  acceptance['passed']=bool(acceptance.get('passed') and cleanup.get('workspaceAbsent'))
- row={'artifact':d.name,'sourceTask':raw['sourceTask'],'provider':'35a3','officialBenchmarkScore':None,'transport':raw.get('transport','shell'),'cleanup':cleanup,'rawAcceptance':raw['acceptance'],'acceptance':acceptance,'elapsedSeconds':raw['elapsedSeconds'],'providerRequests':raw['providerRequests']}
+ row={'artifact':d.name,'sourceTask':raw['sourceTask'],'provider':'35a3' if raw['provider']=='qwen' else raw['provider'],'model':raw.get('model'),'officialBenchmarkScore':None,'transport':raw.get('transport','shell'),'cleanup':cleanup,'rawAcceptance':raw['acceptance'],'acceptance':acceptance,'elapsedSeconds':raw['elapsedSeconds'],'providerRequests':raw['providerRequests']}
  if review:row['independentReview']={k:v for k,v in review.items() if k!='evidenceSha256'}
  runs[d.name]=row
 result={'scope':'Android phone Pi source-backed file/API adaptations, not original GUI scores; historical failures retained','runs':list(runs.values())}

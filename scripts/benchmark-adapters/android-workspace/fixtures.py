@@ -9,7 +9,8 @@ def build_fixture(ios, output, case):
     import openpyxl
     from pptx import Presentation
     app = case.split('-')[0]
-    if app in ('ticketbox','tasterank','trailblaze','megamart','caltrack','skytrip','scorezone','notes','stayfinder','cinephile','mail','freshcart','quickchat','teamchat','lockedin','weather','cityride','dinespot'):
+    task_apps=next(t['apps'] for t in json.loads((ios/'tasks.json').read_text()) if t['name']==case)
+    if len(task_apps)==1 and app in ('ticketbox','tasterank','trailblaze','megamart','caltrack','skytrip','scorezone','notes','stayfinder','cinephile','mail','freshcart','quickchat','teamchat','lockedin','weather','cityride','dinespot'):
         export=output.parent.parent/'source-exports'/(app+'.json')
         provenance=export.with_name(app+'-provenance.json')
         data=json.loads(export.read_text())
@@ -39,23 +40,24 @@ def build_fixture(ios, output, case):
     for kind, titles in selection.items():
         for title in titles:
             item = next(x for x in data[kind] if x['title'] == title)
+            filename=title.replace('/', '／')
             if kind == 'documents':
                 # Blocks preserve the exact source paragraphs, unlike the encoded body field.
-                (output / (title+'.txt')).write_text('\n'.join(x['text'] for x in item['blocks'])+'\n')
+                (output / (filename+'.txt')).write_text('\n'.join(x['text'] for x in item['blocks'])+'\n')
             elif kind == 'spreadsheets':
                 book = openpyxl.Workbook(); book.remove(book.active)
                 for sheet in item['sheets']:
                     target = book.create_sheet(sheet['name'])
                     for cell in sheet['cells']:
                         target[cell['address']] = cell['rawValue']
-                book.save(output / (title+'.xlsx'))
+                book.save(output / (filename+'.xlsx'))
             else:
                 book = Presentation()
                 for slide in item['slides']:
                     target = book.slides.add_slide(book.slide_layouts[1])
                     target.shapes.title.text = slide['title']
                     target.placeholders[1].text = slide['body']
-                book.save(output / (title+'.pptx'))
+                book.save(output / (filename+'.pptx'))
     if 'clouddrive' in task_apps:
         (output/'drive.json').write_text(json.dumps({'folders': data['folders'], 'files': data['files']}, ensure_ascii=False, indent=2))
     return sorted(p.name for p in output.iterdir())
@@ -86,7 +88,7 @@ def verify_fixture(case, original, saved, final):
                 'originalSlidesPreserved':new_slides[:len(old_slides)]==old_slides,'oneSlideAdded':len(new_slides)==len(old_slides)+1,
                 'sheetChanged':bool(changes),'originalCellsNotDeleted':set(old_cells)<=set(new_cells),
                 'semanticReviewRequired':True}
-    if case.split('-')[0] in ('ticketbox','tasterank','trailblaze','megamart','caltrack','skytrip','scorezone','notes','stayfinder','cinephile','mail','freshcart','quickchat','teamchat','lockedin','weather','cityride','dinespot'):
+    if not case.startswith(('mem-','multi-')) and case not in ('lockedin-001','lockedin-002') and case.split('-')[0] in ('ticketbox','tasterank','trailblaze','megamart','caltrack','skytrip','scorezone','notes','stayfinder','cinephile','mail','freshcart','quickchat','teamchat','lockedin','weather','cityride','dinespot'):
         import copy,re
         app=case.split('-')[0]; before=json.loads((original/(app+'.json')).read_text()); after=json.loads((saved/(app+'.json')).read_text()); expected=copy.deepcopy(before)
         if app in ('weather','cityride','dinespot','cinephile','mail','freshcart','quickchat','teamchat','lockedin','weather','cityride','dinespot'):
@@ -143,7 +145,7 @@ def verify_fixture(case, original, saved, final):
             return {'noMutation':before==after,'venueReported':venue['name'].lower() in final.lower(),'priceRangeReported':str(min(prices)) in final and str(max(prices)) in final,'semanticReviewRequired':True}
         (saved/'semantic-review.json').write_text(json.dumps({'task':case,'final':final},indent=2))
         return {'sourceStateUnchanged':before==after,'semanticReviewRequired':True}
-    if case.startswith('multi-'):
+    if case.startswith(('multi-','mem-')) or case in ('lockedin-001','lockedin-002'):
         return {'sourceFilesPreserved':all((saved/p.name).is_file() for p in original.iterdir()),'semanticReviewRequired':True}
     before=json.loads((original/'drive.json').read_text()); after=json.loads((saved/'drive.json').read_text())
     folder=next(x for x in before['folders'] if x['name']=='Product Strategy')

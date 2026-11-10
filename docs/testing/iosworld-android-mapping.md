@@ -43,7 +43,7 @@
 | multi-005 | cityride → isolated ride service; teamchat → isolated Mattermost fixture; mail → Android mock Mail / scoped mail fixture | requires_isolated_source_fixtures |
 | multi-006 | dinespot → isolated restaurant service; freshcart → isolated grocery catalog/cart; quickchat → isolated messaging fixture; splitpay → EXCLUDED | excluded_user_scope |
 | multi-007 | notes → vivo Notes controls or isolated note store; weather → fixed-date weather service or Android weather controls; skytrip → isolated flight search/history | requires_isolated_source_fixtures |
-| multi-008 | caltrack → isolated nutrition store; quickchat → isolated messaging fixture | requires_isolated_source_fixtures |
+| multi-008 | caltrack → isolated nutrition store; quickchat → isolated messaging fixture | android_file_adaptation_passed |
 | multi-009 | mybank → EXCLUDED; mail → Android mock Mail / scoped mail fixture; notes → vivo Notes controls or isolated note store; quickbite → isolated food-order service | excluded_user_scope |
 | multi-010 | megamart → isolated shopping catalog/cart; mybank → EXCLUDED; clouddocs → phone Pi document files | excluded_user_scope |
 | multi-011 | stayfinder → isolated lodging search/history; weather → fixed-date weather service or Android weather controls; tasterank → isolated restaurant list; notes → vivo Notes controls or isolated note store | requires_isolated_source_fixtures |
@@ -53,10 +53,10 @@
 | multi-015 | ticketbox → isolated event catalog/history; cityride → isolated ride service; cloudsheets → phone Pi XLSX files | requires_isolated_source_fixtures |
 | multi-016 | splitpay → EXCLUDED; quickchat → isolated messaging fixture | excluded_user_scope |
 | multi-017 | clock → Android Clock Intent / scoped clock controls; weather → fixed-date weather service or Android weather controls; trailblaze → isolated activity store; caltrack → isolated nutrition store | requires_isolated_source_fixtures |
-| multi-018 | caltrack → isolated nutrition store; freshcart → isolated grocery catalog/cart; notes → vivo Notes controls or isolated note store | requires_isolated_source_fixtures |
+| multi-018 | caltrack → isolated nutrition store; freshcart → isolated grocery catalog/cart; notes → vivo Notes controls or isolated note store | android_file_adaptation_passed |
 | multi-019 | mybank → EXCLUDED; splitpay → EXCLUDED; clouddocs → phone Pi document files; cloudsheets → phone Pi XLSX files | excluded_user_scope |
 | multi-022 | skytrip → isolated flight search/history; cityride → isolated ride service; clock → Android Clock Intent / scoped clock controls; quickchat → isolated messaging fixture | requires_isolated_source_fixtures |
-| multi-025 | megamart → isolated shopping catalog/cart; clouddocs → phone Pi document files | requires_isolated_source_fixtures |
+| multi-025 | megamart → isolated shopping catalog/cart; clouddocs → phone Pi document files | android_file_adaptation_passed |
 | multi-028 | quickbite → isolated food-order service; teamchat → isolated Mattermost fixture | requires_isolated_source_fixtures |
 | multi-031 | weather → fixed-date weather service or Android weather controls; clock → Android Clock Intent / scoped clock controls; caltrack → isolated nutrition store; quickchat → isolated messaging fixture | requires_isolated_source_fixtures |
 | multi-032 | teamchat → isolated Mattermost fixture; clouddocs → phone Pi document files; cloudsheets → phone Pi XLSX files; cloudslides → phone Pi PPTX files | requires_isolated_source_fixtures |

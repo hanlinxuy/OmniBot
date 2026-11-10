@@ -25,8 +25,9 @@ parser.add_argument('--adb', required=True)
 parser.add_argument('--serial', required=True)
 parser.add_argument('--endpoint', default='http://127.0.0.1:18081/v1/chat/completions')
 parser.add_argument('--model', default='qwen3.6-35b-a3b-q4_k_m')
+parser.add_argument('--provider',choices=['qwen','deepseek'],default='qwen')
+parser.add_argument('--api-key-file',type=pathlib.Path)
 args = parser.parse_args()
-args.provider = 'qwen'
 ROOT = args.output.resolve()
 ROOT.mkdir(parents=True, exist_ok=True, mode=0o700)
 phone_root = args.runtime_root.resolve()
@@ -39,7 +40,7 @@ PKG = 'cn.com.omnimind.bot'
 BASE = [ADB, '-s', SERIAL]
 MODEL = args.model
 UPSTREAM = args.endpoint
-KEY = 'local'
+KEY = args.api_key_file.read_text().strip() if args.api_key_file else 'local'
 ADAPTER = pathlib.Path(__file__).resolve().parent
 MARKER = 'ios-android-' + args.case + '-' + args.provider + '-' + uuid.uuid4().hex[:10]
 RUN = ROOT / MARKER
@@ -67,6 +68,8 @@ class Provider(BaseHTTPRequestHandler):
             body['max_tokens'] = 4096
         if args.provider == 'qwen':
             body['chat_template_kwargs'] = {'enable_thinking': False}
+        elif args.provider == 'deepseek':
+            body['thinking'] = {'type':'disabled'}
         (RUN / f'request-{len(requests):02}.json').write_text(json.dumps(body, ensure_ascii=False, indent=2))
         req = urllib.request.Request(UPSTREAM, data=json.dumps(body).encode(), headers={'Authorization': 'Bearer ' + KEY, 'Content-Type': 'application/json'})
         try:
@@ -77,6 +80,10 @@ class Provider(BaseHTTPRequestHandler):
             self.send_response(error.code)
             self.end_headers()
             self.wfile.write(data)
+            return
+        except (urllib.error.URLError, ConnectionError, TimeoutError) as error:
+            (RUN / 'provider-failure.json').write_text(json.dumps({'type':type(error).__name__,'classification':'infrastructure_failure'}))
+            self.send_error(502, 'Upstream model connection failed; task must not be scored as a model failure')
             return
         self.send_response(upstream.status)
         self.send_header('Content-Type', upstream.headers.get('Content-Type', 'text/event-stream'))
@@ -89,12 +96,6 @@ class Provider(BaseHTTPRequestHandler):
                 self.wfile.flush()
 
 
-server = ThreadingHTTPServer(('127.0.0.1', PORT), Provider)
-threading.Thread(target=server.serve_forever, daemon=True).start()
-subprocess.run(BASE + ['reverse', f'tcp:{PORT}', f'tcp:{PORT}'], check=True, capture_output=True)
-config = {'providers': {'omnibot': {'api': 'openai-completions', 'baseUrl': f'http://127.0.0.1:{PORT}/v1', 'models': [{'id': MODEL, 'name': MODEL, 'input': ['text'], 'reasoning': False, 'contextWindow': 32768, 'maxTokens': 4096, 'cost': {'input': 0, 'output': 0, 'cacheRead': 0, 'cacheWrite': 0}}]}}}
-subprocess.run(BASE + ['shell', 'run-as', PKG, 'mkdir', '-p', HOST + '/work'], check=True, capture_output=True)
-subprocess.run(BASE + ['shell', '-T', 'run-as', PKG, 'sh', '-c', shlex.quote('cat > ' + HOST + '/models.json')], input=json.dumps(config).encode(), check=True, capture_output=True)
 import re, io, tarfile, textwrap, fcntl
 ios = args.ios_source.resolve()
 task = next(t for t in json.loads((ios/'tasks.json').read_text()) if t['name'] == args.case)
@@ -118,6 +119,20 @@ else:
 filenames=sorted(p.name for p in local_work.iterdir())
 # Ship pure Python dependencies and the capability into the run-owned directory.
 import openpyxl, et_xmlfile, tzdata
+# Validate fixtures/dependencies and model connectivity before creating phone state.
+try:
+    with urllib.request.urlopen(urllib.request.Request(UPSTREAM.rsplit('/',1)[0].rsplit('/',1)[0]+'/models',headers={'Authorization':'Bearer '+KEY}),timeout=30) as response:
+        json.load(response)
+except (urllib.error.URLError, ConnectionError, TimeoutError) as error:
+    (RUN/'failure.json').write_text(json.dumps({'sourceTask':args.case,'type':type(error).__name__,'classification':'infrastructure_preflight_failure','providerRequests':0}))
+    (RUN/'cleanup.json').write_text(json.dumps({'workspaceCreated':False,'workspaceAbsent':True}))
+    raise
+server = ThreadingHTTPServer(('127.0.0.1', PORT), Provider)
+threading.Thread(target=server.serve_forever, daemon=True).start()
+subprocess.run(BASE + ['reverse', f'tcp:{PORT}', f'tcp:{PORT}'], check=True, capture_output=True)
+config = {'providers': {'omnibot': {'api': 'openai-completions', 'baseUrl': f'http://127.0.0.1:{PORT}/v1', 'models': [{'id': MODEL, 'name': MODEL, 'input': ['text'], 'reasoning': False, 'contextWindow': 32768, 'maxTokens': 4096, 'cost': {'input': 0, 'output': 0, 'cacheRead': 0, 'cacheWrite': 0}}]}}}
+subprocess.run(BASE + ['shell', 'run-as', PKG, 'mkdir', '-p', HOST + '/work'], check=True, capture_output=True)
+subprocess.run(BASE + ['shell', '-T', 'run-as', PKG, 'sh', '-c', shlex.quote('cat > ' + HOST + '/models.json')], input=json.dumps(config).encode(), check=True, capture_output=True)
 archive=io.BytesIO()
 with tarfile.open(fileobj=archive, mode='w') as tar:
     for filename in filenames:
@@ -134,7 +149,7 @@ if args.transport == 'mcp':
     PROMPT=task['goal']+'\nEvaluation environment: operate only the run-owned files through the available structured workspace tools. The spreadsheet and slide files are real XLSX/PPTX; documents are text exports. Read the actual data, make the requested changes and confirm saved state. These tools replace source-app navigation for this Android adaptation. For dated source data, the fixture reference date is 2026-03-05. Use source-backed facts; do not invent issue numbers, names, or completed work details. When content is unspecified, keep wording generic. Report only requested results accurately, using structured time/price fields without mental conversion. Changes across artifacts must convey the same concrete plan; avoid dangling tracker cells and placeholder text. Do not infer the business content of your changes from these environment instructions.'
 if args.case=='weather-004':
     PROMPT += '\nThis case uses the live NWS forecast snapshot. Use capturedAt and the forecast startTime fields as the date reference instead of the March fixture date. State the weekend dates and temperature units.'
-(RUN/'task.json').write_text(json.dumps({'sourceTask':args.case,'sourceCommit':'c59287b6ec9a9d0d7269613ad873f6aa9db0f42c','prompt':PROMPT,'rubric':task['rubric'],'fixtureSeedSha256':hashlib.sha256(seed.read_bytes()).hexdigest(),'adaptation':'Original seed data in phone-owned files; native file capability replaces iOS GUI; not official score'},indent=2))
+(RUN/'task.json').write_text(json.dumps({'sourceTask':args.case,'sourceCommit':'c59287b6ec9a9d0d7269613ad873f6aa9db0f42c','prompt':PROMPT,'rubric':task['rubric'],'fixtureSeedSha256':hashlib.sha256(seed.read_bytes()).hexdigest(),'adapterSha256':{p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in ADAPTER.glob('*.py')},'adaptation':'Original seed data in phone-owned files; native file capability replaces iOS GUI; not official score'},indent=2))
 apk = subprocess.check_output(BASE + ['shell', 'pm', 'path', PKG], text=True).strip()[8:]
 from workspace_mcp import TOOLS, RECORD_TOOLS
 selected_tools=shlex.quote(json.dumps(['mcp__workspace__'+name for name in [*TOOLS,*RECORD_TOOLS]] if args.transport=='mcp' else ['bash','read']))
@@ -242,6 +257,9 @@ finally:
         child.terminate()
         child.wait(timeout=10)
     stderr.close()
+    session_archive=subprocess.run(BASE+['shell','-T','run-as',PKG,'tar','-cf','-','-C',HOST,'sessions'],capture_output=True)
+    if session_archive.returncode==0:
+        (RUN/'pi-sessions.tar').write_bytes(session_archive.stdout)
     server.shutdown()
     subprocess.run(BASE + ['reverse', '--remove', f'tcp:{PORT}'], capture_output=True)
     subprocess.run(BASE + ['shell', 'run-as', PKG, 'rm', '-rf', HOST], capture_output=True, check=True)

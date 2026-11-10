@@ -41,7 +41,10 @@ def main():
             item=next(x for x in data['files'] if x['id']==args[1])
             item['starred']=True
             path.write_text(json.dumps(data,ensure_ascii=False,indent=2))
-        print(json.dumps(data,ensure_ascii=False))
+        if action == 'star':
+            print(json.dumps({'savedFile':item},ensure_ascii=False))
+        else:
+            print(json.dumps({'folders':data['folders'],'fileCount':len(data['files']),'hint':'Use query_records collection files to search or paginate file metadata.'},ensure_ascii=False))
     elif path.suffix == '.json' and action == 'read':
         from records import records
         print(json.dumps(records('query_records',{'file':path.name}),ensure_ascii=False))

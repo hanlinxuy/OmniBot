@@ -15,6 +15,7 @@ TOOLS = {
 }
 
 RECORD_TOOLS = {
+ 'list_channels': ('Discover TeamChat channel names and exact IDs without loading message history. Call read_thread with a returned ID to read messages, then send_message to post.', {'file':'string'}, ['file']),
  'create_note': ('Create a new note in an existing source folder. Refuses duplicate titles; no real account changes.', {'file':'string','folder':'string','title':'string','text':'string'}, ['file','folder','title','text']),
  'request_ride': ('Create an isolated CityRide request from an existing route estimate ID. No real dispatch or payment. Read the source estimates to select route and ride type.', {'file':'string','estimate_id':'string'}, ['file','estimate_id']),
  'reserve_table': ('Create an isolated DineSpot reservation from a bookable source slot ID, preserving its date and party size. No external booking or payment.', {'file':'string','slot_id':'string','dining_preference':'string'}, ['file','slot_id']),
@@ -39,6 +40,22 @@ RECORD_TOOLS = {
 
 
 def main():
+    files={p.name for p in pathlib.Path(__file__).with_name('work').iterdir()}
+    allowed={'list_files','read_file','query_records','convert_time'}
+    for extension,names in {'.xlsx':['set_cell'],'.pptx':['add_bullet','add_slide'],'.txt':['append_text']}.items():
+        if any(p.endswith(extension) for p in files): allowed.update(names)
+    capability_files={
+        'drive.json':['star_file'], 'notes.json':['create_note','append_note','append_note_bullet'],
+        'teamchat.json':['list_channels','list_threads','read_thread','send_message'],
+        'quickchat.json':['list_threads','read_thread','send_message'],
+        'lockedin.json':['list_threads','read_thread','send_message','send_direct_message','save_job','follow_company'],
+        'skytrip.json':['search_flights'], 'cityride.json':['request_ride'], 'dinespot.json':['reserve_table'],
+        'cinephile.json':['add_movie_to_wishlist'], 'mail.json':['archive_mail'],
+        'tasterank.json':['add_to_list'], 'trailblaze.json':['give_kudos'],
+        'freshcart.json':['add_to_cart'], 'megamart.json':['add_to_cart'], 'caltrack.json':['log_food'],
+    }
+    for file,names in capability_files.items():
+        if file in files: allowed.update(names)
     for line in sys.stdin:
         request = json.loads(line)
         if 'id' not in request:
@@ -49,11 +66,13 @@ def main():
         elif method == 'ping':
             result = {}
         elif method == 'tools/list':
-            result = {'tools': [{'name': name, 'description': description, 'inputSchema': {'type': 'object', 'properties': {field: {'type': 'integer' if field == 'slide' else 'string'} for field in fields}, 'required': fields, 'additionalProperties': False}} for name, (_, fields, description) in TOOLS.items()]}
-            result['tools'] += [{'name':name,'description':desc,'inputSchema':{'type':'object','properties':{k:({'type':v,'items':{'type':'string'}} if v=='array' else {'type':v,'enum':['oneWay','roundTrip']} if k=='trip_type' else {'type':v}) for k,v in fields.items()},'required':required,'additionalProperties':False}} for name,(desc,fields,required) in RECORD_TOOLS.items()]
+            result = {'tools': [{'name': name, 'description': description, 'inputSchema': {'type': 'object', 'properties': {field: {'type': 'integer' if field == 'slide' else 'string'} for field in fields}, 'required': fields, 'additionalProperties': False}} for name, (_, fields, description) in TOOLS.items() if name in allowed]}
+            result['tools'] += [{'name':name,'description':desc,'inputSchema':{'type':'object','properties':{k:({'type':v,'items':{'type':'string'}} if v=='array' else {'type':v,'enum':['oneWay','roundTrip']} if k=='trip_type' else {'type':v}) for k,v in fields.items()},'required':required,'additionalProperties':False}} for name,(desc,fields,required) in RECORD_TOOLS.items() if name in allowed]
         elif method == 'tools/call':
             params = request['params']; name = params['name']; values = params.get('arguments', {})
-            if name in RECORD_TOOLS:
+            if name not in allowed:
+                result={'isError':True,'content':[{'type':'text','text':'Tool unavailable for this workspace'}]}
+            elif name in RECORD_TOOLS:
                 from records import records
                 try:
                     content=records(name,values)

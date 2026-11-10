@@ -31,9 +31,9 @@
     "rule": "Unreviewed candidates remain distinct; shared components do not imply equivalent complete tasks."
   },
   "iosStatusCounts": {
-    "android_file_adaptation_passed": 19,
+    "android_file_adaptation_passed": 22,
     "native_adapter_candidate": 2,
-    "requires_isolated_source_fixtures": 78,
+    "requires_isolated_source_fixtures": 75,
     "excluded_user_scope": 34
   },
   "variants": [
@@ -5475,6 +5475,7 @@
           "artifact": "ios-android-caltrack-001-qwen-d5e33d5918",
           "sourceTask": "caltrack-001",
           "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
           "officialBenchmarkScore": null,
           "transport": "mcp",
           "cleanup": {
@@ -5563,6 +5564,7 @@
           "artifact": "ios-android-cinephile-001-qwen-e374893447",
           "sourceTask": "cinephile-001",
           "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
           "officialBenchmarkScore": null,
           "transport": "mcp",
           "cleanup": {
@@ -5654,6 +5656,7 @@
           "artifact": "ios-android-cityride-001-qwen-f38e6745b8",
           "sourceTask": "cityride-001",
           "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
           "officialBenchmarkScore": null,
           "transport": "mcp",
           "cleanup": {
@@ -5804,6 +5807,7 @@
           "artifact": "ios-android-clouddocs-004-qwen-dcc03ee4ff",
           "sourceTask": "clouddocs-004",
           "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
           "officialBenchmarkScore": null,
           "transport": "shell",
           "cleanup": {
@@ -5829,6 +5833,7 @@
           "artifact": "ios-android-clouddocs-004-qwen-e7e5fd76f4",
           "sourceTask": "clouddocs-004",
           "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
           "officialBenchmarkScore": null,
           "transport": "shell",
           "cleanup": {
@@ -5915,6 +5920,7 @@
           "artifact": "ios-android-clouddrive-001-qwen-f38a15bb7e",
           "sourceTask": "clouddrive-001",
           "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
           "officialBenchmarkScore": null,
           "transport": "shell",
           "cleanup": {
@@ -6006,6 +6012,7 @@
           "artifact": "ios-android-cloudsheets-003-qwen-04306fbc89",
           "sourceTask": "cloudsheets-003",
           "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
           "officialBenchmarkScore": null,
           "transport": "shell",
           "cleanup": {
@@ -6042,6 +6049,7 @@
           "artifact": "ios-android-cloudsheets-003-qwen-95236dc8e0",
           "sourceTask": "cloudsheets-003",
           "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
           "officialBenchmarkScore": null,
           "transport": "shell",
           "cleanup": {
@@ -6133,6 +6141,7 @@
           "artifact": "ios-android-cloudslides-002-qwen-4125baeb35",
           "sourceTask": "cloudslides-002",
           "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
           "officialBenchmarkScore": null,
           "transport": "shell",
           "cleanup": {
@@ -6238,6 +6247,7 @@
           "artifact": "ios-android-dinespot-001-qwen-34bf608cc3",
           "sourceTask": "dinespot-001",
           "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
           "officialBenchmarkScore": null,
           "transport": "mcp",
           "cleanup": {
@@ -6338,6 +6348,7 @@
           "artifact": "ios-android-freshcart-001-qwen-04bf2a2fda",
           "sourceTask": "freshcart-001",
           "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
           "officialBenchmarkScore": null,
           "transport": "mcp",
           "cleanup": {
@@ -6438,6 +6449,7 @@
           "artifact": "ios-android-lockedin-003-qwen-9300de600a",
           "sourceTask": "lockedin-003",
           "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
           "officialBenchmarkScore": null,
           "transport": "mcp",
           "cleanup": {
@@ -6558,6 +6570,7 @@
           "artifact": "ios-android-lockedin-004-qwen-5b26499b3d",
           "sourceTask": "lockedin-004",
           "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
           "officialBenchmarkScore": null,
           "transport": "mcp",
           "cleanup": {
@@ -6643,6 +6656,7 @@
           "artifact": "ios-android-mail-002-qwen-ce82099426",
           "sourceTask": "mail-002",
           "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
           "officialBenchmarkScore": null,
           "transport": "mcp",
           "cleanup": {
@@ -6727,6 +6741,7 @@
           "artifact": "ios-android-megamart-001-qwen-fba3ef01aa",
           "sourceTask": "megamart-001",
           "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
           "officialBenchmarkScore": null,
           "transport": "mcp",
           "cleanup": {
@@ -6893,6 +6908,7 @@
           "artifact": "ios-android-notes-001-qwen-7803dcdef9",
           "sourceTask": "notes-001",
           "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
           "officialBenchmarkScore": null,
           "transport": "mcp",
           "cleanup": {
@@ -6926,6 +6942,7 @@
           "artifact": "ios-android-notes-001-qwen-7bc59f1227",
           "sourceTask": "notes-001",
           "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
           "officialBenchmarkScore": null,
           "transport": "mcp",
           "cleanup": {
@@ -6959,6 +6976,7 @@
           "artifact": "ios-android-notes-001-qwen-f0ad2bd81e",
           "sourceTask": "notes-001",
           "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
           "officialBenchmarkScore": null,
           "transport": "mcp",
           "cleanup": {
@@ -7128,6 +7146,7 @@
           "artifact": "ios-android-quickchat-003-qwen-dd6185092a",
           "sourceTask": "quickchat-003",
           "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
           "officialBenchmarkScore": null,
           "transport": "mcp",
           "cleanup": {
@@ -7233,6 +7252,7 @@
           "artifact": "ios-android-scorezone-003-qwen-8764c12853",
           "sourceTask": "scorezone-003",
           "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
           "officialBenchmarkScore": null,
           "transport": "mcp",
           "cleanup": {
@@ -7333,6 +7353,7 @@
           "artifact": "ios-android-skytrip-002-qwen-bc1bfba853",
           "sourceTask": "skytrip-002",
           "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
           "officialBenchmarkScore": null,
           "transport": "mcp",
           "cleanup": {
@@ -7362,6 +7383,7 @@
           "artifact": "ios-android-skytrip-002-qwen-c04473c4e6",
           "sourceTask": "skytrip-002",
           "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
           "officialBenchmarkScore": null,
           "transport": "mcp",
           "cleanup": {
@@ -7379,12 +7401,19 @@
             "passed": false
           },
           "elapsedSeconds": 20.119012708,
-          "providerRequests": 4
+          "providerRequests": 4,
+          "independentReview": {
+            "passed": false,
+            "reviewer": "root",
+            "reason": "Authoritative durations are now correct, but flights Mar 11-14 are not filtered to the next few days from March 5; no complete temporal-rubric pass awarded.",
+            "scope": "Android adaptation, not official score"
+          }
         },
         {
           "artifact": "ios-android-skytrip-002-qwen-c81d98eaed",
           "sourceTask": "skytrip-002",
           "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
           "officialBenchmarkScore": null,
           "transport": "mcp",
           "cleanup": {
@@ -7414,6 +7443,7 @@
           "artifact": "ios-android-skytrip-002-qwen-cd971ba98f",
           "sourceTask": "skytrip-002",
           "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
           "officialBenchmarkScore": null,
           "transport": "mcp",
           "cleanup": {
@@ -7443,6 +7473,7 @@
           "artifact": "ios-android-skytrip-002-qwen-f34bab6821",
           "sourceTask": "skytrip-002",
           "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
           "officialBenchmarkScore": null,
           "transport": "mcp",
           "cleanup": {
@@ -7603,6 +7634,7 @@
           "artifact": "ios-android-stayfinder-001-qwen-070c748a79",
           "sourceTask": "stayfinder-001",
           "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
           "officialBenchmarkScore": null,
           "transport": "mcp",
           "cleanup": {
@@ -7702,6 +7734,7 @@
           "artifact": "ios-android-tasterank-001-qwen-f24cfc5ca3",
           "sourceTask": "tasterank-001",
           "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
           "officialBenchmarkScore": null,
           "transport": "mcp",
           "cleanup": {
@@ -7793,6 +7826,7 @@
           "artifact": "ios-android-teamchat-003-qwen-492ad0282a",
           "sourceTask": "teamchat-003",
           "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
           "officialBenchmarkScore": null,
           "transport": "mcp",
           "cleanup": {
@@ -7822,6 +7856,7 @@
           "artifact": "ios-android-teamchat-003-qwen-e6abf64f18",
           "sourceTask": "teamchat-003",
           "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
           "officialBenchmarkScore": null,
           "transport": "mcp",
           "cleanup": {
@@ -7912,6 +7947,7 @@
           "artifact": "ios-android-ticketbox-004-qwen-0d490fc1f2",
           "sourceTask": "ticketbox-004",
           "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
           "officialBenchmarkScore": null,
           "transport": "mcp",
           "cleanup": {
@@ -7951,6 +7987,7 @@
           "artifact": "ios-android-ticketbox-004-qwen-45487df95c",
           "sourceTask": "ticketbox-004",
           "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
           "officialBenchmarkScore": null,
           "transport": "mcp",
           "cleanup": {
@@ -7978,6 +8015,7 @@
           "artifact": "ios-android-ticketbox-004-qwen-d5fb166a71",
           "sourceTask": "ticketbox-004",
           "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
           "officialBenchmarkScore": null,
           "transport": "mcp",
           "cleanup": {
@@ -8061,6 +8099,7 @@
           "artifact": "ios-android-trailblaze-004-qwen-8dd2104e49",
           "sourceTask": "trailblaze-004",
           "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
           "officialBenchmarkScore": null,
           "transport": "mcp",
           "cleanup": {
@@ -8164,6 +8203,7 @@
           "artifact": "ios-android-weather-004-qwen-13d28d2b25",
           "sourceTask": "weather-004",
           "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
           "officialBenchmarkScore": null,
           "transport": "mcp",
           "cleanup": {
@@ -8444,7 +8484,37 @@
       "relationship": "distinct_source_variant",
       "acceptance": "All source business criteria, preserved inputs, independent persisted-state readback; partial components do not pass the full task.",
       "cleanup": "Remove only run-owned fixture objects and verify their absence; restore any recorded system baseline.",
-      "results": [],
+      "results": [
+        {
+          "artifact": "ios-android-multi-001-qwen-00cdacc78b",
+          "sourceTask": "multi-001",
+          "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "elapsedSeconds": 37.419612292,
+          "providerRequests": 16,
+          "independentReview": {
+            "passed": false,
+            "reviewer": "root",
+            "reason": "Changed explicitly requested Friday19:00 to another slot without approval; selected March5 local slot while reporting FridayMarch6. Saved reservation does not satisfy exact date/time constraint."
+          }
+        }
+      ],
       "officialBenchmarkScore": null
     },
     {
@@ -8684,7 +8754,32 @@
       "relationship": "distinct_source_variant",
       "acceptance": "All source business criteria, preserved inputs, independent persisted-state readback; partial components do not pass the full task.",
       "cleanup": "Remove only run-owned fixture objects and verify their absence; restore any recorded system baseline.",
-      "results": [],
+      "results": [
+        {
+          "artifact": "ios-android-multi-005-qwen-0cd0916193",
+          "sourceTask": "multi-005",
+          "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "elapsedSeconds": 23.818526374999998,
+          "providerRequests": 7
+        }
+      ],
       "officialBenchmarkScore": null
     },
     {
@@ -8920,12 +9015,48 @@
           "requiredFixtureAndVerifier": "source contacts/conversations; no personal recipients"
         }
       ],
-      "status": "requires_isolated_source_fixtures",
+      "status": "android_file_adaptation_passed",
       "canonicalScenario": "iOSWorld/multi-008",
       "relationship": "distinct_source_variant",
       "acceptance": "All source business criteria, preserved inputs, independent persisted-state readback; partial components do not pass the full task.",
       "cleanup": "Remove only run-owned fixture objects and verify their absence; restore any recorded system baseline.",
-      "results": [],
+      "results": [
+        {
+          "artifact": "ios-android-multi-008-qwen-43e302b3b0",
+          "sourceTask": "multi-008",
+          "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": true
+          },
+          "elapsedSeconds": 42.813455292,
+          "providerRequests": 12,
+          "independentReview": {
+            "passed": true,
+            "checks": {
+              "onlyOneProteinShake": true,
+              "reportedTotalsCorrect": true,
+              "onlyElenaMessage": true
+            },
+            "reason": "Source totals independently recomputed: intake 1829, exercise 140, net1689, remaining761; protein155.8/170. Only one shake added and one Elena Saturday-run message persisted.",
+            "reviewer": "root",
+            "scope": "Android source-backed adaptation, no original GUI credit"
+          }
+        }
+      ],
       "officialBenchmarkScore": null
     },
     {
@@ -9289,6 +9420,7 @@
           "artifact": "ios-android-multi-012-qwen-98b8821cbe",
           "sourceTask": "multi-012",
           "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
           "officialBenchmarkScore": null,
           "transport": "mcp",
           "cleanup": {
@@ -9306,7 +9438,13 @@
             "passed": false
           },
           "elapsedSeconds": 33.264240375,
-          "providerRequests": 12
+          "providerRequests": 12,
+          "independentReview": {
+            "passed": false,
+            "reviewer": "root",
+            "reason": "Target pace 253.8 s/km equals the existing 42:18 PR; rounded 4:14/km is slower (42:20). Message therefore does not supply a pace that beats the PR.",
+            "scope": "Android adaptation, not official score"
+          }
         }
       ],
       "officialBenchmarkScore": null
@@ -9400,6 +9538,7 @@
           "artifact": "ios-android-multi-013-qwen-2295e4d4d5",
           "sourceTask": "multi-013",
           "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
           "officialBenchmarkScore": null,
           "transport": "mcp",
           "cleanup": {
@@ -9439,6 +9578,7 @@
           "artifact": "ios-android-multi-013-qwen-584dc0a64c",
           "sourceTask": "multi-013",
           "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
           "officialBenchmarkScore": null,
           "transport": "mcp",
           "cleanup": {
@@ -9478,6 +9618,7 @@
           "artifact": "ios-android-multi-013-qwen-aff8869b31",
           "sourceTask": "multi-013",
           "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
           "officialBenchmarkScore": null,
           "transport": "mcp",
           "cleanup": {
@@ -9517,6 +9658,7 @@
           "artifact": "ios-android-multi-013-qwen-cfe8ca174c",
           "sourceTask": "multi-013",
           "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
           "officialBenchmarkScore": null,
           "transport": "shell",
           "cleanup": {
@@ -9972,12 +10114,49 @@
           "requiredFixtureAndVerifier": "source note bodies, folders, append-preservation and deletion verifier"
         }
       ],
-      "status": "requires_isolated_source_fixtures",
+      "status": "android_file_adaptation_passed",
       "canonicalScenario": "iOSWorld/multi-018",
       "relationship": "distinct_source_variant",
       "acceptance": "All source business criteria, preserved inputs, independent persisted-state readback; partial components do not pass the full task.",
       "cleanup": "Remove only run-owned fixture objects and verify their absence; restore any recorded system baseline.",
-      "results": [],
+      "results": [
+        {
+          "artifact": "ios-android-multi-018-qwen-d008606efc",
+          "sourceTask": "multi-018",
+          "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": true
+          },
+          "elapsedSeconds": 40.703569292000005,
+          "providerRequests": 19,
+          "independentReview": {
+            "passed": true,
+            "checks": {
+              "reportedCartSubtotal": true,
+              "traderJoesSelected": true,
+              "oneNewMealNoteOnly": true,
+              "nutritionUnchanged": true
+            },
+            "reason": "Source goals2450/170 match; Trader Joes cart contains requested snacks and healthy staples; catalog-price subtotal55.86 verified; only one meal-plan note appended, original notes/nutrition preserved. Isolated cart, no purchase.",
+            "reviewer": "root",
+            "scope": "Android source-backed adaptation, no original GUI credit"
+          }
+        }
+      ],
       "officialBenchmarkScore": null
     },
     {
@@ -10244,12 +10423,48 @@
           "requiredFixtureAndVerifier": "source document bodies; saved-file diff; GUI rubric explicitly substituted"
         }
       ],
-      "status": "requires_isolated_source_fixtures",
+      "status": "android_file_adaptation_passed",
       "canonicalScenario": "iOSWorld/multi-025",
       "relationship": "distinct_source_variant",
       "acceptance": "All source business criteria, preserved inputs, independent persisted-state readback; partial components do not pass the full task.",
       "cleanup": "Remove only run-owned fixture objects and verify their absence; restore any recorded system baseline.",
-      "results": [],
+      "results": [
+        {
+          "artifact": "ios-android-multi-025-qwen-0606174549",
+          "sourceTask": "multi-025",
+          "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": true
+          },
+          "elapsedSeconds": 27.286778292,
+          "providerRequests": 6,
+          "independentReview": {
+            "passed": true,
+            "checks": {
+              "onlyOneLampAdded": true,
+              "priceUnderLimit": true,
+              "budgetFilesUnchanged": true,
+              "remainingCorrect": true
+            },
+            "reviewer": "root",
+            "reason": "Lamp choice, price35.99, remaining109.01, single-item addition and unchanged original documents independently verified. No purchase."
+          }
+        }
+      ],
       "officialBenchmarkScore": null
     },
     {
@@ -10511,7 +10726,66 @@
       "relationship": "distinct_source_variant",
       "acceptance": "All source business criteria, preserved inputs, independent persisted-state readback; partial components do not pass the full task.",
       "cleanup": "Remove only run-owned fixture objects and verify their absence; restore any recorded system baseline.",
-      "results": [],
+      "results": [
+        {
+          "artifact": "ios-android-multi-032-qwen-53ea225545",
+          "sourceTask": "multi-032",
+          "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "elapsedSeconds": 37.421935667,
+          "providerRequests": 10,
+          "independentReview": {
+            "passed": false,
+            "reviewer": "root",
+            "reason": "max_tokens before completing original business criteria; missing channel discovery caused repeated large workspace reads. Infrastructure and cleanup succeeded; not a full task pass."
+          }
+        },
+        {
+          "artifact": "ios-android-multi-032-qwen-96b1784d50",
+          "sourceTask": "multi-032",
+          "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "elapsedSeconds": 43.310287374999994,
+          "providerRequests": 7,
+          "independentReview": {
+            "passed": false,
+            "reviewer": "root",
+            "reason": "Channel discovery fixed the context failure and all artifacts were changed, but source says localization QA starts Monday; model changed Android Onboarding Blocked to Pass and announced completed QA without evidence. Dispatch completion is not business acceptance."
+          }
+        }
+      ],
       "officialBenchmarkScore": null
     },
     {
@@ -10964,7 +11238,37 @@
       "relationship": "distinct_source_variant",
       "acceptance": "All source business criteria, preserved inputs, independent persisted-state readback; partial components do not pass the full task.",
       "cleanup": "Remove only run-owned fixture objects and verify their absence; restore any recorded system baseline.",
-      "results": [],
+      "results": [
+        {
+          "artifact": "ios-android-multi-037-qwen-61534e13f1",
+          "sourceTask": "multi-037",
+          "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "elapsedSeconds": 35.029587375,
+          "providerRequests": 8,
+          "independentReview": {
+            "passed": false,
+            "reviewer": "root",
+            "reason": "max_tokens before completing original business criteria; missing channel discovery caused repeated large workspace reads. Infrastructure and cleanup succeeded; not a full task pass."
+          }
+        }
+      ],
       "officialBenchmarkScore": null
     },
     {
@@ -11463,7 +11767,37 @@
       "relationship": "distinct_source_variant",
       "acceptance": "All source business criteria, preserved inputs, independent persisted-state readback; partial components do not pass the full task.",
       "cleanup": "Remove only run-owned fixture objects and verify their absence; restore any recorded system baseline.",
-      "results": [],
+      "results": [
+        {
+          "artifact": "ios-android-multi-048-qwen-7609ce923d",
+          "sourceTask": "multi-048",
+          "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "elapsedSeconds": 58.169113458,
+          "providerRequests": 26,
+          "independentReview": {
+            "passed": false,
+            "reviewer": "root",
+            "reason": "max_tokens after partial document changes; no complete wrap-up/verification. Full task not passed."
+          }
+        }
+      ],
       "officialBenchmarkScore": null
     },
     {
@@ -12494,7 +12828,37 @@
       "relationship": "distinct_source_variant",
       "acceptance": "All source business criteria, preserved inputs, independent persisted-state readback; partial components do not pass the full task.",
       "cleanup": "Remove only run-owned fixture objects and verify their absence; restore any recorded system baseline.",
-      "results": [],
+      "results": [
+        {
+          "artifact": "ios-android-multi-077-qwen-722fe01a58",
+          "sourceTask": "multi-077",
+          "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "elapsedSeconds": 31.542003291,
+          "providerRequests": 7,
+          "independentReview": {
+            "passed": false,
+            "reviewer": "root",
+            "reason": "max_tokens before comparing dates, updating packing note or reporting conflict; no full business acceptance."
+          }
+        }
+      ],
       "officialBenchmarkScore": null
     },
     {
@@ -12766,7 +13130,66 @@
       "relationship": "distinct_source_variant",
       "acceptance": "All source business criteria, preserved inputs, independent persisted-state readback; partial components do not pass the full task.",
       "cleanup": "Remove only run-owned fixture objects and verify their absence; restore any recorded system baseline.",
-      "results": [],
+      "results": [
+        {
+          "artifact": "ios-android-multi-080-deepseek-ddb995ee69",
+          "sourceTask": "multi-080",
+          "provider": "deepseek",
+          "model": "deepseek-flash",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "elapsedSeconds": 40.069669375000004,
+          "providerRequests": 16,
+          "independentReview": {
+            "passed": false,
+            "reviewer": "root",
+            "reason": "No requested groceries added; final confuses kale with spinach and reports unverified calorie arithmetic. Preserved state, but abstention is not a completed original task."
+          }
+        },
+        {
+          "artifact": "ios-android-multi-080-qwen-ebfa05e387",
+          "sourceTask": "multi-080",
+          "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "elapsedSeconds": 36.129796416999994,
+          "providerRequests": 12,
+          "independentReview": {
+            "passed": false,
+            "reviewer": "root",
+            "reason": "Correct calorie arithmetic and inexpensive products, but buys from Aldi instead of explicitly requested Natural Foods Market; wrong merchant violates task constraint."
+          }
+        }
+      ],
       "officialBenchmarkScore": null
     },
     {
@@ -14212,7 +14635,32 @@
       "relationship": "distinct_source_variant",
       "acceptance": "All source business criteria, preserved inputs, independent persisted-state readback; partial components do not pass the full task.",
       "cleanup": "Remove only run-owned fixture objects and verify their absence; restore any recorded system baseline.",
-      "results": [],
+      "results": [
+        {
+          "artifact": "ios-android-mem-002-qwen-e8a2f04eac",
+          "sourceTask": "mem-002",
+          "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "elapsedSeconds": 28.150962957999997,
+          "providerRequests": 10
+        }
+      ],
       "officialBenchmarkScore": null
     },
     {
@@ -14339,7 +14787,32 @@
       "relationship": "distinct_source_variant",
       "acceptance": "All source business criteria, preserved inputs, independent persisted-state readback; partial components do not pass the full task.",
       "cleanup": "Remove only run-owned fixture objects and verify their absence; restore any recorded system baseline.",
-      "results": [],
+      "results": [
+        {
+          "artifact": "ios-android-mem-004-qwen-f28c05659d",
+          "sourceTask": "mem-004",
+          "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "elapsedSeconds": 33.091683374999995,
+          "providerRequests": 7
+        }
+      ],
       "officialBenchmarkScore": null
     },
     {
@@ -14533,7 +15006,32 @@
       "relationship": "distinct_source_variant",
       "acceptance": "All source business criteria, preserved inputs, independent persisted-state readback; partial components do not pass the full task.",
       "cleanup": "Remove only run-owned fixture objects and verify their absence; restore any recorded system baseline.",
-      "results": [],
+      "results": [
+        {
+          "artifact": "ios-android-mem-007-qwen-ae828f3f02",
+          "sourceTask": "mem-007",
+          "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "elapsedSeconds": 41.213601834,
+          "providerRequests": 10
+        }
+      ],
       "officialBenchmarkScore": null
     },
     {
@@ -14600,7 +15098,32 @@
       "relationship": "distinct_source_variant",
       "acceptance": "All source business criteria, preserved inputs, independent persisted-state readback; partial components do not pass the full task.",
       "cleanup": "Remove only run-owned fixture objects and verify their absence; restore any recorded system baseline.",
-      "results": [],
+      "results": [
+        {
+          "artifact": "ios-android-mem-009-qwen-212487f144",
+          "sourceTask": "mem-009",
+          "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "elapsedSeconds": 96.540307708,
+          "providerRequests": 18
+        }
+      ],
       "officialBenchmarkScore": null
     },
     {
@@ -14854,7 +15377,32 @@
       "relationship": "distinct_source_variant",
       "acceptance": "All source business criteria, preserved inputs, independent persisted-state readback; partial components do not pass the full task.",
       "cleanup": "Remove only run-owned fixture objects and verify their absence; restore any recorded system baseline.",
-      "results": [],
+      "results": [
+        {
+          "artifact": "ios-android-mem-015-qwen-aed617c26c",
+          "sourceTask": "mem-015",
+          "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "elapsedSeconds": 36.968625125,
+          "providerRequests": 18
+        }
+      ],
       "officialBenchmarkScore": null
     },
     {
@@ -15025,7 +15573,32 @@
       "relationship": "distinct_source_variant",
       "acceptance": "All source business criteria, preserved inputs, independent persisted-state readback; partial components do not pass the full task.",
       "cleanup": "Remove only run-owned fixture objects and verify their absence; restore any recorded system baseline.",
-      "results": [],
+      "results": [
+        {
+          "artifact": "ios-android-mem-018-qwen-c674ccbac9",
+          "sourceTask": "mem-018",
+          "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "elapsedSeconds": 41.361779375000005,
+          "providerRequests": 15
+        }
+      ],
       "officialBenchmarkScore": null
     },
     {
@@ -17189,7 +17762,32 @@
       "relationship": "distinct_source_variant",
       "acceptance": "All source business criteria, preserved inputs, independent persisted-state readback; partial components do not pass the full task.",
       "cleanup": "Remove only run-owned fixture objects and verify their absence; restore any recorded system baseline.",
-      "results": [],
+      "results": [
+        {
+          "artifact": "ios-android-mem-041-qwen-98253fbbf0",
+          "sourceTask": "mem-041",
+          "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "elapsedSeconds": 43.302647832999995,
+          "providerRequests": 13
+        }
+      ],
       "officialBenchmarkScore": null
     },
     {
@@ -17359,7 +17957,67 @@
       "relationship": "distinct_source_variant",
       "acceptance": "All source business criteria, preserved inputs, independent persisted-state readback; partial components do not pass the full task.",
       "cleanup": "Remove only run-owned fixture objects and verify their absence; restore any recorded system baseline.",
-      "results": [],
+      "results": [
+        {
+          "artifact": "ios-android-mem-043-qwen-d267abd5b1",
+          "sourceTask": "mem-043",
+          "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "elapsedSeconds": 35.215687333000005,
+          "providerRequests": 15
+        },
+        {
+          "artifact": "ios-android-mem-043-qwen-ea616c19f2",
+          "sourceTask": "mem-043",
+          "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "elapsedSeconds": 59.021776875,
+          "providerRequests": 9,
+          "independentReview": {
+            "passed": false,
+            "reviewer": "root",
+            "reason": "Native Pi compaction at 28561 tokens succeeded and the original ACP prompt ended normally; business acceptance fails. Final labels completed stays such as stay-soma as upcoming, claims all TicketBox history is SF Bay Area despite Giants at Dodgers at Dodger Stadium, and names Dodgers at Chase Center contrary to Oracle Park source tickets. Owned files preserved and cleanup verified.",
+            "runtimeVerification": {
+              "nativeCompactions": 1,
+              "tokensBefore": 28561,
+              "stopReason": "end_turn",
+              "providerRequests": 9
+            }
+          }
+        }
+      ],
       "officialBenchmarkScore": null
     },
     {
@@ -18156,7 +18814,32 @@
       "relationship": "distinct_source_variant",
       "acceptance": "All source business criteria, preserved inputs, independent persisted-state readback; partial components do not pass the full task.",
       "cleanup": "Remove only run-owned fixture objects and verify their absence; restore any recorded system baseline.",
-      "results": [],
+      "results": [
+        {
+          "artifact": "ios-android-mem-051-qwen-58c5af5a31",
+          "sourceTask": "mem-051",
+          "provider": "35a3",
+          "model": "qwen3.6-35b-a3b-q4_k_m",
+          "officialBenchmarkScore": null,
+          "transport": "mcp",
+          "cleanup": {
+            "workspaceAbsent": true,
+            "reverseRemoved": true
+          },
+          "rawAcceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "acceptance": {
+            "sourceFilesPreserved": true,
+            "semanticReviewRequired": true,
+            "passed": false
+          },
+          "elapsedSeconds": 74.61827783400001,
+          "providerRequests": 16
+        }
+      ],
       "officialBenchmarkScore": null
     },
     {
