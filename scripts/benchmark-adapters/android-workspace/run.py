@@ -277,4 +277,7 @@ finally:
     subprocess.run(BASE + ['shell', 'run-as', PKG, 'rm', '-rf', HOST], capture_output=True, check=True)
 
     assert not subprocess.run(BASE + ['shell', 'run-as', PKG, 'test', '!', '-e', HOST], capture_output=True).returncode
-    (RUN / 'cleanup.json').write_text(json.dumps({'workspaceAbsent': True, 'reverseRemoved': True}))
+    reverse_lines = subprocess.check_output(BASE + ['reverse', '--list'], text=True).splitlines()
+    reverse_removed = all(f'tcp:{PORT}' not in line.split() for line in reverse_lines)
+    (RUN / 'cleanup.json').write_text(json.dumps({'workspaceAbsent': True, 'reverseRemoved': reverse_removed}))
+    assert reverse_removed, 'Owned ADB reverse remains after cleanup'
