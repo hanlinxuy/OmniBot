@@ -181,3 +181,21 @@ The CloudDocs baseline exposes an actionable tool-design gap: write tools are av
 The first multi-037 attempt with 35a3 reached both TeamChat channels and Mail, then issued four `open_message` calls in one assistant turn. Pi 1.4.0 defaults to parallel tool execution. All four Mail calls timed out, while later `clouddocs_launch` reported an All Inboxes page: outstanding UI work was still competing for the same Appium screen. The host stopped the owned MCP workers and runner, then restored the Cloud workspace, Notes database, TeamChat JSON and Mail preferences with the owned simulator shut down. This attempt is infrastructure-failed, not a clean model-capability score or a full-task pass.
 
 The Pi adapter now accepts an explicit session launch setting, `OMNIBOT_PI_TOOL_EXECUTION=sequential`, forwarding it to the SDK agent's existing execution mode. This does not add a second executor, lock or permission owner, and does not change the default parallel mode for other workloads. A real SDK/MCP control reproduces two concurrent reads both returning the second shared page; sequential mode returns the intended first and second pages, with both ACP permission decisions retained. All 27 adapter tests and packaging pass; the Android build succeeds. Live installation and same-task retesting are underway. This setting controls one session, not arbitrary concurrent clients of the same device.
+
+The sequential retry exposed a second, separate source-tool defect. Mail's
+`_in_message_detail` checks old SF-Symbol names, while the pinned Swift app
+explicitly sets `detail_archive_button` and `detail_delete_button`. It therefore
+misclassifies an opened message and sweeps more folders. A pinned patch uses
+those real IDs; the previously problematic subject then opens in a measured
+3.76-second isolated control. This also limits the causal claim about the
+first attempt: concurrency and the stale selector both existed; the timeout
+cannot be attributed solely to model behavior or solely to parallelism.
+
+The detail observation has another evidence gap: only 2,000 of 10,050 XML
+characters reached the model, omitting the email body. A compact read-only
+accessibility text reader now exposes the actual open message, with pagination.
+Two focused controls pass, and a live open-plus-read control obtains the actual
+subject/sender/date/body in 3.82 seconds. The source fixture is synthetic; no
+personal mailbox is accessed. The second incomplete attempt was also stopped
+and fully restored. The corrected six-app matrix is now running with both
+source patches and explicit sequential execution.

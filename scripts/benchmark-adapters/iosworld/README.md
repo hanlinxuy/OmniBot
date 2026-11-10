@@ -35,3 +35,24 @@ Apply and restart the MCP server as above, substituting `clouddocs-read.patch`. 
 ## Shared spreadsheet evidence
 
 `workspace_evidence.py` normalizes two source-defined serialization equivalents before comparing spreadsheet snapshots: an omitted/null style versus the app's exact default style, and a duplicate `value` field equal to `rawValue` written by the MCP setter. It preserves conflicting aliases, actual formatting and all cell values. `test_workspace_evidence.py` covers those boundaries. Keep raw snapshots and original verdicts; record corrected acceptance in a separate audit. This normalization must not mask real content or style changes.
+
+## Mail detail identity and compact reading
+
+`mail-detail.patch` uses the pinned app's explicit `detail_archive_button` and
+`detail_delete_button` accessibility identifiers to recognize an open message.
+The original check expected old icon names (`archive`/`trash`), so a successful
+open was misclassified and followed by unnecessary folder sweeps. A simulator
+control opens the previously problematic subject successfully in about 3.8 s.
+
+The patch also adds `read_open_message(offset, limit)`. The original XML tool
+returns a 2,000-character prefix; in the observed 10,050-character detail tree
+that prefix contains the subject but omits the body. The compact reader returns
+only static text from the current Mail detail accessibility tree, with bounded
+pagination. It does not read hidden mailbox storage or guarantee content that
+the UI has not exposed. Its controls cover body text beyond verbose XML,
+escaped characters, pagination, and rejection of a list screen/invalid bounds.
+Run `test_mail_detail.py` against the patched source, as with the other controls.
+
+Use one execution owner and serial tool calls for the shared simulator UI. The
+Mail selector defect and concurrent calls are distinct observed problems; a
+serial setting alone cannot repair a stale selector.

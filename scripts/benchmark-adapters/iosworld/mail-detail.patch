@@ -1,0 +1,54 @@
+--- a/mcps/mail.py
++++ b/mcps/mail.py
+@@ -366,15 +366,15 @@
+ def _in_message_detail(tree: str) -> bool:
+     """True if the single-message DETAIL view is showing.
+ 
+-    The detail toolbar exposes the per-message ``archive`` / ``trash`` /
+-    ``reply`` bar buttons (the SF-Symbol image names surface as the element
+-    ``name``). The list view never shows these, so their presence is a
++    The detail toolbar exposes explicit ``detail_archive_button`` and
++    ``detail_delete_button`` accessibility identifiers. UIKit exposes those
++    identifiers as element names, overriding the SF-Symbol names. The list view never shows these, so their presence is a
+     reliable "we are reading one message" marker — used to confirm an
+     ``open_message`` tap actually pushed the detail screen and to drive the
+     targeted ``archive_message`` / ``delete_message`` actions.
+     """
+     t = tree or ""
+-    return 'name="archive"' in t and 'name="trash"' in t
++    return 'name="detail_archive_button"' in t and 'name="detail_delete_button"' in t
+ 
+ 
+ def _open_message_internal(sim, subject: str) -> tuple[bool, str]:
+@@ -453,6 +453,31 @@
+         return f"Opened message '{subject}' (in {where})."
+     return f"Could not open message '{subject}'. {where}"
+ 
++
++
++@mcp.tool()
++def read_open_message(offset: int = 0, limit: int = 1500) -> dict:
++    """Read text exposed by the current Mail detail accessibility tree.
++
++    Call open_message first. This compact reader avoids the full XML response
++    being truncated before the message body. Follow next_offset for the rest
++    of this observed text; content not exposed by the UI is not guaranteed.
++    It does not open, send, archive or delete any message.
++    """
++    if offset < 0 or not 1 <= limit <= 1500:
++        return {"ok": False, "message": "offset must be nonnegative; limit must be 1..1500."}
++    import xml.etree.ElementTree as ET
++    tree = SimulatorBridge.get().observe_text() or ""
++    if not _is_mail_foreground(tree) or not _in_message_detail(tree):
++        return {"ok": False, "message": "No Mail message detail is open. Use open_message first."}
++    nodes = ET.fromstring(tree).iter("XCUIElementTypeStaticText")
++    text = "\n".join(node.get("label") or node.get("value") or node.get("name", "") for node in nodes)
++    if offset > len(text):
++        return {"ok": False, "message": "offset exceeds observed text length.", "total_chars": len(text)}
++    end = min(offset + limit, len(text))
++    return {"ok": True, "text": text[offset:end], "offset": offset,
++            "total_chars": len(text), "next_offset": end if end < len(text) else None,
++            "source": "Current Mail detail accessibility text; not hidden mailbox storage."}
+ 
+ def _detail_action(subject: str, button_id: str, verb: str, gerund: str) -> str:
+     """Open ``subject`` and tap a per-message detail toolbar button.
