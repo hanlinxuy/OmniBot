@@ -302,3 +302,54 @@ All six returned complete completion reports without truncation, and their full
 RunLogs were retained. Synthetic mail state/sent-record files were restored
 byte-for-byte (or removed when originally absent). All three unique alarms were
 independently deleted with visible baseline preservation. Actual ringing was not tested.
+
+### DownloadReadmeTask: public source to synthetic Mail
+
+The GitHub connector supplied the complete AndroidWorld README, blob
+`a19a6777526c00e4b8132c7034a117899c336f67`. A read-only MCP fixture exposed
+those exact 10,817 characters in pages of at most 4,000. All valid baseline runs
+read all three pages; the original recipient, subject and six-keyword predicate
+were retained. Sending used the offline synthetic Mail app on vivo, with direct
+sent-record readback and baseline restoration; external delivery was not tested.
+
+| Outer model | Seconds | GUI steps | Source predicate | Actual mismatch |
+| --- | ---: | ---: | --- | --- |
+| 35a3 | 36.87 | 5 | fail, 4/6 keywords | omitted issue URL; `slow` instead of `slowly` |
+| DeepSeek Flash | 68.13 | 10 | fail, 5/6 keywords | omitted issue URL |
+| Terra | 53.48 | 5 | fail, 5/6 keywords | omitted issue URL |
+
+Recipients and subjects matched; all fixtures were cleaned. The performance
+warning was semantically present in 35a3's message, so the literal-word failure
+is distinct from the missing reference. Do not relabel these as original-predicate
+passes. An earlier 35a3 run was invalid for comparison: the host matched the
+whole permission display title, missing Pi's `: README.md` suffix, and denied all
+source reads. The model then sent guessed source content. That artifact and its
+failed predicate were retained separately; the harness title matching was fixed
+against the captured request before valid runs.
+
+`share-source-summary` is a generic skill, with no benchmark answer or keyword
+list. In a targeted 35a3 rerun it retained the exact linked issue reference and
+performance caveat, completing in 34.42 seconds with five GUI actions. Original
+predicate still failed because the body said `slower`, not `slowly`; semantic
+reference preservation improved without changing the judge.
+
+A controlled unavailable-source case exposed another issue: the first skill
+version prevented invented source content but still let the model send an
+unrequested failure notice. The revised skill explicitly reports failure in the
+current conversation and forbids a replacement message unless requested. Its
+negative control made zero GUI calls and left no sent record; fixture restoration
+passed. The model still made three unsuccessful source calls, so avoidance of
+redundant retries remains unresolved. These are bounded skill observations, not
+proof that prompts enforce all constraints. Both public-source fixture servers
+and their phone reverse ports were stopped/removed after these tests.
+
+The validated reminder workflow and source-summary skill are registered in the
+built-in skill manifest. The asset-update APK was installed with a matching device hash, and both seeded
+skill files matched source hashes. A read-only phone Pi probe, with no skill
+name or slash expansion in its user prompt, advertised both from the normal
+installed catalog and successfully read both in two model requests. This proves
+installation/discovery/read wiring, not full autonomous business-task execution.
+An earlier probe omitted the existing `OMNIBOT_HOST_WORKSPACE` bind and therefore
+had no skill catalog; it is invalid for discovery assessment and was corrected
+before this result. The valid explanation still overgeneralized same-time alarm
+identity, so guidance interpretation is not assumed perfect.

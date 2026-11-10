@@ -69,6 +69,26 @@
       "hasReferences": false,
       "hasAssets": false,
       "hasEvals": false
+    },
+    {
+      "id": "manage-device-reminders",
+      "name": "manage-device-reminders",
+      "description": "Create and verify system Clock alarms, timers and calendar events using device APIs first, with GUI for unsupported fields and readback.",
+      "assetPath": "builtin_skills/manage-device-reminders",
+      "hasScripts": false,
+      "hasReferences": false,
+      "hasAssets": false,
+      "hasEvals": false
+    },
+    {
+      "id": "share-source-summary",
+      "name": "share-source-summary",
+      "description": "Read a specified source and send or save an accurate summary, preserving actionable caveats and reference links; stop when source content is unavailable.",
+      "assetPath": "builtin_skills/share-source-summary",
+      "hasScripts": false,
+      "hasReferences": false,
+      "hasAssets": false,
+      "hasEvals": false
     }
   ]
 }
