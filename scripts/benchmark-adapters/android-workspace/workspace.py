@@ -26,6 +26,8 @@ def main():
     path = (root / args[0]).resolve()
     if path.parent != root.resolve() or not path.is_file():
         raise ValueError('File must be an existing direct child of the owned work directory')
+    if action == 'star' and path.name != 'drive.json':
+        raise ValueError('Star requires file=drive.json and the selected metadata file_id; query drive.json collection files for IDs')
     if path.suffix == '.xlsx':
         import openpyxl
         book = openpyxl.load_workbook(path)

@@ -11,7 +11,7 @@ TOOLS = {
     'append_text': ('append', ['file', 'text'], 'Append text, including multiple lines, to a document.'),
     'add_bullet': ('bullet', ['file', 'slide', 'text'], 'Append a bullet to an existing slide. Slide numbers start at 1.'),
     'add_slide': ('add-slide', ['file', 'title', 'body'], 'Append a new slide with title and body.'),
-    'star_file': ('star', ['file', 'file_id'], 'Star the selected file in drive metadata. Does not alter its modified date.'),
+    'star_file': ('star', ['file', 'file_id'], 'Star a source Drive file by metadata ID. file must be drive.json, and file_id must be an id from its files collection, not a document filename. Does not alter modified dates.'),
 }
 
 RECORD_TOOLS = {
@@ -73,7 +73,7 @@ def main():
         elif method == 'ping':
             result = {}
         elif method == 'tools/list':
-            result = {'tools': [{'name': name, 'description': description, 'inputSchema': {'type': 'object', 'properties': {field: {'type': 'integer' if field == 'slide' else 'string'} for field in fields}, 'required': fields, 'additionalProperties': False}} for name, (_, fields, description) in TOOLS.items() if name in allowed]}
+            result = {'tools': [{'name': name, 'description': description, 'inputSchema': {'type': 'object', 'properties': {field: ({'type': 'string', 'enum': ['drive.json']} if name == 'star_file' and field == 'file' else {'type': 'integer' if field == 'slide' else 'string'}) for field in fields}, 'required': fields, 'additionalProperties': False}} for name, (_, fields, description) in TOOLS.items() if name in allowed]}
             result['tools'] += [{'name':name,'description':desc,'inputSchema':{'type':'object','properties':{k:({'type':v,'items':{'type':'string'}} if v=='array' else {'type':v,'enum':['oneWay','roundTrip']} if k=='trip_type' else {'type':v}) for k,v in fields.items()},'required':required,'additionalProperties':False}} for name,(desc,fields,required) in RECORD_TOOLS.items() if name in allowed]
         elif method == 'tools/call':
             params = request['params']; name = params['name']; values = params.get('arguments', {})
