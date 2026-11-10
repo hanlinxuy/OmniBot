@@ -852,3 +852,44 @@ content before cleanup. Fresh ADB readback confirms their unique workspaces and
 provider reverse port are absent. Evidence: private
 `invoice-copy-policy-matrix-audit.json`, per-run acceptance and cleanup records;
 DeepSeek/Terra additionally retain `file-readback-finally.json`.
+
+
+## Resource conflict resolution across native calendar, fixture DM and Mail
+
+`MattermostResourceConflictResolutionTask` uses all five source booking requests
+and both source existing reservations. The source date function selects next
+week; times are explicitly UTC in this adaptation. Requests live in a unique
+synthetic Mattermost channel, authored by fixture Harry with the original
+Requester fields retained. Phone Pi uses scoped native calendar tools and a
+fixture-only direct-message adapter; only the final local mock Mail send uses
+the shared GUI executor. No real external recipient is contacted.
+
+| Outer model | Seconds | Provider requests | Independent acceptance |
+| --- | ---: | ---: | --- |
+| 35a3 | 49.81 | 9 | pass |
+| DeepSeek, fresh run after API failure | 108.42 | 9 | pass |
+| Terra | 73.34 | 7 | pass |
+
+Acceptance checks the source predicate plus all four exact resource/requester
+titles and start/end times, six total scoped events, preserved readable fields
+of both seed events, exclusive APPROVED/CONFLICT email categories, and exactly
+one DM to Alex explaining the Conf Room A overlap. The source judge alone would
+accept any DM to Alex and does not validate reservation times. Calendar list
+omits descriptions, so description preservation is not claimed.
+
+An initial 35a3 attempt completed its actions but the grader indexed that absent
+`description` field and failed before independent DM readback; it is excluded
+from full-pass results. A first DeepSeek attempt ended with an official API 500
+after a successful GUI terminal log; mail/calendar business readback was missing
+before cleanup, so GUI success is not elevated to full-task success. Both failed
+attempts were cleaned and retained. The grader now checks fields the API actually
+returns, and exceptional exit captures mail/calendar/DM state before cleanup.
+These changes repair evaluation infrastructure, not OmniBot product behavior.
+
+All three accepted runs independently verified GUI termination, local Mail
+baseline restoration, zero remaining scoped calendar entries, deletion of owned
+posts and archival of the unique source channel. Deleted DM posts are absent;
+empty fixture DM channels may remain until the owned test backend is removed.
+Private evidence: per-run `calendar-readback.json`, `dm-readback.json`,
+`sentEmail.json`, `gui-settlement.json` and separate cleanup records. This is a
+source-task adaptation, not an official benchmark score or iOS coverage.
