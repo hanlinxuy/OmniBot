@@ -380,14 +380,14 @@ object AgentToolDefinitions {
         "可选，目标日历 ID。" to "Optional target calendar ID.",
         "提醒分钟列表，例如 [10, 30]。" to
             "Reminder minute offsets, for example [10, 30].",
-        "按时间范围、关键字、calendarId 查询日历事件。" to
-            "Query calendar events by time range, keyword, and calendarId.",
+        "按时间范围、关键字、calendarId 查询日历事件。省略时间时仅查当前日期前30天至后180天；查询历史或远期日程需明确传 startAt 和 endAt，关键词不会取消时间范围。" to
+            "Query calendar events by time range, keyword, and calendarId. Omitted dates default to 30 days before now through 180 days after now. For historical or distant events, pass explicit startAt and endAt; a keyword does not remove this time window.",
         "可选日历 ID；未传时查询所有可访问的日历。用户指定日历时应传该日历 ID。" to
             "Optional calendar ID; omission queries all accessible calendars. When the user specifies a calendar, pass its ID.",
         "查看结果后再决定是否更新或删除。" to
             "Review the result first, then decide whether to update or delete.",
-        "可选，查询起始时间，ISO-8601。" to "Optional query start time in ISO-8601 format.",
-        "可选，查询结束时间，ISO-8601。" to "Optional query end time in ISO-8601 format.",
+        "可选，查询起始时间，ISO-8601。默认当前时间前30天。" to "Optional query start time in ISO-8601 format. Defaults to 30 days before now.",
+        "可选，查询结束时间，ISO-8601。默认当前时间后180天。" to "Optional query end time in ISO-8601 format. Defaults to 180 days after now.",
         "可选关键词，匹配标题或地点。" to
             "Optional keyword matching title or location.",
         "可选返回上限；省略时返回该时间范围内的完整结果。" to
@@ -1908,7 +1908,7 @@ object AgentToolDefinitions {
             put("name", "calendar_event_list")
             put("displayName", "查询日程")
             put("toolType", "calendar")
-            put("description", "按时间范围、关键字、calendarId 查询日历事件。")
+            put("description", "按时间范围、关键字、calendarId 查询日历事件。省略时间时仅查当前日期前30天至后180天；查询历史或远期日程需明确传 startAt 和 endAt，关键词不会取消时间范围。")
             put("postToolRule", "查看结果后再决定是否更新或删除。")
             putJsonObject("parameters") {
                 put("type", "object")
@@ -1919,11 +1919,11 @@ object AgentToolDefinitions {
                     }
                     putJsonObject("startAt") {
                         put("type", "string")
-                        put("description", "可选，查询起始时间，ISO-8601。")
+                        put("description", "可选，查询起始时间，ISO-8601。默认当前时间前30天。")
                     }
                     putJsonObject("endAt") {
                         put("type", "string")
-                        put("description", "可选，查询结束时间，ISO-8601。")
+                        put("description", "可选，查询结束时间，ISO-8601。默认当前时间后180天。")
                     }
                     putJsonObject("query") {
                         put("type", "string")

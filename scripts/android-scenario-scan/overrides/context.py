@@ -95,18 +95,13 @@ def analyze_page_context(state: dict[str, Any], *, limit: int = 48) -> PageConte
         enumerate(records),
         key=lambda item: (item[1][0], item[0]),
     )[: min(48, max(1, int(limit)))]
-    visible_elements = [
-        f"[{index}] {record}"
-        for index, (_actionable, record) in enumerate(
-            (item[1] for item in selected),
-            start=1,
-        )
-    ]
+    # A second row number can be mistaken for the actual accessibility node id.
+    visible_elements = [f"- {item[1][1]}" for item in selected]
     useful = bool(visible_elements)
     evidence = (
         "Primary UI grounding evidence from the latest accessibility XML "
         "(bounds use normalized 0..1000 coordinates). For target_description, "
-        "copy the exact text or desc label when available:\n"
+        "copy the exact text or desc label when available. For node_id, copy only the explicit node_id= value from this current observation:\n"
         + "\n".join(visible_elements)
     )
     return PageContext(

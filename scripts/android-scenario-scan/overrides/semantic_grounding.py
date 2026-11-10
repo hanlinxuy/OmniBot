@@ -25,7 +25,8 @@ def resolve_semantic_action(
     observation: Observation,
 ) -> SemanticGroundingResult:
     target = str(action.args.get("target_description") or "").strip()
-    if action.tool not in _SUPPORTED_TOOLS or not target:
+    requested_node_id = str(action.args.get("node_id") or "").strip()
+    if action.tool not in _SUPPORTED_TOOLS or not (target or requested_node_id):
         return SemanticGroundingResult(action)
     display = observation.extra.get("display")
     if not isinstance(display, dict):
@@ -60,7 +61,10 @@ def resolve_semantic_action(
         if text_label and description_label:
             labels.add(f"{text_label} {description_label}")
             labels.add(f"{description_label} {text_label}")
-        if normalized_target not in labels and (not label_target or label_target not in labels):
+        if requested_node_id:
+            if str(element.attrib.get("id") or "").strip() != requested_node_id:
+                continue
+        elif normalized_target not in labels and (not label_target or label_target not in labels):
             continue
         actionable = _nearest_actionable(
             element,
@@ -79,7 +83,7 @@ def resolve_semantic_action(
         matches[bounds] = actionable
 
     if len(matches) != 1:
-        reason = "target_missing" if not matches else "target_ambiguous"
+        reason = ("node_id_missing" if requested_node_id else "target_missing") if not matches else "target_ambiguous"
         result = _unresolved(
             action,
             target,
@@ -114,7 +118,7 @@ def resolve_semantic_action(
             "schema_version": "omniflow.semantic-grounding.v1",
             "status": "resolved",
             "target_description": target,
-            "match_source": "accessibility_text_or_content_description",
+            "match_source": "accessibility_node_id" if requested_node_id else "accessibility_text_or_content_description",
             "bounds": list(bounds),
             "node_id": node_id or None,
             "node_resource_id": resource_id or None,

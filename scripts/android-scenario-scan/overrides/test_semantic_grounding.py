@@ -31,6 +31,25 @@ def resolve(xml, target):
     return module.resolve_semantic_action(Action('click', {'target_description': target, 'x': 10, 'y': 10}), Observation(xml, {'display': {'width': 1260, 'height': 2800}}))
 
 class GroundingTests(unittest.TestCase):
+    def test_current_node_id_resolves_duplicate_labels_and_replaces_bad_coordinates(self):
+        xml = '<root><node id="7" text="Save" clickable="true" bounds="[100,200][200,300]"/><node id="8" text="Save" clickable="true" bounds="[500,600][700,800]"/></root>'
+        action = Action('click', {'node_id':'8','target_description':'Save','x':0,'y':0})
+        result = module.resolve_semantic_action(action, Observation(xml, {'display':{'width':1000,'height':1000}}))
+        self.assertEqual('resolved', result.detail['status'])
+        self.assertEqual('accessibility_node_id', result.detail['match_source'])
+        self.assertEqual((600,700), (result.action.args['x'],result.action.args['y']))
+        self.assertEqual('8', result.action.args['node_id'])
+
+    def test_node_id_without_label_and_missing_node_keep_distinct_evidence(self):
+        xml = '<root><node id="7" clickable="true" bounds="[100,200][200,300]"/></root>'
+        observation = Observation(xml, {'display':{'width':1000,'height':1000}})
+        result = module.resolve_semantic_action(Action('click', {'node_id':'7','x':0,'y':0}), observation)
+        self.assertEqual('resolved', result.detail['status'])
+        missing = module.resolve_semantic_action(Action('click', {'node_id':'8','x':20,'y':30}), observation)
+        self.assertEqual('fallback', missing.detail['status'])
+        self.assertEqual('node_id_missing', missing.detail['reason'])
+        self.assertEqual((20,30), (missing.action.args['x'],missing.action.args['y']))
+
     def test_real_calculator_xml(self):
         fixture = pathlib.Path('.session-history/full-scenario-scan/BA19-before-1.xml')
         if not fixture.exists(): self.skipTest('private real-device fixture unavailable')

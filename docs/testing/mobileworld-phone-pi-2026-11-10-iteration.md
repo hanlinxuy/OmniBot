@@ -72,3 +72,31 @@ The first DeepSeek run produced the correct local recipient, subject and body an
 Evidence is retained locally under `phone-real-use/artifacts/pi-eight-hour-20261110/`: per-run task metadata, source hashes, ACP updates, provider requests, answer/readback, explicit acceptance audits and cleanup. Secret values and private device dumps must not be committed. USB keep-awake was temporarily enabled during installation after automatic sleep; restore its recorded original value (0) at the end of the window.
 
 Repair validation: 28 existing override tests, four Android MCP-server tests, five PDF-helper tests and Android build passed. Installed APK SHA-256 `ace408542a18c666c124cef0869c3da96897cdf62f996e11eaedfb0d9618b3bf`. Managed planner readback SHA-256 `e11d5267cdddd247c69ed509ec2ed192b4f4c7ceafed2869bdab2264b978dbe0`; prior source was preserved, other overrides retained. One APK installation was aborted by the installer; the subsequent ordinary confirmation flow completed successfully.
+
+## Batch 3: Mail to native calendar, cancellation, selector repair
+
+| Source task | 35a3 | DeepSeek | Terra |
+| --- | --- | --- | --- |
+| CheckSetMeetTimeTask | Correct event; host acceptance query corrected before cleanup | Pass | Pass |
+| CheckInterviewTimesTask | Three exact interviews; pass | Three exact interviews; pass | Three exact interviews; pass |
+| CancelMeetingTask | Local reply; pass, four node-grounded actions | Same | Same; added an unrequested future rescheduling commitment |
+
+Mail uses the original fixture bytes. Calendar adaptations explicitly specify the fixture year 2025 and UTC, use unique title prefixes and native calendar APIs, and independently compare timestamps. The interview acceptance checks the three expected companies and exact times rather than merely accepting the source judge's weak count of three. All owned calendar records were deleted and scoped readback returned zero; Mail baseline bytes were restored. These are new task adaptations, not official MobileWorld scores.
+
+The first board-meeting host query omitted dates. The calendar API defaults to now minus 30 days through now plus 180 days even when a keyword is supplied, so the host initially missed the correctly created 2025 event. Explicit date bounds found it; the original false report was retained, then the unique event was deleted and absence verified. This is a harness acceptance bug, not a model failure. The model itself had recovered by specifying dates. Chinese and English calendar tool descriptions now disclose this default window and require explicit dates for historical/distant searches; implementation semantics are unchanged. Android MCP tests and build passed; deployment of that latest description is tracked separately.
+
+A deeper selector defect explained why prompt advice alone was insufficient: the Python action-tool whitelist removed `node_id`, and grounding did not consume explicit IDs. The managed schemas override now exposes live IDs; grounding resolves them against the current XML and reuses the actionable-node/bounds path. A first retest still copied the summary's numbered row index instead of its actual ID. Removing that competing index fixed this ambiguity. In the new cancellation matrix, all 12 actions resolved through `accessibility_node_id`, and local send readback and terminal RunLogs passed. Unknown IDs still fall back, so this is not a strict selector enforcement boundary. No persistent Android node-ID executor or general reliability improvement is claimed.
+
+There were 32 passing focused override tests. Sources were applied through the official whole-file managed interface, with prior sources preserved and unrelated overrides retained; the runtime ZIP was not changed. Managed candidate hashes: schemas `823858d2d6126f11a27721ca3c9ca1eaf06aa2fac2170b7263044656fb995288`, grounding `a19cb6566f5c1841bef128317e135e193c8f4a4c203cd73348304fb3f8ec2c1a`, context `50bbe98f23cba634855b5a5485f1d7ede215b926e9082b90ee9992ab406996df`.
+
+The mail harness denied some harmless discovery calls (`list_functions`/app lookup); those denials should not be counted as product defects. Future cases should allow bounded capability discovery. All GUI cases here still share one OmniFlow visual executor beneath the three outer Pi models.
+
+Latest calendar-description APK installed and independently hashed on device: `986a5fb7f30965fccf43ce9e9f2acede9858dd78989073a49e1cf6bfdcb85bad`. The live MCP tools list includes both default date bounds. An existing alarm banner obscured the app menu; the app's existing settings Intent route allowed service startup without dismissing or modifying the alarm.
+
+## Batch 4 in progress: isolated Mattermost APIs
+
+The pinned MobileWorld image's Mattermost/PostgreSQL fixture was recovered into a newly owned, outbound-isolated Docker network. Normal fixture-user API authentication is held on the host; phone Pi receives typed MCP tools and no backend token. The task's original post belongs to Harry, so the fixture actor was verified against the source before testing. Only the newly cloned fixture account was prepared; no external user account or real messaging service was used.
+
+MattermostReplyToMessageTask passed for 35a3, DeepSeek and Terra, approximately 19.2 / 24.0 / 25.7 seconds with 5 / 5 / 4 model requests. Each independently found the current user and relevant original post, then posted exactly one reply containing 35.5 to the correct root/channel as the correct actor. Original goal, posts and judge criterion were preserved; API execution replaces the benchmark GUI, so this is an adaptation, not an official score. All created posts were deleted and their absence in the original thread verified. The first cleanup incorrectly expected a deleted post to remain GET-readable; the API returned 404. The host recovered and verified cleanup before continuing, then fixed the cleanup query. That harness error does not invalidate the independently recorded task mutation.
+
+This small matrix demonstrates that the weaker local model can complete a suitable task through explicit system tools. It does not establish superiority or general benchmark performance. DeepSeek expanded the numeric result to a percentage/pass@1 formulation inferred from context; retain the actual response for content-quality review.
