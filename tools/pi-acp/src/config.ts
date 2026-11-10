@@ -16,6 +16,7 @@ export interface LaunchConfig {
   provider: Parameters<ModelRuntime["registerProvider"]>[1];
   skillPaths: string[];
   toolNames?: string[];
+  toolExecution?: "parallel" | "sequential";
 }
 
 // Pi configuration values support interpolation and !commands. ACP and host
@@ -51,6 +52,10 @@ export function readLaunchConfig(env = process.env): LaunchConfig {
     throw new Error("Provider headers must contain string values.");
   }
   const toolNames = env.OMNIBOT_PI_TOOLS_JSON === undefined ? undefined : JSON.parse(env.OMNIBOT_PI_TOOLS_JSON);
+  const toolExecution = env.OMNIBOT_PI_TOOL_EXECUTION;
+  if (toolExecution !== undefined && toolExecution !== "parallel" && toolExecution !== "sequential") {
+    throw new Error("OMNIBOT_PI_TOOL_EXECUTION must be parallel or sequential.");
+  }
   if (toolNames !== undefined && (!Array.isArray(toolNames) || toolNames.some((name) => typeof name !== "string"))) {
     throw new Error("OMNIBOT_PI_TOOLS_JSON must be an array of Pi tool names or patterns.");
   }
@@ -66,6 +71,7 @@ export function readLaunchConfig(env = process.env): LaunchConfig {
     },
     skillPaths: (env.OMNIBOT_PI_SKILL_PATHS || "").split(":").filter(Boolean),
     toolNames,
+    toolExecution,
   };
 }
 

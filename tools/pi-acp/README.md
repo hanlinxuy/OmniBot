@@ -151,3 +151,17 @@ ACP permission decisions still apply to selected tools. Record the selection
 as an evaluation condition, and retain independent acceptance and cleanup.
 Native `/skill:` expansion can be selected explicitly; a model that must discover
 and read skills needs the corresponding read capability in its tool selection.
+
+For a task whose tools share one mutable UI, the host can explicitly set
+`OMNIBOT_PI_TOOL_EXECUTION=sequential`. This uses the official Pi agent's
+existing execution mode: a multi-call assistant turn executes in source order.
+The setting is session-local; omitted configuration retains SDK parallel mode.
+No alternate executor, lock, permission owner or retry layer is introduced.
+
+A six-app simulator run exposed concurrent `open_message` calls competing for
+one Appium screen and returning timeouts. The deterministic control reproduces
+two reads observing the second page in parallel and verifies both requested
+pages under sequential mode, while retaining both ACP permission decisions.
+This is not cross-session/server arbitration, and does not make a stateful tool
+idempotent. Hosts must still ensure one owner per device and independently
+check uncertain effects before retrying.

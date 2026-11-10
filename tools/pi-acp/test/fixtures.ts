@@ -33,7 +33,7 @@ export async function httpFixture(handler: (body: any, response: ServerResponse,
   };
 }
 
-export function stream(response: ServerResponse, options: { text?: string; thinking?: string; tool?: { id: string; name: string; arguments: unknown } } = {}) {
+export function stream(response: ServerResponse, options: { text?: string; thinking?: string; tool?: { id: string; name: string; arguments: unknown }; tools?: { id: string; name: string; arguments: unknown }[] } = {}) {
   response.writeHead(200, { "Content-Type": "text/event-stream" });
   const chunk = (delta: unknown, finish_reason: string | null = null) => response.write(`data: ${JSON.stringify({
     id: "completion", object: "chat.completion.chunk", model: "fixture", created: 1,
@@ -42,8 +42,9 @@ export function stream(response: ServerResponse, options: { text?: string; think
   chunk({ role: "assistant" });
   if (options.thinking) chunk({ reasoning_content: options.thinking });
   if (options.text) chunk({ content: options.text });
-  if (options.tool) chunk({ tool_calls: [{ index: 0, id: options.tool.id, type: "function", function: { name: options.tool.name, arguments: JSON.stringify(options.tool.arguments) } }] });
-  chunk({}, options.tool ? "tool_calls" : "stop");
+  const tools = options.tools ?? (options.tool ? [options.tool] : []);
+  if (tools.length) chunk({ tool_calls: tools.map((tool, index) => ({ index, id: tool.id, type: "function", function: { name: tool.name, arguments: JSON.stringify(tool.arguments) } })) });
+  chunk({}, tools.length ? "tool_calls" : "stop");
   response.write(`data: ${JSON.stringify({ id: "completion", choices: [], usage: { prompt_tokens: 32, completion_tokens: 8, total_tokens: 40 } })}\n\n`);
   response.end("data: [DONE]\n\n");
 }

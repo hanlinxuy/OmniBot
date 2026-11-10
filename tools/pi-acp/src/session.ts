@@ -74,6 +74,7 @@ export class PiAcpSession {
       sessionStartEvent: { type: "session_start", reason: storedModel ? "resume" : "startup" },
     });
     owned.session = result.session;
+    if (config.toolExecution) owned.session.agent.toolExecution = config.toolExecution;
     owned.projection = new PiProjection(manager, manager.getCwd(), (update) => owned.publish(update));
     owned.unsubscribe = owned.session.subscribe((event) => owned.onEvent(event));
     try {

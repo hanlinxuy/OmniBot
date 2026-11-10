@@ -179,3 +179,43 @@ test("MCP values are literal, names are isolated and SSE is rejected", () => {
   assert.equal((config.servers[0].config as any).headers.X, "$${TOKEN}");
   assert.throws(() => sessionMcpConfig([{ type: "sse", name: "old", url: "http://localhost/sse", headers: [] }], "/workspace"), /SSE/);
 });
+
+test("session tool execution mode serializes shared UI calls using Pi's existing loop", { timeout: 20000 }, async () => {
+  let active = 0, peak = 0, currentPage = "";
+  const observations: string[] = [];
+  const mcp = await httpFixture(async (body, response) => {
+    if (!body.id) { response.writeHead(202); response.end(); return; }
+    let result: unknown = {};
+    if (body.method === "initialize") result = { protocolVersion: body.params.protocolVersion, capabilities: { tools: {} }, serverInfo: { name: "screen", version: "1" } };
+    else if (body.method === "tools/list") result = { tools: [{ name: "open", description: "Open and read one shared screen", inputSchema: { type: "object", properties: { page: { type: "string" } }, required: ["page"] } }] };
+    else if (body.method === "tools/call") {
+      active++;
+      peak = Math.max(peak, active);
+      currentPage = body.params.arguments.page;
+      await new Promise(resolve => setTimeout(resolve, 80));
+      observations.push(currentPage);
+      result = { content: [{ type: "text", text: currentPage }] };
+      active--;
+    }
+    response.writeHead(200, { "Content-Type": "application/json" });
+    response.end(JSON.stringify({ jsonrpc: "2.0", id: body.id, result }));
+  });
+  const provider = await httpFixture((body, response) => {
+    if (body.messages.at(-1).role === "tool") stream(response, { text: "Finished" });
+    else stream(response, { tools: ["first", "second"].map(page => ({ id: page, name: "mcp__screen__open", arguments: { page } })) });
+  });
+  try {
+    for (const mode of [undefined, "sequential"] as const) {
+      peak = 0; observations.length = 0;
+      const host = await harness(provider.url, { configure: config => { config.toolExecution = mode; } });
+      try {
+        const session = await host.newSession([{ type: "http", name: "screen", url: `${mcp.url}/mcp`, headers: [] }]);
+        await host.prompt(session.sessionId, "Read both pages");
+        assert.equal(host.permissions(), 2);
+        assert.equal(active, 0);
+        assert.equal(peak, mode === "sequential" ? 1 : 2);
+        assert.deepEqual(observations, mode === "sequential" ? ["first", "second"] : ["second", "second"]);
+      } finally { await host.close(); }
+    }
+  } finally { await provider.close(); await mcp.close(); }
+});
