@@ -38,6 +38,27 @@ def records(action, args):
     if path.parent!=root.resolve() or path.suffix!='.json' or not path.is_file():
         raise ValueError('Use an existing owned JSON fixture')
     data=json.loads(path.read_text())
+    if action=='nutrition_summary' and path.name=='caltrack.json':
+        from datetime import date, timedelta
+        start=date.fromisoformat(args['start_date']);end=date.fromisoformat(args['end_date'])
+        if end<start:raise ValueError('end_date must not precede start_date')
+        state=data['state'];rows=[]
+        for day in state['dailyLogs']:
+            if not start<=date.fromisoformat(day['id'])<=end:continue
+            rows.append({'date':day['id'],'calories':round(sum(entry['quantity']*entry['foodItem']['calories'] for entry in day['mealEntries']),2),
+                         'protein':round(sum(entry['quantity']*entry['foodItem']['protein'] for entry in day['mealEntries']),2)})
+        rows.sort(key=lambda row:row['date'])
+        dates={row['date'] for row in rows}
+        requested=[(start+timedelta(days=i)).isoformat() for i in range((end-start).days+1)]
+        goals={'calories':state['userProfile']['dailyCalorieGoal'],'protein':state['nutritionGoal']['goalProtein']}
+        totals={key:round(sum(row[key] for row in rows),2) for key in goals}
+        covered_goals={key:value*len(rows) for key,value in goals.items()}
+        return {'daily':rows,'coveredDays':len(rows),'requestedDays':len(requested),
+                'missingDates':[day for day in requested if day not in dates],
+                'dailyGoals':goals,'totals':totals,'coveredDayGoals':covered_goals,
+                'surplusVsCoveredGoal':{key:round(totals[key]-covered_goals[key],2) for key in goals},
+                'dailyAverages':{key:round(value/len(rows),2) if rows else None for key,value in totals.items()},
+                'scope':'Intake versus configured goals for logged days only; missing days are unknown, not zero. Exercise expenditure not subtracted.'}
     if action=='mastodon_request' and path.name=='mastodon.json':
         return mastodon_api(data,{key:args[key] for key in ('method','path','params') if key in args})
     if action=='mastodon_report_post' and path.name=='mastodon.json':

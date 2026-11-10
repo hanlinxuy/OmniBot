@@ -7,6 +7,21 @@ import records
 
 
 class OwnedActionsTest(unittest.TestCase):
+    def test_nutrition_uses_portions_and_only_covered_day_goals(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=pathlib.Path(directory);(root/'work').mkdir()
+            data={'state':{'userProfile':{'dailyCalorieGoal':2450},'nutritionGoal':{'goalProtein':170},
+                          'dailyLogs':[{'id':f'2026-03-{day:02}','mealEntries':[{'quantity':1.5,'foodItem':{'calories':150,'protein':10}}]} for day in range(1,7)]}}
+            path=root/'work/caltrack.json';path.write_text(json.dumps(data));before=path.read_bytes()
+            with patch.object(records,'__file__',str(root/'records.py')):
+                result=records.records('nutrition_summary',{'file':'caltrack.json','start_date':'2026-03-01','end_date':'2026-03-07'})
+            self.assertEqual(result['coveredDays'],6)
+            self.assertEqual(result['missingDates'],['2026-03-07'])
+            self.assertEqual(result['totals'],{'calories':1350,'protein':90})
+            self.assertEqual(result['coveredDayGoals'],{'calories':14700,'protein':1020})
+            self.assertEqual(result['surplusVsCoveredGoal'],{'calories':-13350,'protein':-930})
+            self.assertEqual(path.read_bytes(),before)
+
     def test_report_copies_selected_post_without_retyping_or_extra_actions(self):
         with tempfile.TemporaryDirectory() as directory:
             root=pathlib.Path(directory);(root/'work').mkdir()
