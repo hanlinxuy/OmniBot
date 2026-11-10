@@ -739,3 +739,30 @@ Private evidence: `brightness-baseline-audit.json`, `display-mcp-preflight.json`
 `display-mcp-shizuku-preflight.json`, `display-mcp-installed.json`, and build/test
 logs. An explicit before/after-readback model control is tracked separately from
 the original baseline.
+
+### Explicit display-readback controls
+
+With the new native query available and an explicit instruction to read before
+and after the single GUI delegation, all three phone Pi models actually called
+`context_display_get` and surfaced the normalized/raw discrepancy:
+
+| Outer model | Seconds | Interpretation |
+| --- | ---: | --- |
+| 35a3 | 56.53 | Reports conflict but still asserts raw 255 proves maximum; not fully calibrated. |
+| DeepSeek | 34.44 | Reports conflict, but calls raw 255 authoritative/full scale without a proven device contract. |
+| Terra | 53.76 | Reports both values and explicitly cannot verify actual maximum brightness. |
+
+These are explicit-tool-guidance controls, not an autonomous tool-selection or
+speedup claim. All three reached raw 255 and automatic brightness off, satisfying
+the original source predicate but not proving physical luminance.
+
+All three controls exposed a cleanup failure: shell `settings put` returned zero
+but readback remained at test values. A five-second read-only poll also failed
+for DeepSeek and Terra, so this cannot be dismissed as a proven short delay.
+The owning task was already terminal. Host recovery used the guarded, freshly
+observed inner automatic-brightness switch (not the large accessibility wrapper),
+then independently read back raw 74 and automatic mode 1. Each unique Pi
+workspace and provider reverse was removed. Original failed cleanup files remain;
+`cleanup-followup.json` records successful recovery separately. This is a harness
+restoration limitation, not a fixed Android setter or another task pass.
+The actual cause of this vendor write/readback behavior remains unresolved.
