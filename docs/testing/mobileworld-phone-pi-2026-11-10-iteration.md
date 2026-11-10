@@ -606,3 +606,48 @@ condition prepares the parser inside each owned workspace and allows only that
 trailing stderr merge. All successful runs preserve original PDF hashes and have
 verified workspace cleanup. This is a bounded harness observation, not a product
 file sandbox, automatic skill selection or a general model-speed comparison.
+
+
+### CheckRegistrationTask: received versus confirmed
+
+The original inbox contains a Putnam registration acknowledgment whose full body
+says coordinator confirmation is still required. All outer models first receive
+a read-only-inspection instruction, then decide whether a separate inquiry send
+is needed. Only the synthetic Mail app is available; the shared GUI executor is
+unchanged within the baseline.
+
+| Outer model | Seconds | GUI calls / steps | Original task readback |
+| --- | ---: | ---: | --- |
+| 35a3 | 14.14 | 1 / 0 | fail: mistook title/preview for confirmation, did not send |
+| DeepSeek Flash | 55.07 | 2 / 8 | pass: read pending condition, sent inquiry |
+| Terra | 85.55 | 2 / 15 | pass: read pending condition, sent inquiry |
+
+35a3's GUI goal asked only for visible inbox subjects. The executor accurately
+reported the title and truncated preview; the outer model then asserted the
+business condition without opening the body. Faster termination is not success.
+Terra noted that a copy was not visible in Sent; independent host acceptance uses
+the offline fixture's sent record, not external-delivery or Sent-folder claims.
+All baseline GUI runs settled and original mail state was restored.
+
+The new generic `check-message-condition` skill requires reading full relevant
+message evidence, keeping qualifications/pending steps, considering separate
+confirmation messages, and distinguishing true/false/unknown before action. It
+contains no fixture names, expected email text or answer key. Explicit Pi skill
+expansion was confirmed in the actual model request in both controls:
+
+- Original pending-confirmation inbox: 35a3 now opened the full body and correctly
+  sent the inquiry; 58.72 seconds, three GUI calls and ten steps. The extra title
+  inspection means this is a correctness improvement, not a speedup.
+- A separately labelled negative control changes the candidate message to a clear
+  confirmation. 35a3 opened its body and sent nothing; 16.77 seconds, one GUI call
+  and one step. No sent record existed. This altered inbox is not an original
+  benchmark task or another original-task pass.
+
+Both controls have independent send/no-send evidence, terminal GUI verification
+and byte-exact mail restoration. The skill passes its frontmatter validator, is
+registered in the built-in manifest, and the asset APK built and installed.
+Device APK and seeded skill hashes matched source; authenticated MCP health was
+verified after restart. APK SHA-256:
+`e1b0321c7acda762923af26da9d5d58515cd62f9b7df5a02084296b188ab5bb9`.
+This establishes installation and two explicit-selection observations, not reliable
+autonomous skill selection or broad generalization across message types.

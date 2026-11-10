@@ -89,6 +89,16 @@
       "hasReferences": false,
       "hasAssets": false,
       "hasEvals": false
+    },
+    {
+      "id": "check-message-condition",
+      "name": "check-message-condition",
+      "description": "Read full message evidence before a conditional send, reply, or follow-up when the action depends on confirmation, approval, completion, or the absence of a message.",
+      "assetPath": "builtin_skills/check-message-condition",
+      "hasScripts": false,
+      "hasReferences": false,
+      "hasAssets": false,
+      "hasEvals": false
     }
   ]
 }
