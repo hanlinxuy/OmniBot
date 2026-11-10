@@ -18,6 +18,8 @@ class AndroidDeviceMcpServerTest {
                     "register_function",
                     "context_apps_query",
                     "context_display_get",
+                    "display_brightness_set",
+                    "display_auto_brightness_set",
                     "file_transfer",
                     "schedule_task_create",
                     "schedule_task_list",

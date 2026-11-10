@@ -74,6 +74,23 @@ internal object AndroidDeviceMcpServer {
             properties = emptyMap(),
         ),
         DeviceTool(
+            name = "display_brightness_set",
+            operation = "display_brightness_set",
+            description = "Set normalized Android display brightness from 0 to 100 percent using an already authorized Root or Shizuku backend. " +
+                "The existing privileged controller independently reads back the setting. This does not change automatic brightness; " +
+                "use display_auto_brightness_set when manual brightness is requested. Do not claim success if the returned result is unsuccessful.",
+            properties = mapOf("percent" to schema("integer", "Normalized display brightness percentage, from 0 to 100.")),
+            required = listOf("percent"),
+        ),
+        DeviceTool(
+            name = "display_auto_brightness_set",
+            operation = "display_auto_brightness_set",
+            description = "Enable or disable Android automatic brightness using an already authorized Root or Shizuku backend. " +
+                "Uses the existing permission policy and readback verification; does not request backend access.",
+            properties = mapOf("enabled" to schema("boolean", "Whether automatic brightness should be enabled.")),
+            required = listOf("enabled"),
+        ),
+        DeviceTool(
             name = "run_gui",
             operation = "run_gui",
             description = "Execute a new Android GUI task with the installed OmniFlow runtime. " +
@@ -404,6 +421,20 @@ internal object AndroidDeviceMcpServer {
             .reserve("mcp-display-query")
             .executeAgentAction(PrivilegedActionPolicy.ACTION_DEVICE_GET_DISPLAY, emptyMap(), false)
             .toMap()
+        "display_brightness_set" -> PrivilegedCapabilityManager.get(context)
+            .reserve("mcp-display-brightness")
+            .executeAgentAction(
+                PrivilegedActionPolicy.ACTION_DEVICE_SET_BRIGHTNESS,
+                mapOf("percent" to arguments["percent"].toString()),
+                false,
+            ).toMap()
+        "display_auto_brightness_set" -> PrivilegedCapabilityManager.get(context)
+            .reserve("mcp-display-auto-brightness")
+            .executeAgentAction(
+                PrivilegedActionPolicy.ACTION_DEVICE_SET_STATE,
+                mapOf("target" to "auto_brightness", "enabled" to arguments["enabled"].toString()),
+                false,
+            ).toMap()
         "personal_context" -> PersonalContextService(context).execute(tool.name, JsonObject(arguments.toJson()))
         "run_gui" -> {
             val goal = arguments["goal"]?.toString().orEmpty().trim()
