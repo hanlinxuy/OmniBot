@@ -59,6 +59,16 @@
       "hasReferences": false,
       "hasAssets": false,
       "hasEvals": false
+    },
+    {
+      "id": "edit-structured-note",
+      "name": "edit-structured-note",
+      "description": "Update existing structured notes without losing content, misplacing bullets, or inventing factual details.",
+      "assetPath": "builtin_skills/edit-structured-note",
+      "hasScripts": false,
+      "hasReferences": false,
+      "hasAssets": false,
+      "hasEvals": false
     }
   ]
 }

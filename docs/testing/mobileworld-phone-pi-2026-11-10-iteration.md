@@ -118,3 +118,20 @@ Second, native `run_gui` already emits actual execution events, but the MCP endp
 The English alarm description also contradicted the existing Chinese guidance by preferring app reminders. It now distinguishes native system Clock dispatch from app reminders and verification, matching the Chinese description. No new clock-task pass is claimed by that text change.
 
 A fixture-bound calendar MCP adapter is under evaluation: it enforces calendar ID and unique title scope on the host instead of repeatedly requiring model-supplied isolation parameters. Its first DeepSeek run completed the calendar subtask but the GUI forwarding client failed before dispatch because it inherited a SOCKS proxy without its optional dependency. The full attempt is infrastructure-invalid, not a model-task score. Local HTTP now ignores proxy environment. All owned partial effects were independently cleaned; system channel-join messages are not mistaken for leftover task posts.
+
+
+## Batch 5: original iOSWorld Notes through phone Pi
+
+A dedicated iOS 26.5 simulator now runs seven original iOSWorld apps. All three models still execute inside Pi 1.4.0 on vivo; their MCP calls reach the original iOSWorld tools on the Mac. These tools mix Appium/WDA UI automation with source-provided direct SwiftData helpers. This is a remote-tool adaptation, not iOS execution on Android, a pure GUI result, or an official benchmark score. Clock and Mail needed only a deployment-target build override for the installed Xcode; benchmark source was unchanged. The simulator and all test stores are isolated from personal applications.
+
+For notes-001, the original request asks for a bullet about a bug fix completed today in Team Standup Notes. All three baseline runs added one bullet and preserved existing content. Their quality differed:
+
+| Model | Baseline content and placement | Explicit native Pi skill condition |
+| --- | --- | --- |
+| 35a3 | Invented login timeout / issue number; appended under Blockers | Generic factual wording; still appended under Blockers and incorrectly claimed placement was checked |
+| DeepSeek | Invented token-refresh crash / merged status; appended under Blockers | Read-modify-write under Today; generic wording; independently verified pass |
+| Terra | Generic wording under Today; independently verified pass | Generic wording under Today; independently verified pass |
+
+The skill is a general `edit-structured-note` workflow: read the full body, select the appropriate section, inspect append versus replacement semantics, preserve unrelated content, use only supplied facts, and read back the actual placement. It contains no fixture IDs, note titles or answer key. The comparison explicitly selects it through Pi's native `/skill:` expansion; autonomous skill discovery is not claimed. These are single-run observations, not a reliable success-rate estimate. The 35a3 placement failure remains open.
+
+The first host verifier incorrectly required the updated body to begin with the entire old body, so it rejected Terra's correct insertion before the final section. The raw result is preserved and a separate acceptance audit corrects it. A reusable line-diff verifier now distinguishes original-content preservation, exactly one added bullet and section placement; factual accuracy remains a separate source-based audit. Three focused tests cover middle insertion, wrong-section append, and destructive/duplicate edits. Each completed run restored and independently compared all Notes rows and folders before the next model.
