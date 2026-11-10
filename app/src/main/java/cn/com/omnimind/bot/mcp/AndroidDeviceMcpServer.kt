@@ -4,6 +4,7 @@ import android.content.Context
 import cn.com.omnimind.baselib.i18n.PromptLocale
 import cn.com.omnimind.bot.agent.personal.PersonalContextTools
 import cn.com.omnimind.bot.agent.personal.PersonalContextService
+import cn.com.omnimind.bot.agent.tool.handlers.permissionActionContext
 import cn.com.omnimind.bot.agent.AgentRuntimeContextRepository
 import cn.com.omnimind.bot.agent.AgentAlarmCreateRequest
 import cn.com.omnimind.bot.agent.parseTimerDuration
@@ -400,7 +401,7 @@ internal object AndroidDeviceMcpServer {
                 ),
                 modelClient = modelClient,
                 hooks = OmniVlmPlugin.Hooks(onProgress = onProgress),
-            ).payload
+            ).payload.let(::guiResultContext)
         }
         "run_function" -> {
             val functionId = arguments["function_id"]?.toString().orEmpty().trim()
@@ -498,6 +499,35 @@ internal object AndroidDeviceMcpServer {
             source = "mcp",
             modelClient = modelClient,
         ).payload
+    }
+
+    /** Keep the terminal receipt visible when an MCP client truncates tool output.
+     * Full steps and recall diagnostics remain in the existing RunLog.
+     */
+    internal fun guiResultContext(payload: Map<String, Any?>): Map<String, Any?> {
+        val steps = (payload["steps"] as? List<*>)?.mapNotNull { value ->
+            (value as? Map<*, *>)?.entries?.associate { it.key.toString() to it.value }
+        }.orEmpty()
+        return linkedMapOf<String, Any?>().apply {
+            for (key in listOf("success", "status", "run_id", "done_reason", "finished_content",
+                "error", "error_code", "error_message")) {
+                if (payload.containsKey(key)) put(key, payload[key])
+            }
+            putAll(payload.filterKeys { it !in setOf("steps", "function_resolution") })
+            putAll(permissionActionContext(steps))
+            put("trace_in_run_log", !payload["run_id"]?.toString().isNullOrBlank())
+            put("result_interpretation", "finished_content is the GUI executor's report, not independent " +
+                "verification. Per-step success only proves dispatch. final_state.activity_name is an " +
+                "Android component name, not evidence of the selected tab. Do not repeat a completed " +
+                "mutation solely because of that component name.")
+            val failures = steps.filter { (it["result"] as? Map<*, *>)?.get("success") == false }
+            if (failures.isNotEmpty()) {
+                put("failed_steps", failures.takeLast(8).map { step ->
+                    step.filterKeys { it in setOf("step_index", "action", "result") }
+                })
+                put("failed_steps_total", failures.size)
+            }
+        }
     }
 
     private fun successResult(result: Map<String, Any?>): CallToolResult = CallToolResult(

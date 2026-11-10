@@ -124,4 +124,47 @@ class AndroidDeviceMcpServerTest {
 
         assertEquals(0, inspectionCount)
     }
+    @Test
+    fun `GUI receipt retains completion ahead of large trace without changing success`() {
+        val payload = linkedMapOf<String, Any?>(
+            "success" to true, "status" to "succeeded", "run_id" to "gui-owned",
+            "steps" to List(26) { mapOf("metadata" to mapOf("thinking" to "x".repeat(2000))) },
+            "function_resolution" to mapOf("diagnostics" to "x".repeat(12000)),
+            "done_reason" to "finished", "finished_content" to "Saved and reopened the target alarm.",
+            "final_state" to mapOf("activity_name" to "com.android.BBKClock.Timer"),
+        )
+        val result = AndroidDeviceMcpServer.guiResultContext(payload)
+        assertEquals(payload["finished_content"], result["finished_content"])
+        assertEquals(payload["success"], result["success"])
+        assertEquals(payload["final_state"], result["final_state"])
+        assertFalse(result.containsKey("steps"))
+        assertFalse(result.containsKey("function_resolution"))
+        assertTrue(result.toString().length < 2000)
+        assertTrue(result["result_interpretation"].toString().contains("not independent"))
+        assertTrue(result["result_interpretation"].toString().contains("not evidence of the selected tab"))
+        assertEquals(true, result["trace_in_run_log"])
+    }
+
+    @Test
+    fun `GUI receipt preserves failure and permission action evidence`() {
+        val denied = mapOf("action" to mapOf("tool" to "click", "args" to mapOf(
+            "node_resource_id" to "com.android.permissioncontroller:id/permission_deny_and_dont_ask_again_button")),
+            "result" to mapOf("success" to true))
+        val failure = mapOf("step_index" to 2, "action" to mapOf("tool" to "click"),
+            "result" to mapOf("success" to false, "error" to "node_id_not_resolved"),
+            "metadata" to mapOf("thinking" to "large private trace"))
+        val payload = mapOf("success" to false, "status" to "failed", "run_id" to "gui-owned",
+            "error_message" to "Needs user input", "done_reason" to "waiting_input",
+            "payment_confirmation_blocked" to true, "steps" to listOf(denied, failure))
+        val result = AndroidDeviceMcpServer.guiResultContext(payload)
+        assertEquals(false, result["success"])
+        assertEquals("waiting_input", result["done_reason"])
+        assertEquals("Needs user input", result["error_message"])
+        assertEquals(true, result["payment_confirmation_blocked"])
+        assertTrue(result.containsKey("permission_action_notice"))
+        assertEquals(listOf(failure.filterKeys { it != "metadata" }), result["failed_steps"])
+        assertEquals(1, result["failed_steps_total"])
+        assertEquals(false, AndroidDeviceMcpServer.guiResultContext(emptyMap())["trace_in_run_log"])
+    }
+
 }

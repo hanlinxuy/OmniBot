@@ -241,3 +241,42 @@ from model execution. No draft alarm was saved. Cleanup confirmation is tracked
 separately in private evidence. Ninety-two seconds remains poor alarm-setting
 latency despite the improvement; DeepSeek and Terra still need the same revised
 condition before a model comparison is valid.
+
+### Same-condition weekend alarm matrix completed
+
+| Outer phone Pi model | Elapsed seconds | GUI calls | GUI steps | Independent configuration | Owned alarm cleanup |
+| --- | ---: | ---: | ---: | --- | --- |
+| 35a3 | 92.39 | 1 | 16 | pass | pass |
+| DeepSeek Flash | 139.95 | 2 | 35 | pass | pass |
+| Terra | 143.20 | 2 | 30 | pass | pass |
+
+All three use reminder skill v2, the unresolved-live-ID guard and the same
+DeepSeek GUI executor. Settings checked: enabled, 08:25, Saturday and Sunday,
+unique supplied audio filename and vibration off. Actual ringing and source URI
+readback are not established by the Clock UI. Failed node actions blocked before
+dispatch: 1/2/3 respectively. Only the unique test alarms were deleted; visible
+baseline preservation was checked for each run. These are single-run adapted
+task results, not official benchmark scores or universal model rankings.
+
+### GUI receipt truncation: concrete diagnosis and candidate
+
+The first DeepSeek GUI call's complete result explicitly said the alarm had been
+saved and reopened. Its steps occupied about 45 KB and function-recall diagnostics
+about 13 KB. Pi's truncated tool output omitted `finished_content` and
+`done_reason`, while retaining `final_state.activity_name=com.android.BBKClock.Timer`.
+The next model call incorrectly inferred a Timer tab and requested another GUI
+verification. Terra also made a second GUI call after a truncated success result;
+its causal attribution has not been isolated.
+
+The MCP `run_gui` result now puts terminal status, completion report, errors and
+RunLog identity first, excludes full steps/recall diagnostics from the immediate
+receipt, and retains recent failed action receipts and existing permission-action
+notices. Full traces remain in RunLog. Other result fields, including payment
+confirmation state, are preserved. The receipt explicitly distinguishes the GUI
+executor's report from independent verification and component name from tab state.
+Six focused Android unit tests and APK assembly pass. The APK was installed
+with matching device/local SHA-256, and existing runtime overrides survived.
+A new CheckEventTimeTask phone Pi run produced two complete GUI receipts of
+1,141 and 1,755 bytes with their finished content intact, without Pi truncation.
+The underlying full RunLogs remained available. Business acceptance is recorded
+separately below; this does not establish general latency improvement.
