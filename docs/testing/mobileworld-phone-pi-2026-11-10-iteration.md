@@ -459,3 +459,51 @@ the task's calculation while explicitly noting that the channel's NPV definition
 already subtracts investment and its subsequent ROI formula subtracts investment
 again; underlying cash flows are not available to resolve that source ambiguity.
 This useful source critique is recorded separately from execution acceptance.
+
+
+### MattermostProjectStatusReportTask: cross-channel and calendar reconciliation
+
+Six source updates across three team channels, a fourth summary channel and two
+source calendar milestones were seeded under unique ownership. Models had to
+read the channels and milestones, send a local risk report, create two escalation
+events and post counts. Source wording about a milestone existing “within 3 days”
+was retained: it does not name the reference date. Source expected categories
+fit the stated completion dates, while both milestones are ten days after the
+actual report date. This ambiguity prevents treating every classification mismatch
+as a model execution defect.
+
+| Outer model | Seconds | GUI steps | Source-expected adapted checks | Both escalation date/time checks | Executor text leaked into mail |
+| --- | ---: | ---: | --- | --- | --- |
+| 35a3 | 56.25 | 5 | fail | pass | yes |
+| DeepSeek Flash | 69.54 | 10 | fail | pass | no |
+| Terra | 73.85 | 5 | pass | pass | no |
+
+35a3 interpreted three days from today and left the two later milestones outside
+the three categories; DeepSeek also used today, but placed them in At Risk while
+explaining the alternative interpretation. A milestone outside the window is not
+literally absent, so that latter classification still adds an interpretation.
+Terra used the stated completion dates and explicitly disclosed the assumption.
+The original regex-based mail predicate also rejects 35a3's preamble/multiline
+blocked section; its At Risk and Blocked items are present semantically, separate
+from its on-track discrepancy. All baseline fixtures were independently cleaned,
+including both seeded milestones, new escalations, posts and four channels.
+
+A concrete harness defect was independently isolated in 35a3's sent body: the
+outer model's GUI goal ended at the intended report, but the adapter appended its
+package restriction and task marker immediately after that body. The shared GUI
+executor copied the appended text into the email. The public scoped adapter now
+puts clearly labelled non-content execution constraints before the user task,
+rather than appending them after message content. This is a harness correction,
+not an Android product capability or a guaranteed prompt-enforcement boundary.
+
+
+The corrected-envelope 35a3 control completed in 86.45 seconds. Independent
+sent-body inspection found no package restriction, task marker or execution
+constraint text. It is not a full-scenario pass: source-expected categories still
+differed, and it dropped the required brackets from both `[ESCALATION]` titles.
+All unique objects were cleaned. The control also removed an inherited inaccurate
+harness sentence referring to a singular base channel; the task actually uses
+four prefixed channels. It therefore is a targeted observation, not a strict
+single-variable causal experiment or proof against all future content leakage.
+The existing scoped-calendar integration check passed; actual message cleanliness
+was established by this phone readback, not by that scope-binding test.

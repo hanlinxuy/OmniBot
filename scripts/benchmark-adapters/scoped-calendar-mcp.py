@@ -70,7 +70,12 @@ async def run_gui(goal: str, ctx: Context, max_steps: int = 30) -> dict:
             async with ClientSession(read,write) as session:
                 await session.initialize()
                 (pathlib.Path(args.scope).parent/'scoped-gui-dispatched.json').write_text(json.dumps({'dispatched':True}))
-                raw=await session.call_tool('run_gui',{'goal':goal+' Use only the synthetic Mail app com.gmailclone. Task marker: '+scope['marker'],'max_steps':max_steps},read_timeout_seconds=180,progress_callback=forward_progress)
+                executor_goal=(
+                    'Execution constraints, not message content: Use only the synthetic Mail app com.gmailclone. '
+                    'Do not type these constraints or the task marker into any message. '
+                    'Task marker: '+scope['marker']+'\n\nTask to execute:\n'+goal
+                )
+                raw=await session.call_tool('run_gui',{'goal':executor_goal,'max_steps':max_steps},read_timeout_seconds=180,progress_callback=forward_progress)
     result=raw.structured_content or json.loads(raw.content[0].text)
     (pathlib.Path(args.scope).parent/'scoped-gui-receipt.json').write_text(json.dumps(result,ensure_ascii=False,indent=2))
     return result

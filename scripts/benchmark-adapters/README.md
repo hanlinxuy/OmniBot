@@ -30,6 +30,8 @@ The example endpoint assumes an existing authenticated native MCP service and ca
 
 The additional `run_gui` tool is specifically for the synthetic MobileWorld Mail clone (`com.gmailclone`), allows one dispatch, and forwards actual native progress events through the same MCP request. It writes a dispatch marker and terminal receipt beside the scope file. This GUI package restriction is instruction guidance, not an enforced application sandbox. Use the original device-access policy and exclude personal messaging, banking and payment applications. After an uncertain send, inspect terminal RunLog and independent fixture state before cleanup; do not replay it. Stop the per-run adapter before starting another run.
 
+GUI execution constraints are placed before the task and explicitly labelled as non-content. Never append fixture restrictions or trace markers directly after a goal that ends with message-body text: the executor can copy them into the outgoing body. Still independently inspect the saved message; prompt separation is not enforcement.
+
 The title constraint and scope checks are harness improvements, not a new Android Calendar permission or a general authorization boundary. The model still needs to discover relevant records, reconcile dates, create the correct events, verify them and accurately report completion. Use a unique marker whose ownership was recorded before setup. Restore only those records and owned Mail/Mattermost fixtures after execution settles.
 
 A local integration control starts a fake native endpoint and proves that a rejected title produces no native write, valid writes bind the selected calendar, and list calls bind both calendar and marker:
