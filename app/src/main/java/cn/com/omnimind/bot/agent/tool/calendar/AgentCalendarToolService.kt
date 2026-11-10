@@ -338,9 +338,11 @@ class AgentCalendarToolService(
         val currentStart = Instant.ofEpochMilli(current.startMillis).atZone(zone)
         val currentEnd = Instant.ofEpochMilli(current.endMillis).atZone(zone)
 
-        val nextStart = request.startAt?.takeIf { it.isNotBlank() }?.let { parseCalendarDateTime(it, zone, !request.timezone.isNullOrBlank()) }
+        // Updates retain the stored regional zone unless the caller replaces it.
+        // An ISO timestamp offset describes an instant, not a timezone change.
+        val nextStart = request.startAt?.takeIf { it.isNotBlank() }?.let { parseCalendarDateTime(it, zone, true) }
             ?: currentStart
-        val nextEnd = request.endAt?.takeIf { it.isNotBlank() }?.let { parseCalendarDateTime(it, zone, !request.timezone.isNullOrBlank()) }
+        val nextEnd = request.endAt?.takeIf { it.isNotBlank() }?.let { parseCalendarDateTime(it, zone, true) }
             ?: currentEnd
         val (normalizedStart, normalizedEnd) = normalizeEventRange(nextStart, nextEnd, allDay)
 
