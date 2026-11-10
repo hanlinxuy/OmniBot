@@ -8,4 +8,6 @@ Each task restores the dedicated database and Redis, checks health, scores the i
 
 A completed runner is not task acceptance. Require the original source judge, a terminal phone execution, independent review of unintended mutations, phone workspace cleanup, and matching backend restoration hash. A source judge may only inspect its requested final predicate; audit the action trace for extra changes. Keep failed attempts and infrastructure errors separate. No source constants or expected answer IDs are exposed to the model.
 
+Install the pinned source timezone dependency `pytz==2025.2` into the isolated runner environment (from MobileWorld uv.lock). Compiled source SQL helpers receive this dependency unchanged; missing judge dependencies are infrastructure errors, not zero model scores.
+
 Regression: `python3 -m unittest discover -s scripts/benchmark-adapters/mobileworld-api -p 'test_*.py'`. Task and helper sources are pinned to the MobileWorld version recorded in each report; see the adjacent Android workspace adapter for source licensing.
