@@ -13,7 +13,7 @@ for d in sorted(a.artifacts.glob('ios-android-*')):
  raw=json.loads((d/'result.json').read_text());cleanup=json.loads((d/'cleanup.json').read_text()) if (d/'cleanup.json').exists() else {};review=json.loads((d/'independent-review.json').read_text()) if (d/'independent-review.json').exists() else None
  acceptance=dict(raw['acceptance'])
  if review is not None: acceptance['passed']=bool(review['passed'])
- acceptance['passed']=bool(acceptance.get('passed') and cleanup.get('workspaceAbsent'))
+ acceptance['passed']=bool(acceptance.get('passed') and cleanup.get('workspaceAbsent') and cleanup.get('reverseRemoved'))
  row={'completedRun':True,'artifact':d.name,'sourceTask':raw['sourceTask'],'provider':'35a3' if raw['provider']=='qwen' else raw['provider'],'model':raw.get('model'),'officialBenchmarkScore':None,'transport':raw.get('transport','shell'),'cleanup':cleanup,'rawAcceptance':raw['acceptance'],'acceptance':acceptance,'elapsedSeconds':raw['elapsedSeconds'],'providerRequests':raw['providerRequests']}
  if review:row['independentReview']={k:v for k,v in review.items() if k!='evidenceSha256'}
  runs[d.name]=row
