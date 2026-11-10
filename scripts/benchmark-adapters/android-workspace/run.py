@@ -127,6 +127,11 @@ else:
     from fixtures import build_fixture
     build_fixture(ios,local_work,args.case)
 filenames=sorted(p.name for p in local_work.iterdir())
+# Reviewed source goals only request ride estimates in these cases. Do not turn
+# the presence of a ride fixture into authority to dispatch a ride.
+denied_tools = {'multi-035': ['request_ride'], 'multi-053': ['request_ride']}.get(args.case, [])
+policy = {'deniedTools': denied_tools, 'reason': 'Source goal requests transportation price comparison only' if denied_tools else None}
+(RUN/'task-policy.json').write_text(json.dumps(policy))
 # Ship pure Python dependencies and the capability into the run-owned directory.
 import openpyxl, et_xmlfile, tzdata
 # Validate fixtures/dependencies and model connectivity before creating phone state.
@@ -151,6 +156,7 @@ with tarfile.open(fileobj=archive, mode='w') as tar:
     tar.add(ADAPTER/'presentations.py',arcname='presentations.py')
     tar.add(ADAPTER/'workspace_mcp.py',arcname='workspace_mcp.py')
     tar.add(ADAPTER/'records.py',arcname='records.py')
+    tar.add(RUN/'task-policy.json',arcname='task-policy.json')
     for module in (openpyxl,et_xmlfile,tzdata):
         tar.add(pathlib.Path(module.__file__).parent,arcname=module.__name__,filter=lambda info: None if '__pycache__' in info.name else info)
 subprocess.run(BASE+['shell','-T','run-as',PKG,'sh','-c',shlex.quote('tar -xf - -C '+HOST)],input=archive.getvalue(),check=True,capture_output=True)

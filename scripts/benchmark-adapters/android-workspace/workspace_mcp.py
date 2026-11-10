@@ -63,6 +63,9 @@ def main():
     }
     for file,names in capability_files.items():
         if file in files: allowed.update(names)
+    policy_path = pathlib.Path(__file__).with_name('task-policy.json')
+    if policy_path.exists():
+        allowed.difference_update(json.loads(policy_path.read_text())['deniedTools'])
     for line in sys.stdin:
         request = json.loads(line)
         if 'id' not in request:
