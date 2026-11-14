@@ -1,12 +1,12 @@
 # Screenshot-only decision-policy experiment
 
-Status: experimental harness, not a completed phone benchmark. The initial implementation has
-only offline boundary tests; no model/device success or latency result is claimed yet.
+Status: experimental harness, not a completed phone benchmark. Four real StartLux runs
+failed independent acceptance; see the dated visual-policy research report.
 
 `run.py` executes against the dedicated `omnibot-lab` AVD / `emulator-5580`.
 It sends screenshots, the user goal and recent actions to a StartLux-compatible
 `/v1/systemone` endpoint. It never queries a UI tree, OCR text or application APIs
-for the model. ADB is the transport for screenshot and coordinate input, not a
+for the model. A package-only foreground guard refuses to capture or operate outside the selected test app. ADB is the transport for screenshot and coordinate input, not a
 semantic observation source. Run on the emulator host to avoid SSH per action.
 
 The decision model selects an action and two coordinate bins (24 per axis).
@@ -21,7 +21,7 @@ page-specific action sequence belongs in the options.
 ```bash
 python3 run.py --adb "$HOME/Library/Android/sdk/platform-tools/adb" \
   --endpoint http://127.0.0.1:8090 --goal 'Create a note with the supplied text' \
-  --text 'visual-loop-owned-example' --out /path/to/unique-run
+  --package org.fossify.notes --text 'visual-loop-owned-example' --out /path/to/unique-run
 ```
 
 Only use an isolated test snapshot containing the authorized calculator, clock and
@@ -35,8 +35,12 @@ observation/decision/execution timings, final screenshot and terminal reason.
 `accepted` remains null even when the model claims completion. A separate evaluator
 must inspect the final app state, retain failure evidence, clean only owned objects
 and verify cleanup. Timeouts or malformed responses are errors; no replay of an
-uncertain input is implemented. Whole-run failures still need outer orchestration
-and a result record before this harness can be used for production reporting.
+uncertain input is implemented. Runtime failures after run admission are recorded
+as runtime_error and re-raised, without automatically replaying an action.
+
+`prepare.py --adb ... --case calculator|notes|alarm` restores only the disposable
+fixture and waits for ADB and the expected foreground. `--policy regions` selects
+the conditional region experiment; it has not demonstrated a successful fix.
 
 Current scope: calculator, alarm and notes only. Report per-case success and total
 wall time; separate model warm-up and capture/transport latency. Do not pool text
