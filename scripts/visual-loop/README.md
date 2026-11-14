@@ -1,7 +1,9 @@
 # Screenshot-only decision-policy experiment
 
-Status: experimental harness, not a completed phone benchmark. Four real StartLux runs
-failed independent acceptance; see the dated visual-policy research report.
+Status: experimental harness, not a completed phone benchmark. StartLux calculator
+and alarm runs failed. Note entry was visible; the initial force-stop persistence
+oracle bypassed the app's onPause autosave and is invalid for normal-use grading.
+See the dated visual-policy research report for qualified comparison results.
 
 `run.py` executes against the dedicated `omnibot-lab` AVD / `emulator-5580`.
 It sends screenshots, the user goal and recent actions to a StartLux-compatible
